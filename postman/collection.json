@@ -1,0 +1,169 @@
+{
+	"info": {
+		"_postman_id": "5b5f6c49-214b-4cc1-aad0-73634fa1e9cf",
+		"name": "CAV dove",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/posto/<uuid>",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/posto/149d624c-2c00-4590-9813-ab0c8ced81ff",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"posto",
+						"149d624c-2c00-4590-9813-ab0c8ced81ff"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/posto",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/posto",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"posto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"token\", pm.response.json().token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "daniele",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "cav-01",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/authenticate",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/app/alive",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/app/alive",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"app",
+						"alive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/authenticate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:8180"
+		}
+	]
+}
