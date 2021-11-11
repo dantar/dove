@@ -23,4 +23,9 @@
       <router-outlet></router-outlet>
     </div>
   </div>
+
+  <div class="panel-menu-list top-left-menu">
+    <div *ngFor="let button of menu.buttons" class="button menu" (click)="button.trigger()">{{button.letter}}</div>
+  </div>
+
 </div>

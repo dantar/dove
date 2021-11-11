@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MenuButton, MenuButtonsService } from './services/menu-buttons.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'dove-pwa';
+
+  constructor(
+    public menu: MenuButtonsService,
+  ) {
+    this.menu.buttons.push(new MenuButton('Q', () => {
+      console.log('you clicked me?', this);
+    }));
+  }
+
 }
