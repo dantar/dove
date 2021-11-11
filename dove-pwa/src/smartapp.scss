@@ -7,7 +7,7 @@
     width: 100%;
     top: 0;
     left: 0;
-    .full {
+    &.full {
         /* The image used */
         background-image: url("./assets/bg.jpg");
         /* Center and scale the image nicely */
@@ -15,7 +15,7 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
-    .tiled {
+    &.tiled {
         /* The image used */
         background-image: url("./assets/bg.jpg");
         /* Center and scale the image nicely */
@@ -145,7 +145,7 @@
     }
     .fullpage::after {
         content: "_";
-        font-size: 70px;
+        font-size: 140px;
         opacity: 0;
     }
     .splash-title {
