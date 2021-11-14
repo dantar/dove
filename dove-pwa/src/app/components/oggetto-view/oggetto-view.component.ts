@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OggettoViewComponent implements OnInit {
 
-  uuid: string;
+  uuid: string | null;
 
   constructor(
     private route: ActivatedRoute
