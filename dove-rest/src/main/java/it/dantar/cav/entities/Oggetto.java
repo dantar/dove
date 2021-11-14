@@ -31,6 +31,7 @@ public class Oggetto {
 	@Id
 	String id;
 	String idPosto;
+	String nome;
 	@Type(type = "jsonb")
 	JsonNode scheda;
 

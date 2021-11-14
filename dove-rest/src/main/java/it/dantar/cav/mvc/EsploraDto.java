@@ -13,5 +13,6 @@ public class EsploraDto {
 
 	Posto posto;
 	List<Oggetto> oggetti;
+	List<Posto> posti;
 	
 }

@@ -1,13 +1,16 @@
 <div class="bg tiled">
-  <div class="fullpage">
-    <h1>Centro di aiuto alla vita</h1>
-    <div>
-      <router-outlet></router-outlet>
+  <div *ngIf="shared.user">
+    <div class="fullpage">
+      <div>{{shared.user.details.username}}</div>
+      <h1>Centro di aiuto alla vita</h1>
+      <div>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  
+    <div class="panel-menu-list top-left-menu">
+      <div *ngFor="let button of menu.buttons" class="button menu" (click)="button.trigger()">{{button.letter}}</div>
     </div>
   </div>
-
-  <div class="panel-menu-list top-left-menu">
-    <div *ngFor="let button of menu.buttons" class="button menu" (click)="button.trigger()">{{button.letter}}</div>
-  </div>
-
+  <div app-login-form *ngIf="!shared.user"></div>
 </div>

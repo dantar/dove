@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthRestService } from './services/auth-rest.service';
 import { MenuButton, MenuButtonsService } from './services/menu-buttons.service';
+import { SharedDataService } from './services/shared-data.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +13,8 @@ export class AppComponent {
 
   constructor(
     public menu: MenuButtonsService,
+    public shared: SharedDataService,
+    public auth: AuthRestService,
     private router: Router,
   ) {
     this.menu.buttons.push(new MenuButton('Q', () => {
