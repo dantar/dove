@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuButton, MenuButtonsService } from './services/menu-buttons.service';
 
 @Component({
@@ -10,9 +11,11 @@ export class AppComponent {
 
   constructor(
     public menu: MenuButtonsService,
+    private router: Router,
   ) {
     this.menu.buttons.push(new MenuButton('Q', () => {
       console.log('you clicked me?', this);
+      this.router.navigate(['oggetto', 'f2980be0-5c25-4540-bf07-78c7c2a6bdba']);
     }));
   }
 
