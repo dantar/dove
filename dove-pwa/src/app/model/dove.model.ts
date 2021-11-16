@@ -40,6 +40,7 @@ export class SchedaOggetto {
 
 export class PostoBrowse {
 
+    breadcrumbs: Posto[];
     posto: Posto;
     posti: Posto[];
     oggetti: Oggetto[];
@@ -48,7 +49,8 @@ export class PostoBrowse {
 
 export class OggettoBrowse {
 
-    oggetto: Oggetto;
+    breadcrumbs: Posto[];
     posto: Posto;
+    oggetto: Oggetto;
 
 }

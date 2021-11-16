@@ -11,6 +11,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class PostoBrowseDto {
 
+	List<Posto> breadcrumbs;
 	Posto posto;
 	List<Oggetto> oggetti;
 	List<Posto> posti;

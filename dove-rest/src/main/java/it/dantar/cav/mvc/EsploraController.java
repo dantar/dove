@@ -22,6 +22,7 @@ public class EsploraController {
 	public PostoBrowseDto browsePosto(@PathVariable("uuid") String uuid) {
 		Posto posto = postoDao.findById(uuid).get();
 		return new PostoBrowseDto(
+				postoDao.findPostoBreadcrumbs(uuid),
 				posto, 
 				oggettoDao.findByIdPosto(uuid),
 				postoDao.findByPercorso(
@@ -35,8 +36,10 @@ public class EsploraController {
 	@GetMapping("/browse/oggetto/{uuid}")
 	public OggettoBrowseDto browseOggetto(@PathVariable("uuid") String uuid) {
 		Oggetto oggetto = oggettoDao.findById(uuid).get();
-		Posto posto = postoDao.findById(oggetto.getIdPosto()).get();
-		return new OggettoBrowseDto(posto, oggetto);
+		return new OggettoBrowseDto(
+				postoDao.findPostoBreadcrumbs(uuid),
+				postoDao.findById(oggetto.getIdPosto()).get(), 
+				oggetto);
 	}
 
 }
