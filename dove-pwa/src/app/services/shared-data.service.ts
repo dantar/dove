@@ -11,7 +11,19 @@ export class SharedDataService {
 
   constructor(
     private auth: AuthRestService,
-  ) {}
+  ) {
+    let saved = localStorage.getItem('dove-user');
+    if (saved) {
+      this.user = JSON.parse(saved);
+    }
+
+
+  }
+
+  setUser(user: JwtUserData) {
+    this.user = user;
+    localStorage.setItem('dove-user', JSON.stringify(this.user));
+  }
 
 }
 

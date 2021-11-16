@@ -23,7 +23,7 @@ export class LoginFormComponent implements OnInit {
 
   login() {
     this.auth.login(this.username, this.password).subscribe((user: JwtUserData) => {
-      this.shared.user = user;
+      this.shared.setUser(user);
     });
   }
 
