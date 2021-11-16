@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EsploraDto {
+public class PostoBrowseDto {
 
 	Posto posto;
 	List<Oggetto> oggetti;

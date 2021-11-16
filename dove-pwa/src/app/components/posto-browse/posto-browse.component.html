@@ -1,1 +1,10 @@
 <p>posto-browse works!</p>
+<div *ngIf="browse">
+    <div app-posto-view [posto]="browse.posto"></div>
+    <div *ngFor="let posto of browse.posti">
+        <div app-posto-view [posto]="posto"></div>
+    </div>
+    <div *ngFor="let oggetto of browse.oggetti">
+        <div app-oggetto-view [oggetto]="oggetto"></div>
+    </div>
+</div>

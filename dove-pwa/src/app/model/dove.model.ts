@@ -16,6 +16,7 @@ export class Utente {
     hash: string;
 }
 
+
 export class Posto {
 
     id: string;
@@ -34,5 +35,20 @@ export class Oggetto {
 }
 
 export class SchedaOggetto {
+
+}
+
+export class PostoBrowse {
+
+    posto: Posto;
+    posti: Posto[];
+    oggetti: Oggetto[];
+
+}
+
+export class OggettoBrowse {
+
+    oggetto: Oggetto;
+    posto: Posto;
 
 }

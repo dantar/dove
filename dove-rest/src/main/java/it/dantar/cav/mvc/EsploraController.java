@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.dantar.cav.entities.Oggetto;
 import it.dantar.cav.entities.OggettoDao;
 import it.dantar.cav.entities.Posto;
 import it.dantar.cav.entities.PostoDao;
@@ -17,10 +18,10 @@ public class EsploraController {
 	@Autowired
 	private OggettoDao oggettoDao; 
 	
-	@GetMapping("/esplora/{uuid}")
-	public EsploraDto esplora(@PathVariable("uuid") String uuid) {
+	@GetMapping("/browse/posto/{uuid}")
+	public PostoBrowseDto browsePosto(@PathVariable("uuid") String uuid) {
 		Posto posto = postoDao.findById(uuid).get();
-		return new EsploraDto(
+		return new PostoBrowseDto(
 				posto, 
 				oggettoDao.findByIdPosto(uuid),
 				postoDao.findByPercorso(
@@ -29,6 +30,13 @@ public class EsploraController {
 								posto.getPercorso(), 
 								posto.getId().replace("-", "_"))
 						));
+	}
+
+	@GetMapping("/browse/oggetto/{uuid}")
+	public OggettoBrowseDto browseOggetto(@PathVariable("uuid") String uuid) {
+		Oggetto oggetto = oggettoDao.findById(uuid).get();
+		Posto posto = postoDao.findById(oggetto.getIdPosto()).get();
+		return new OggettoBrowseDto(posto, oggetto);
 	}
 
 }

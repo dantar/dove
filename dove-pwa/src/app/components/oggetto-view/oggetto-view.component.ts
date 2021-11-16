@@ -1,21 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Oggetto } from 'src/app/model/dove.model';
 
 @Component({
-  selector: 'app-oggetto-view',
+  selector: '[app-oggetto-view]',
   templateUrl: './oggetto-view.component.html',
   styleUrls: ['./oggetto-view.component.scss']
 })
 export class OggettoViewComponent implements OnInit {
 
-  uuid: string | null;
+  @Input() oggetto: Oggetto;
 
   constructor(
-    private route: ActivatedRoute
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.uuid = this.route.snapshot.paramMap.get('id');
+  }
+
+  browse() {
+    this.router.navigate(['oggetto', this.oggetto.id]);
   }
 
 }
