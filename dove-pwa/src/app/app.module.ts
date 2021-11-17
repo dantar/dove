@@ -19,6 +19,7 @@ import { PostoBrowseComponent } from './components/posto-browse/posto-browse.com
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { OggettoBrowseComponent } from './components/oggetto-browse/oggetto-browse.component';
+import { OggettoEditComponent } from './components/oggetto-edit/oggetto-edit.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { OggettoBrowseComponent } from './components/oggetto-browse/oggetto-brow
     PostoBrowseComponent,
     LoginFormComponent,
     OggettoBrowseComponent,
+    OggettoEditComponent,
   ],
   imports: [
     BrowserModule,

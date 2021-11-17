@@ -1,5 +1,8 @@
 <p>oggetto-browse works!</p>
+<div *ngIf="!browse">loading...</div>
 <div *ngIf="browse">
     <div app-posto-view [posto]="browse.posto"></div>
-    <div app-oggetto-view [oggetto]="browse.oggetto"></div>
+    <div *ngIf="!edit" app-oggetto-view [oggetto]="browse.oggetto"></div>
+    <div *ngIf="edit" app-oggetto-edit [oggetto]="browse.oggetto" (done)="reload($event)"></div>
+    <div class="mode-edit-{{edit}}" (click)="edit = ! edit">switch</div>
 </div>

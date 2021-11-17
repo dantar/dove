@@ -14,6 +14,9 @@ export class PostoBrowseComponent implements OnInit {
   uuid: string | null;
   browse: PostoBrowse;
 
+  nuovoPosto: Posto;
+  qrcode: string;
+
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
@@ -26,6 +29,11 @@ export class PostoBrowseComponent implements OnInit {
         this.browse = browse;
       });
     });
+  }
+
+  addItem() {
+    console.log(this.qrcode);
+    //this.nuovoPosto = new Posto();
   }
 
 }

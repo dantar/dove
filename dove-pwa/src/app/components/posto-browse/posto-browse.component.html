@@ -10,4 +10,8 @@
     <div *ngFor="let oggetto of browse.oggetti">
         <div app-oggetto-view [oggetto]="oggetto"></div>
     </div>
+    <div>
+        <input type="text" pInputText [(ngModel)]="qrcode"/>
+        <p-button label="+" (click)="addItem()" ></p-button>
+    </div>
 </div>

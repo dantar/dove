@@ -35,6 +35,33 @@ export class Oggetto {
 }
 
 export class SchedaOggetto {
+    tipo: string;
+}
+
+export class SchedaAccessorio extends SchedaOggetto {
+    accessorio: string;
+    condizioni: number;
+    descrizione: string;
+    note: string;
+    constructor() {
+        super();
+        this.tipo = 'accessorio';
+    }
+    
+}
+
+export class SchedaScatola extends SchedaOggetto {
+    scatola: string;
+    contenuti: ContenutoScatola[];
+    descrizione: string;
+    note: string;
+    constructor() {
+        super();
+        this.tipo = 'scatola';
+    }
+}
+
+export class ContenutoScatola {
 
 }
 

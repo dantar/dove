@@ -1,0 +1,11 @@
+<p>oggetto-edit works!</p>
+<div>${{oggetto.id}}</div>
+<div>${{oggetto.idPosto}}</div>
+<div *ngIf="oggetto.scheda">
+    <div><input type="text" pInputText [(ngModel)]="oggetto.scheda.tipo" /></div>
+    <div>DEBT: show oggetto.scheda by tipo</div>
+</div>
+<div *ngIf="!oggetto.scheda" (click)="newScheda()">crea scheda</div>
+<div *ngIf="oggetto.scheda">
+    <p-button label="salva" (click)="save()"></p-button>
+</div>
