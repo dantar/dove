@@ -20,6 +20,10 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { OggettoBrowseComponent } from './components/oggetto-browse/oggetto-browse.component';
 import { OggettoEditComponent } from './components/oggetto-edit/oggetto-edit.component';
+import { SchedaViewDirective } from './directives/scheda-view.directive';
+import { SchedaViewComponent } from './components/scheda-view/scheda-view.component';
+import { SchedaScatolaViewComponent } from './components/schede/scheda-scatola-view/scheda-scatola-view.component';
+import { SchedaAccessorioViewComponent } from './components/schede/scheda-accessorio-view/scheda-accessorio-view.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +34,10 @@ import { OggettoEditComponent } from './components/oggetto-edit/oggetto-edit.com
     LoginFormComponent,
     OggettoBrowseComponent,
     OggettoEditComponent,
+    SchedaViewDirective,
+    SchedaViewComponent,
+    SchedaScatolaViewComponent,
+    SchedaAccessorioViewComponent,
   ],
   imports: [
     BrowserModule,
