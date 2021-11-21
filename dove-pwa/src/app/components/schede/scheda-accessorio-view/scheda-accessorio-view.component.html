@@ -1,3 +1,18 @@
 <p>scheda-scatola-view works!</p>
-<div>{{scheda.descrizione}}</div>
-<div>{{scheda.condizioni}}</div>
+<div>
+    <p-button *ngIf="!edit" (click)="openEdit()" label="edit"></p-button>
+    <p-button *ngIf="edit" (click)="cancelEdit()" label="annulla"></p-button>
+    <p-button *ngIf="edit" (click)="saveEdit()" label="salva"></p-button>
+</div>
+<div>
+    <div>
+        <span>Descrizione</span>
+        <span *ngIf="!edit">{{scheda.descrizione}}</span>
+        <input *ngIf="edit" pInputText [(ngModel)]="edit.descrizione" />
+    </div>
+    <div>
+        <span>Condizioni</span>
+        <span *ngIf="!edit">{{scheda.condizioni}}</span>
+        <p-slider *ngIf="edit" [(ngModel)]="edit.condizioni" [min]="0" [max]="5"></p-slider>
+    </div>
+</div>

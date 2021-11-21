@@ -12,6 +12,7 @@ import { OggettoViewComponent } from './components/oggetto-view/oggetto-view.com
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import {InputTextModule} from 'primeng/inputtext';
+import {SliderModule} from 'primeng/slider';
 import {ButtonModule} from 'primeng/button';
 
 import { PostoViewComponent } from './components/posto-view/posto-view.component';
@@ -46,6 +47,7 @@ import { SchedaAccessorioViewComponent } from './components/schede/scheda-access
     HttpClientModule,
     FormsModule,
     ButtonModule,
+    SliderModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

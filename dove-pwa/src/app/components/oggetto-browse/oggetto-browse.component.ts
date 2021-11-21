@@ -13,7 +13,6 @@ export class OggettoBrowseComponent implements OnInit {
 
   uuid: string | null;
   browse: OggettoBrowse | null;
-  edit: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,7 +20,6 @@ export class OggettoBrowseComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.edit = false;
     this.browse = null;
     this.route.paramMap.subscribe(params => {
       this.uuid = params.get('id');
@@ -29,11 +27,6 @@ export class OggettoBrowseComponent implements OnInit {
         this.browse = browse;
       });
     });
-  }
-
-  reload(oggetto: Oggetto) {
-    this.uuid = oggetto.id;
-    this.ngOnInit();
   }
 
 }

@@ -7,7 +7,7 @@ import { AuthRestService } from './auth-rest.service';
 })
 export class SharedDataService {
 
-  user: JwtUserData;
+  user: JwtUserData | null;
 
   constructor(
     private auth: AuthRestService,
@@ -16,13 +16,19 @@ export class SharedDataService {
     if (saved) {
       this.user = JSON.parse(saved);
     }
-
-
   }
 
   setUser(user: JwtUserData) {
     this.user = user;
     localStorage.setItem('dove-user', JSON.stringify(this.user));
+  }
+
+  httpError(error: any) {
+    console.log(error);
+    if (error.status === 401) {
+      this.user = null;
+      localStorage.removeItem('dove-user');
+    }
   }
 
 }

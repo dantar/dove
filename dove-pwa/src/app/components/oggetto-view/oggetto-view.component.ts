@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Oggetto } from 'src/app/model/dove.model';
+import { Oggetto, SchedaOggetto } from 'src/app/model/dove.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: '[app-oggetto-view]',
@@ -13,6 +15,7 @@ export class OggettoViewComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private http: HttpClient,
   ) { }
 
   ngOnInit(): void {
@@ -20,6 +23,14 @@ export class OggettoViewComponent implements OnInit {
 
   browse() {
     this.router.navigate(['oggetto', this.oggetto.id]);
+  }
+
+  saveScheda(scheda: SchedaOggetto) {
+    this.oggetto.scheda = scheda;
+    this.http.post<Oggetto>(`${environment.restUrl}/oggetto`, this.oggetto)
+    .subscribe(oggetto => {
+      this.oggetto.scheda = oggetto.scheda;
+    });
   }
 
 }

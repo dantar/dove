@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { SchedaViewDirective } from 'src/app/directives/scheda-view.directive';
-import { SchedaOggetto } from 'src/app/model/dove.model';
+import { SchedaOggetto, SchedaScatola } from 'src/app/model/dove.model';
 import { SchedaViewInterface } from '../interfaces/scheda-view-interface';
 
 @Component({
@@ -12,9 +12,11 @@ export class SchedaViewComponent implements OnInit {
 
   @ViewChild(SchedaViewDirective, {static: true}) appSchedaView!: SchedaViewDirective;
   @Input() scheda: SchedaOggetto;
+  @Output() save: EventEmitter<SchedaOggetto> = new EventEmitter<SchedaOggetto>();
 
-  constructor() { }
-
+  constructor() { 
+  }
+  
   ngOnInit(): void {
     this.loadComponent();
   }
@@ -24,6 +26,15 @@ export class SchedaViewComponent implements OnInit {
     viewContainerRef.clear();
     const componentRef = viewContainerRef.createComponent<SchedaViewInterface>(SchedaOggetto.component[this.scheda.tipo]);
     componentRef.instance.scheda = this.scheda;
+    componentRef.instance.save.subscribe(scheda => {
+      this.save.emit(scheda);
+      this.scheda = scheda;
+      this.loadComponent();
+    });
+  }
+
+  schedaAsSchedaOggetto(): SchedaScatola {
+    return this.scheda as SchedaScatola;
   }
 
 }
