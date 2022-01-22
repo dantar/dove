@@ -180,7 +180,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<spring.profiles.active>db-local</spring.profiles.active>
+				<spring.profiles.active>db-local,pictures-local</spring.profiles.active>
 			</properties>
 		</profile>
 	</profiles>

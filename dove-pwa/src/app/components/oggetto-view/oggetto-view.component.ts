@@ -42,6 +42,13 @@ export class OggettoViewComponent implements OnInit {
     });
   }
 
+  shootPicture(jpeg: string) {
+    this.http.post<string[]>(`${environment.restUrl}/oggetto/${this.oggetto.id}/picture`, jpeg)
+    .subscribe(pictures => {
+      this.oggetto.pictures = pictures;
+    });
+  }
+
   private saveAndReload(): Observable<Oggetto> {
     return this.http.post<Oggetto>(`${environment.restUrl}/oggetto`, this.oggetto);
   }

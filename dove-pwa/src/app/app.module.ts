@@ -26,6 +26,7 @@ import { SchedaViewComponent } from './components/scheda-view/scheda-view.compon
 import { SchedaScatolaViewComponent } from './components/schede/scheda-scatola-view/scheda-scatola-view.component';
 import { SchedaAccessorioViewComponent } from './components/schede/scheda-accessorio-view/scheda-accessorio-view.component';
 import { QrCodePopupComponent } from './components/qr-code-popup/qr-code-popup.component';
+import { CameraPopupComponent } from './components/camera-popup/camera-popup.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { QrCodePopupComponent } from './components/qr-code-popup/qr-code-popup.c
     SchedaScatolaViewComponent,
     SchedaAccessorioViewComponent,
     QrCodePopupComponent,
+    CameraPopupComponent,
   ],
   imports: [
     BrowserModule,

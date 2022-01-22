@@ -35,12 +35,14 @@ export class Oggetto {
     idPosto: string;
     nome: string;
     scheda: SchedaOggetto;
+    pictures: string[];
 
 }
 
 export class SchedaOggetto {
     static component: {[id:string]: Type<any>} = {};
     tipo: string;
+
 }
 
 export class SchedaAccessorio extends SchedaOggetto {

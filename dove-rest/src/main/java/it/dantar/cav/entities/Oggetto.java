@@ -1,7 +1,11 @@
 package it.dantar.cav.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -34,5 +38,7 @@ public class Oggetto {
 	String nome;
 	@Type(type = "jsonb")
 	JsonNode scheda;
+	@Transient
+	List<String> immagini = new ArrayList<>();
 
 }

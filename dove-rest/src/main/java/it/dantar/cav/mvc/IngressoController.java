@@ -1,6 +1,8 @@
 package it.dantar.cav.mvc;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class IngressoController {
 	private PostoDao postoDao; 
 	@Autowired
 	private OggettoDao oggettoDao; 
+	@Autowired
+	private PicturesService pictureService;
 	
 	@GetMapping("/posto/{uuid}")
 	public Posto getPosto(@PathVariable("uuid") String uuid) {
@@ -44,7 +48,11 @@ public class IngressoController {
 
 	@GetMapping("/oggetto/{uuid}")
 	public Oggetto getOggetto(@PathVariable("uuid") String uuid) {
-		return oggettoDao.findById(uuid).get();
+		Optional<Oggetto> found = oggettoDao.findById(uuid);
+		if (found.isPresent()) {
+			this.pictureService.caricaImmagini(found.get());
+		}
+		return found.get();
 	}
 
 	@GetMapping("/oggetto")
@@ -59,6 +67,12 @@ public class IngressoController {
 		}
 		oggettoDao.save(oggetto);
 		return oggetto;
+	}
+
+	@PostMapping("/oggetto/{uuid}/picture")
+	public List<String> postPicture(@PathVariable String uuid, @RequestBody String picture) throws IOException {
+		this.pictureService.savePicture(uuid, picture);
+		return this.pictureService.allPictureUuids(uuid);
 	}
 
 }
