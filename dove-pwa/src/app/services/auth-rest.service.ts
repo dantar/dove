@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { JwtUserData } from '../model/dove.model';
+import { JwtUserData, JwtUserDetails } from '../model/dove.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,4 +19,7 @@ export class AuthRestService {
     });
   }
 
+  getUser(): Observable<JwtUserDetails> {
+    return this.http.get<JwtUserDetails>(`${environment.restUrl}/user`);
+  }
 }
