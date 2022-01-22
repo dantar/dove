@@ -1,2 +1,6 @@
 <div>Scheda View</div>
 <ng-template appSchedaView></ng-template>
+<p-button *ngIf="!moving" (click)="openMove()" label="sposta"></p-button>
+<div *ngIf="moving">
+    <div app-qr-code-popup (qrcode)="moveToCode($event)" (cancel)="moving = false"></div>
+</div>

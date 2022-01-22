@@ -25,6 +25,7 @@ import { SchedaViewDirective } from './directives/scheda-view.directive';
 import { SchedaViewComponent } from './components/scheda-view/scheda-view.component';
 import { SchedaScatolaViewComponent } from './components/schede/scheda-scatola-view/scheda-scatola-view.component';
 import { SchedaAccessorioViewComponent } from './components/schede/scheda-accessorio-view/scheda-accessorio-view.component';
+import { QrCodePopupComponent } from './components/qr-code-popup/qr-code-popup.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { SchedaAccessorioViewComponent } from './components/schede/scheda-access
     SchedaViewComponent,
     SchedaScatolaViewComponent,
     SchedaAccessorioViewComponent,
+    QrCodePopupComponent,
   ],
   imports: [
     BrowserModule,

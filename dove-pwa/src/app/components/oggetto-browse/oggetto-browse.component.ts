@@ -23,9 +23,13 @@ export class OggettoBrowseComponent implements OnInit {
     this.browse = null;
     this.route.paramMap.subscribe(params => {
       this.uuid = params.get('id');
-      this.http.get<OggettoBrowse>(`${environment.restUrl}/browse/oggetto/${this.uuid}`).subscribe(browse => {
-        this.browse = browse;
-      });
+      this.reloadOggetto();
+    });
+  }
+
+  reloadOggetto() {
+    this.http.get<OggettoBrowse>(`${environment.restUrl}/browse/oggetto/${this.uuid}`).subscribe(browse => {
+      this.browse = browse;
     });
   }
 

@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +23,11 @@ public class Utente {
 	@Id
 	String id;
 	String username;
+	@JsonIgnore
 	String password;
+	@JsonIgnore
 	String hash;
+	@JsonIgnore
 	String salt;
 	
 	Boolean abilitato;

@@ -43,7 +43,7 @@ public class AuthenticationController {
 					.setToken(jwtTokenUtil.generateToken(details)));
 		} else {
 			return  ResponseEntity
-	                .status(HttpStatus.NOT_FOUND)
+	                .status(HttpStatus.UNAUTHORIZED)
 	                .body("Utente o password errati");
 		}
 	}
@@ -51,6 +51,11 @@ public class AuthenticationController {
 	@GetMapping(value = "/hash")
 	public String hashPassword(@RequestParam String password) throws Exception {
 		return encoder.encode(password);
+	}
+
+	@GetMapping("/user")
+	public AppUserDetails alive() {
+		return AppUserDetails.loggedUser();
 	}
 
 	private void authenticate(String username, String password) throws Exception {
