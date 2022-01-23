@@ -35,7 +35,7 @@ export class Oggetto {
     idPosto: string;
     nome: string;
     scheda: SchedaOggetto;
-    pictures: string[];
+    immagini: string[];
 
 }
 

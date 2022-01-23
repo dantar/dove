@@ -72,5 +72,10 @@ public class PicturesService {
 	public void caricaImmagini(Oggetto oggetto) {
 		oggetto.setImmagini(this.allPictureUuids(oggetto.getId()));
 	}
+
+	public List<Oggetto> caricaImmagini(List<Oggetto> oggetti) {
+		oggetti.stream().forEach(oggetto -> this.caricaImmagini(oggetto));
+		return oggetti;
+	}
 	
 }

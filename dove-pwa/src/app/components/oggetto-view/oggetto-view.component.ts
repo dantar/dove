@@ -14,6 +14,7 @@ export class OggettoViewComponent implements OnInit {
 
   @Input() oggetto: Oggetto;
   @Output() move = new EventEmitter<string>();
+  gallery: GalleryCarousel;
 
   constructor(
     private router: Router,
@@ -21,6 +22,7 @@ export class OggettoViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.gallery = new GalleryCarousel(this.oggetto);
   }
 
   browse() {
@@ -45,7 +47,7 @@ export class OggettoViewComponent implements OnInit {
   shootPicture(jpeg: string) {
     this.http.post<string[]>(`${environment.restUrl}/oggetto/${this.oggetto.id}/picture`, jpeg)
     .subscribe(pictures => {
-      this.oggetto.pictures = pictures;
+      this.oggetto.immagini = pictures;
     });
   }
 
@@ -53,4 +55,29 @@ export class OggettoViewComponent implements OnInit {
     return this.http.post<Oggetto>(`${environment.restUrl}/oggetto`, this.oggetto);
   }
 
+}
+
+class GalleryCarousel {
+  shown: GalleryImage[];
+  more: GalleryImage[];
+  constructor(oggetto: Oggetto) {
+    this.more = oggetto.immagini.map(p => new GalleryImage(oggetto, p));
+    this.shown = [];
+    if (oggetto.immagini.length > 0) {
+      this.shown.push(...this.more.splice(0, 1));
+    }
+  }
+
+  showAll() {
+    this.shown.push(...this.more);
+    this.more = [];
+  }
+
+}
+
+class GalleryImage {
+  src: string
+  constructor(oggetto: Oggetto, img: string) {
+    this.src = `${environment.imgsUrl}/${oggetto.id}/${img}`;
+  }
 }

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   restUrl: 'http://localhost:9180',
+  imgsUrl: 'http://localhost/dove-repo/pictures',
 };
 
 /*
