@@ -57,9 +57,12 @@ export class OggettoViewComponent implements OnInit {
   }
 
   shootPicture(jpeg: string) {
+    this.saving = true;
     this.http.post<string[]>(`${environment.restUrl}/oggetto/${this.oggetto.id}/picture`, jpeg)
     .subscribe(pictures => {
+      this.saving = false;
       this.oggetto.immagini = pictures;
+      this.gallery = new GalleryCarousel(this.oggetto);
     });
   }
 

@@ -10,7 +10,7 @@
         <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>
     <div *ngFor="let oggetto of browse.oggetti">
-        <div app-oggetto-view [oggetto]="oggetto"></div>
+        <div app-oggetto-view [oggetto]="oggetto" (move)="itemMoved($event)"></div>
     </div>
     <div>
         <p-button label="+" (click)="adding = true" ></p-button>
