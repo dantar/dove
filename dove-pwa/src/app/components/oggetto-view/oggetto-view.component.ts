@@ -15,6 +15,7 @@ export class OggettoViewComponent implements OnInit {
   @Input() oggetto: Oggetto;
   @Output() move = new EventEmitter<string>();
   gallery: GalleryCarousel;
+  saving: boolean;
 
   constructor(
     private router: Router,
@@ -23,6 +24,7 @@ export class OggettoViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.gallery = new GalleryCarousel(this.oggetto);
+    this.saving = false;
   }
 
   browse() {
@@ -31,7 +33,9 @@ export class OggettoViewComponent implements OnInit {
 
   saveScheda(scheda: SchedaOggetto) {
     this.oggetto.scheda = scheda;
+    this.saving = true;
     this.saveAndReload().subscribe(oggetto => {
+      this.saving = false;
       this.oggetto.scheda = oggetto.scheda;
     });
   }

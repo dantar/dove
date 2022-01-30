@@ -1,4 +1,8 @@
-<div>Scheda View</div>
+<div>
+    <p-button *ngIf="!edit" (click)="openEdit()" label="modifica"></p-button>
+    <p-button *ngIf="edit" (click)="cancelEdit()" label="annulla"></p-button>
+    <p-button *ngIf="edit" (click)="saveEdit()" label="salva"></p-button>
+</div>
 <ng-template appSchedaView></ng-template>
 <p-button *ngIf="!moving" (click)="openMove()" label="sposta"></p-button>
 <p-button *ngIf="!shooting" (click)="openShoot()" label="foto"></p-button>

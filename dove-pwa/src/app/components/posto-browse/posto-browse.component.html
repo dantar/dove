@@ -1,11 +1,13 @@
-<p>posto-browse works!</p>
+<div *ngIf="!browse" class="loading">Caricamento...</div>
 <div *ngIf="browse">
     <div class="breadcrumbs">
         <span app-posto-view *ngFor="let posto of browse.breadcrumbs" [posto]="posto"></span>
     </div>
-    <div app-posto-view [posto]="browse.posto"></div>
-    <div *ngFor="let posto of browse.posti">
-        <div app-posto-view [posto]="posto"></div>
+    <div>
+        <div app-posto-view [posto]="browse.posto"></div>
+    </div>
+    <div class="posti-children">
+        <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>
     <div *ngFor="let oggetto of browse.oggetti">
         <div app-oggetto-view [oggetto]="oggetto"></div>

@@ -7,6 +7,7 @@ import { PostoBrowseComponent } from './components/posto-browse/posto-browse.com
 const routes: Routes = [
   {path: 'posto/:id', component: PostoBrowseComponent},
   {path: 'oggetto/:id', component: OggettoBrowseComponent},
+  {path: 'userinfo', component: OggettoBrowseComponent},
 ];
 
 @NgModule({

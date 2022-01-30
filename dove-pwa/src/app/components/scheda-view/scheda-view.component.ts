@@ -18,27 +18,23 @@ export class SchedaViewComponent implements OnInit {
   moving: boolean;
   shooting: boolean;
 
+  edit: SchedaOggetto | null;
+
   constructor() { 
   }
   
   ngOnInit(): void {
     this.moving = false;
     this.shooting = false;
-    this.loadComponent();
+    this.loadComponent(this.scheda, false);
   }
 
-  loadComponent() {
+  loadComponent(data: SchedaOggetto, editable: boolean) {
     const viewContainerRef = this.appSchedaView.viewContainerRef;
     viewContainerRef.clear();
-    const componentRef = viewContainerRef.createComponent<SchedaViewInterface>(SchedaOggetto.component[this.scheda.tipo]);
-    componentRef.instance.scheda = this.scheda;
-    if (componentRef.instance.save) {
-      componentRef.instance.save.subscribe(scheda => {
-        this.save.emit(scheda);
-        this.scheda = scheda;
-        this.loadComponent();
-      });
-    }
+    const componentRef = viewContainerRef.createComponent<SchedaViewInterface>(SchedaOggetto.component[data.tipo]);
+    componentRef.instance.scheda = data;
+    componentRef.instance.editable = editable;
   }
 
   schedaAsSchedaOggetto(): SchedaScatola {
@@ -61,6 +57,21 @@ export class SchedaViewComponent implements OnInit {
   loadPicture(jpeg: string) {
     this.shooting = false;
     this.shoot.emit(jpeg);
+  }
+
+  openEdit() {
+    this.edit = JSON.parse(JSON.stringify(this.scheda));
+    this.loadComponent(this.edit as SchedaOggetto, true);
+  }
+
+  cancelEdit() {
+    this.edit = null;
+    this.loadComponent(this.scheda, false);
+  }
+
+  saveEdit() {
+    this.save.emit(this.edit as SchedaOggetto);
+    this.cancelEdit();
   }
 
 }

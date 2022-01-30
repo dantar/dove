@@ -27,6 +27,7 @@ import { SchedaScatolaViewComponent } from './components/schede/scheda-scatola-v
 import { SchedaAccessorioViewComponent } from './components/schede/scheda-accessorio-view/scheda-accessorio-view.component';
 import { QrCodePopupComponent } from './components/qr-code-popup/qr-code-popup.component';
 import { CameraPopupComponent } from './components/camera-popup/camera-popup.component';
+import { UserinfoComponent } from './components/userinfo/userinfo.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CameraPopupComponent } from './components/camera-popup/camera-popup.com
     SchedaAccessorioViewComponent,
     QrCodePopupComponent,
     CameraPopupComponent,
+    UserinfoComponent,
   ],
   imports: [
     BrowserModule,

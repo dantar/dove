@@ -10,25 +10,11 @@ import { SchedaViewInterface } from '../../interfaces/scheda-view-interface';
 export class SchedaAccessorioViewComponent implements OnInit, SchedaViewInterface {
 
   @Input() scheda: SchedaAccessorio;
-  edit: SchedaAccessorio | null;
-  @Output() save: EventEmitter<SchedaOggetto> = new EventEmitter<SchedaOggetto>();
+  @Input() editable: boolean;
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  openEdit() {
-    this.edit = JSON.parse(JSON.stringify(this.scheda));
-  }
-
-  cancelEdit() {
-    this.edit = null;
-  }
-
-  saveEdit() {
-    this.save.emit(this.edit as SchedaAccessorio);
-    this.edit = null;
   }
 
 }

@@ -6,7 +6,7 @@
     </div>
     <div *ngIf="oggetto.scheda">
         <div>{{oggetto.scheda.tipo}}</div>
-        <div app-scheda-view [scheda]="oggetto.scheda" 
+        <div *ngIf="!saving" app-scheda-view [scheda]="oggetto.scheda" 
             (save)="saveScheda($event)" 
             (move)="moveScheda($event)"
             (shoot)="shootPicture($event)"

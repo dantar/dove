@@ -10,25 +10,11 @@ import { SchedaViewInterface } from '../../interfaces/scheda-view-interface';
 export class SchedaScatolaViewComponent implements OnInit, SchedaViewInterface {
 
   @Input() scheda: SchedaScatola;
-  edit: SchedaScatola | null;
-  @Output() save: EventEmitter<SchedaOggetto> = new EventEmitter<SchedaOggetto>();
+  @Input() editable: boolean;
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  openEdit() {
-    this.edit = JSON.parse(JSON.stringify(this.scheda));
-  }
-
-  cancelEdit() {
-    this.edit = null;
-  }
-
-  saveEdit() {
-    this.save.emit(this.edit as SchedaScatola);
-    this.edit = null;
   }
 
 }
