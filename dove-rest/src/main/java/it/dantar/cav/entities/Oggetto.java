@@ -17,11 +17,12 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Accessors(chain = true)
 @Entity
 @TypeDef(
 		name = "jsonb", 

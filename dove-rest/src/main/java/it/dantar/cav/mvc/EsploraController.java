@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.dantar.cav.entities.Oggetto;
@@ -35,6 +36,15 @@ public class EsploraController {
 								posto.getPercorso(), 
 								posto.getId().replace("-", "_"))
 						));
+	}
+
+	@PostMapping("/browse/posto/{uuid}/add/{item}")
+	public PostoBrowseDto browsePostoAddItem(@PathVariable("uuid") String uuid, @PathVariable("item") String item) {
+		Optional<Oggetto> found = oggettoDao.findById(item);
+		Oggetto oggetto = found.orElse(new Oggetto().setId(item));
+		oggetto.setIdPosto(uuid);
+		oggettoDao.save(oggetto);
+		return this.browsePosto(uuid);
 	}
 
 	@GetMapping("/browse/oggetto/{uuid}")
