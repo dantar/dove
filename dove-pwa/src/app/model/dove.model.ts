@@ -41,8 +41,16 @@ export class Oggetto {
 
 export class SchedaOggetto {
     static component: {[id:string]: Type<any>} = {};
+    static protos: SchedaOggettoProto[] = [];
     tipo: string;
-
+}
+export class SchedaOggettoProto {
+    proto: SchedaOggetto;
+    nome: string;
+    constructor(nome: string, proto: SchedaOggetto) {
+        this.nome = nome;
+        this.proto = proto;
+    }
 }
 
 export class SchedaAccessorio extends SchedaOggetto {
@@ -56,6 +64,7 @@ export class SchedaAccessorio extends SchedaOggetto {
     }
 }
 SchedaOggetto.component['accessorio'] = SchedaAccessorioViewComponent;
+SchedaOggetto.protos.push(new SchedaOggettoProto("Accessorio", new SchedaAccessorio()));
 
 export class SchedaScatola extends SchedaOggetto {
     scatola: string;
@@ -68,6 +77,7 @@ export class SchedaScatola extends SchedaOggetto {
     }
 }
 SchedaOggetto.component['scatola'] = SchedaScatolaViewComponent;
+SchedaOggetto.protos.push(new SchedaOggettoProto("Scatola", new SchedaScatola()));
 
 export class ContenutoScatola {
 

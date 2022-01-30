@@ -12,4 +12,7 @@
             (shoot)="shootPicture($event)"
             ></div>
     </div>
+    <div *ngIf="!oggetto.scheda">
+        <div *ngFor="let proto of allSchedaProto()" (click)="newSchedaAs(proto)">{{proto.nome}}</div>
+    </div>
 </div>

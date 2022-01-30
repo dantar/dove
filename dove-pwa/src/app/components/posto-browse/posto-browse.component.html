@@ -13,7 +13,9 @@
         <div app-oggetto-view [oggetto]="oggetto"></div>
     </div>
     <div>
-        <input type="text" pInputText [(ngModel)]="qrcode"/>
-        <p-button label="+" (click)="addItem()" ></p-button>
+        <p-button label="+" (click)="adding = true" ></p-button>
     </div>
+</div>
+<div *ngIf="adding">
+    <div app-qr-code-popup (qrcode)="addItem($event)" (cancel)="adding = false"></div>
 </div>

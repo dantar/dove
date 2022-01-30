@@ -16,7 +16,7 @@ export class PostoBrowseComponent implements OnInit {
   browse: PostoBrowse;
 
   nuovoPosto: Posto;
-  qrcode: string;
+  adding: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +25,7 @@ export class PostoBrowseComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.adding = false;
     this.route.paramMap.subscribe(params => {
       this.uuid = params.get('id');
       this.http.get<PostoBrowse>(`${environment.restUrl}/browse/posto/${this.uuid}`).subscribe({
@@ -36,9 +37,14 @@ export class PostoBrowseComponent implements OnInit {
     });
   }
 
-  addItem() {
-    console.log(this.qrcode);
-    //this.nuovoPosto = new Posto();
+  addItem(qrcode: string) {
+    this.http.post<PostoBrowse>(`${environment.restUrl}/browse/posto/${this.uuid}/add/${qrcode}`, {}).subscribe({
+      next: browse => {
+        this.adding = false;
+        this.browse = browse;
+      },
+      error: this.shared.httpError
+    });
   }
 
 }
