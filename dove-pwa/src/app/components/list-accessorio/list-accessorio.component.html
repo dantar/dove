@@ -1,4 +1,4 @@
-<p-table [value]="lista" responsiveLayout="scroll">
+<p-table [value]="lista" responsiveLayout="stack">
     <ng-template pTemplate="header">
         <tr>
             <th>Nome</th>
@@ -8,9 +8,9 @@
     </ng-template>
     <ng-template pTemplate="body" let-oggetto>
         <tr>
-            <td>{{oggetto.nome}}</td>
-            <td>{{oggetto.scheda.condizioni}}</td>
-            <td>{{oggetto.scheda.descrizione}}</td>
+            <td><span class="p-column-title">Nome</span>{{oggetto.nome}}</td>
+            <td><span class="p-column-title">Condizioni</span>{{oggetto.scheda.condizioni}}</td>
+            <td><span class="p-column-title">Descrizione</span>{{oggetto.scheda.descrizione}}</td>
         </tr>
     </ng-template>
 </p-table>
