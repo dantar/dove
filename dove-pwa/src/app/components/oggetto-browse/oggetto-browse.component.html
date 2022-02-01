@@ -1,5 +1,8 @@
 <div *ngIf="!browse" class="loading">Caricamento...</div>
 <div *ngIf="browse">
-    <div app-posto-view [posto]="browse.posto"></div>
+    <div class="breadcrumbs">
+        <span app-posto-view *ngFor="let posto of browse.breadcrumbs" [posto]="posto"></span>
+        <span app-posto-view [posto]="browse.posto"></span>
+    </div>
     <div app-oggetto-view [oggetto]="browse.oggetto" (move)="reloadOggetto()"></div>
 </div>

@@ -3,9 +3,9 @@
     <div class="breadcrumbs">
         <span app-posto-view *ngFor="let posto of browse.breadcrumbs" [posto]="posto"></span>
     </div>
-    <div>
+    <h1>
         <div app-posto-view [posto]="browse.posto"></div>
-    </div>
+    </h1>
     <div class="posti-children">
         <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>

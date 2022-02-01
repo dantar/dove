@@ -9,6 +9,26 @@ body {
     font-family: 'Belleza';
 }
 
+.breadcrumbs {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    flex-wrap: wrap;
+    .posto {
+        padding-left: 10px;
+    }
+}
+
+.posti-children{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    flex-wrap: wrap;
+    .posto {
+        padding-left: 10px;
+    }
+}
+
 .gallery .images {
     display: flex;
     flex-direction: row;

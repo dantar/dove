@@ -67,7 +67,7 @@ public class EsploraController {
 		Oggetto oggetto = found.get();
 		this.picturesService.caricaImmagini(oggetto);
 		return new OggettoBrowseDto(
-				postoDao.findPostoBreadcrumbs(uuid),
+				postoDao.findPostoBreadcrumbs(oggetto.getIdPosto()),
 				postoDao.findById(oggetto.getIdPosto()).get(), 
 				oggetto);
 	}
