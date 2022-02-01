@@ -84,8 +84,10 @@ export class OggettoViewComponent implements OnInit {
 class GalleryCarousel {
   shown: GalleryImage[];
   more: GalleryImage[];
+  zoomed: boolean;
 
   constructor(oggetto: Oggetto) {
+    this.zoomed = false;
     this.more = oggetto.immagini.map(p => new GalleryImage(oggetto, p));
     this.shown = [];
     if (oggetto.immagini.length > 0) {
@@ -104,6 +106,10 @@ class GalleryCarousel {
 
   remove(i: GalleryImage) {
     this.shown.splice(this.shown.indexOf(i), 1);
+  }
+
+  toggle() {
+    this.zoomed = ! this.zoomed;
   }
 
 }

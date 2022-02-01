@@ -9,11 +9,43 @@ body {
     font-family: 'Belleza';
 }
 
-.gallery {
+.gallery .images {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.gallery.zoomed-false {
     img{
         width: 80px;
+    }
+}
+
+.gallery.zoomed-true {
+    background-color: rgba($color: #000000, $alpha: 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: scroll;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    .buttons {
+        position: fixed;
+        top: 0;
+        right: 0;
+        font-size: 2em;
+        color: white;
+        padding: 2px;
+        border: 2px solid white;
+    }
+    .images {
+        justify-content: center;
+        padding: 5px;
+        width: 100%;
+    }
+    img{
+        max-width: 100%;
     }
 }
 
