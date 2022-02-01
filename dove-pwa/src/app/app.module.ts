@@ -14,9 +14,11 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import {InputTextModule} from 'primeng/inputtext';
 import {SliderModule} from 'primeng/slider';
 import {ButtonModule} from 'primeng/button';
+import {TableModule} from 'primeng/table';
 
 import { PostoViewComponent } from './components/posto-view/posto-view.component';
 import { PostoBrowseComponent } from './components/posto-browse/posto-browse.component';
+
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { OggettoBrowseComponent } from './components/oggetto-browse/oggetto-browse.component';
@@ -29,6 +31,8 @@ import { QrCodePopupComponent } from './components/qr-code-popup/qr-code-popup.c
 import { CameraPopupComponent } from './components/camera-popup/camera-popup.component';
 import { UserinfoComponent } from './components/userinfo/userinfo.component';
 import { QrCodeBrokerComponent } from './components/qr-code-broker/qr-code-broker.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ListAccessorioComponent } from './components/list-accessorio/list-accessorio.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +51,7 @@ import { QrCodeBrokerComponent } from './components/qr-code-broker/qr-code-broke
     CameraPopupComponent,
     UserinfoComponent,
     QrCodeBrokerComponent,
+    ListAccessorioComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +61,8 @@ import { QrCodeBrokerComponent } from './components/qr-code-broker/qr-code-broke
     FormsModule,
     ButtonModule,
     SliderModule,
+    TableModule,
+    PaginatorModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

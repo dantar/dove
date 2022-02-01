@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
@@ -18,6 +19,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+@NamedNativeQuery(
+		name = "Oggetto.allByTipo",
+		query = "select * from oggetto o where o.scheda->>'tipo' = :tipo",
+		resultClass = Oggetto.class
+)
 
 @Data
 @AllArgsConstructor

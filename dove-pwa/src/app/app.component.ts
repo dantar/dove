@@ -26,6 +26,9 @@ export class AppComponent implements OnInit {
     this.menu.buttons.push(new MenuButton('U', () => {
       this.router.navigate(['userinfo']);
     }));
+    this.menu.buttons.push(new MenuButton('A', () => {
+      this.router.navigate(['list', 'accessorio']);
+    }));
   }
   ngOnInit(): void {
     this.shared.loadUser();
