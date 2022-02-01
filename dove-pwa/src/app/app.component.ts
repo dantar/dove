@@ -17,11 +17,8 @@ export class AppComponent implements OnInit {
     public auth: AuthRestService,
     private router: Router,
   ) {
-    this.menu.buttons.push(new MenuButton('P', () => {
-      this.router.navigate(['posto', '149d624c-2c00-4590-9813-ab0c8ced81ff']);
-    }));
-    this.menu.buttons.push(new MenuButton('O', () => {
-      this.router.navigate(['oggetto', 'f2980be0-5c25-4540-bf07-78c7c2a6bdba']);
+    this.menu.buttons.push(new MenuButton('B', () => {
+      this.router.navigate(['broker']);
     }));
     this.menu.buttons.push(new MenuButton('U', () => {
       this.router.navigate(['userinfo']);

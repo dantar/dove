@@ -28,6 +28,7 @@ import { SchedaAccessorioViewComponent } from './components/schede/scheda-access
 import { QrCodePopupComponent } from './components/qr-code-popup/qr-code-popup.component';
 import { CameraPopupComponent } from './components/camera-popup/camera-popup.component';
 import { UserinfoComponent } from './components/userinfo/userinfo.component';
+import { QrCodeBrokerComponent } from './components/qr-code-broker/qr-code-broker.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { UserinfoComponent } from './components/userinfo/userinfo.component';
     QrCodePopupComponent,
     CameraPopupComponent,
     UserinfoComponent,
+    QrCodeBrokerComponent,
   ],
   imports: [
     BrowserModule,
