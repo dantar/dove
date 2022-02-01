@@ -1,8 +1,11 @@
 <div class="oggetto">
     <div class="linkto" (click)="browse()">{{oggetto.id}}</div>
     <div class="gallery" *ngIf="!saving">
-        <img *ngFor="let image of gallery.shown" [src]="image.src" />
+        <div class="image" *ngFor="let image of gallery.shown" >
+            <img class="selected-{{image.selected}}" [src]="image.src" (click)="image.toggle()" />
+        </div>
         <div *ngIf="gallery.more.length > 0" (click)="gallery.showAll()">Altre {{gallery.more.length}} foto</div>
+        <div *ngIf="gallery.selected().length > 0" (click)="deleteSelectedImages()">Elimina foto</div>
     </div>
     <div *ngIf="oggetto.scheda">
         <div>{{oggetto.scheda.tipo}}</div>

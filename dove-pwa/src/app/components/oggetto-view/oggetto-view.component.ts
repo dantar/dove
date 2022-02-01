@@ -70,11 +70,21 @@ export class OggettoViewComponent implements OnInit {
     return this.http.post<Oggetto>(`${environment.restUrl}/oggetto`, this.oggetto);
   }
 
+  deleteSelectedImages() {
+    this.gallery.selected().forEach(i => {
+      this.http.delete(`${environment.restUrl}/oggetto/${this.oggetto.id}/picture/${i.id}`)
+      .subscribe(() => {
+        this.gallery.remove(i);
+      });
+    });
+  }
+
 }
 
 class GalleryCarousel {
   shown: GalleryImage[];
   more: GalleryImage[];
+
   constructor(oggetto: Oggetto) {
     this.more = oggetto.immagini.map(p => new GalleryImage(oggetto, p));
     this.shown = [];
@@ -88,11 +98,26 @@ class GalleryCarousel {
     this.more = [];
   }
 
+  selected(): GalleryImage[] {
+    return this.shown.filter(i => i.selected);
+  }
+
+  remove(i: GalleryImage) {
+    this.shown.splice(this.shown.indexOf(i), 1);
+  }
+
 }
 
 class GalleryImage {
-  src: string
+  id: string;
+  src: string;
+  selected: boolean;
   constructor(oggetto: Oggetto, img: string) {
+    this.id = img;
     this.src = `${environment.imgsUrl}/${oggetto.id}/${img}`;
+    this.selected = false;
+  }
+  toggle() {
+    this.selected = !this.selected;
   }
 }

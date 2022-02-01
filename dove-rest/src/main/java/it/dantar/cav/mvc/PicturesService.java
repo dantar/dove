@@ -77,5 +77,10 @@ public class PicturesService {
 		oggetti.stream().forEach(oggetto -> this.caricaImmagini(oggetto));
 		return oggetti;
 	}
+
+	public Boolean deletePicture(String uuid, String code) {
+		File d = this.picturesDirectory(uuid);
+		return new File(d, code).delete();
+	}
 	
 }
