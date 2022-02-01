@@ -2,6 +2,7 @@ package it.dantar.cav.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +22,8 @@ public class Posto {
 	String nome;
 	String percorso;
 	
+	@Transient
+	public String getPathId() {
+		return this.getId().replace("-", "_");
+	}
 }

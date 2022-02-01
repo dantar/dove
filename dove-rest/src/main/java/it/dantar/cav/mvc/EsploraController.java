@@ -1,5 +1,6 @@
 package it.dantar.cav.mvc;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,18 @@ public class EsploraController {
 	private OggettoDao oggettoDao; 
 	@Autowired
 	private PicturesService picturesService;
-	
+
+	@GetMapping("/browse/root")
+	public PostoBrowseDto browseRoot() {
+		Posto posto = postoDao.findRoot().orElseThrow(() -> new IllegalArgumentException());
+		return new PostoBrowseDto(
+				new ArrayList<Posto>(),
+				posto, 
+				this.picturesService.caricaImmagini(oggettoDao.findByIdPosto(posto.getId())),
+				postoDao.findByPercorso(posto.getPathId())
+				);
+	}
+
 	@GetMapping("/browse/posto/{uuid}")
 	public PostoBrowseDto browsePosto(@PathVariable("uuid") String uuid) {
 		Posto posto = postoDao.findById(uuid).get();
@@ -31,10 +43,9 @@ public class EsploraController {
 				posto, 
 				this.picturesService.caricaImmagini(oggettoDao.findByIdPosto(uuid)),
 				postoDao.findByPercorso(
-						posto.getPercorso() == null ? posto.getId().replace("-", "_") : String.format(
-								"%s.%s", 
-								posto.getPercorso(), 
-								posto.getId().replace("-", "_"))
+						posto.getPercorso() == null ? 
+								posto.getPathId() 
+								: String.format("%s.%s", posto.getPercorso(), posto.getPathId())
 						));
 	}
 

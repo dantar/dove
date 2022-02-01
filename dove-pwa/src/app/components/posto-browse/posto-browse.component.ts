@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Oggetto, Posto, PostoBrowse } from 'src/app/model/dove.model';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import { environment } from 'src/environments/environment';
@@ -33,12 +34,18 @@ export class PostoBrowseComponent implements OnInit {
   }
 
   loadBrowse() {
-    this.http.get<PostoBrowse>(`${environment.restUrl}/browse/posto/${this.uuid}`).subscribe({
+    this.fetchDto().subscribe({
       next: browse => {
+        this.uuid = browse.posto.id;
         this.browse = browse;
       },
       error: this.shared.httpError
     });
+  }
+  
+  fetchDto(): Observable<PostoBrowse> {
+    return this.uuid ? this.http.get<PostoBrowse>(`${environment.restUrl}/browse/posto/${this.uuid}`)
+    : this.http.get<PostoBrowse>(`${environment.restUrl}/browse/root`);
   }
 
   addItem(qrcode: string) {
