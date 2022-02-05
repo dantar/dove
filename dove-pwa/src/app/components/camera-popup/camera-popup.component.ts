@@ -9,13 +9,17 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild("capture") capture: ElementRef;
   @ViewChild("photo") photo: ElementRef;
+  @ViewChild("videocontainer") videocontainer: ElementRef;
   @Output() picture = new EventEmitter<string>();
+  @Output() exit = new EventEmitter<string>();
 
   stream: MediaStream;
   jpg: string;
   clicked: boolean;
-
-  pictureSize = 300;
+  devices: MediaDeviceInfo[];
+  videoelement: HTMLVideoElement;
+  trimmer: VideoTrimmer;
+  style: {[prop: string]: string};
 
   constructor() { }
 
@@ -28,9 +32,38 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.clicked = false;
-    console.log(this.capture);
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      navigator.mediaDevices.enumerateDevices()
+      .then(devices => {
+        this.devices = devices.filter(d => d.kind === 'videoinput');
+        if (this.devices.length > 0) {
+          this.startCamera(this.devices[0]);
+        }
+      })
+      ;
+      return;
+    }
+  }
+
+  removeVideo() {
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+    let div = this.videocontainer.nativeElement as HTMLDivElement;
+    while(div.firstChild) {
+      div.removeChild(div.firstChild);
+    }
+  }
+
+  startCamera(device: MediaDeviceInfo) {
+    this.removeVideo();
+    this.videoelement = document.createElement('video');
+    (this.videocontainer.nativeElement as HTMLDivElement).appendChild(this.videoelement);
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({video: { facingMode: "environment" }}).then((stream) => {
+      //let c: MediaTrackConstraints = {deviceId: device.deviceId};
+      navigator.mediaDevices.getUserMedia({video: {deviceId: device.deviceId}}).then((stream) => {
         this.startStream(stream);
       });
     }
@@ -38,35 +71,22 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   startStream(stream: MediaStream) {
     this.stream = stream;
-    this.capture.nativeElement.srcObject = stream;
-    let settings: MediaTrackSettings = stream.getVideoTracks()[0].getSettings();
-    let streamh = settings.height;
-    let captureh = this.capture.nativeElement.clientHeight;
-    console.log (captureh, streamh);
-    let cam = this.capture.nativeElement as HTMLVideoElement;
-    console.log(cam, cam.clientHeight, cam.clientWidth);
+    this.videoelement.srcObject = stream;
+    this.videoelement.autoplay = true;
+    this.trimmer = new VideoTrimmer(stream.getVideoTracks()[0]);
+    this.style = this.trimmer.style();
+    this.trimmer.fixVideo(this.videoelement);
+    console.log("style", this.style);
   }
 
   ngOnInit(): void {
+    this.style = {};
   }
 
   snapshot() {
-    let selfie = document.createElement('canvas');
-    let video = this.capture.nativeElement;
-    selfie.width = this.pictureSize;
-    selfie.height = this.pictureSize;
-    //selfie.width = video.videoWidth;
-    //selfie.height = video.videoHeight;
-    let c2d = selfie.getContext("2d");
-    if (c2d) {
-      c2d.drawImage(video, 100, 100, 300, 300, 0,0,300,300);
-      //selfie.getContext("2d").drawImage(this.alice.nativeElement, 0, 0);
-      //this.photo.nativeElement.src = selfie.toDataURL("image/webp");
-      this.jpg = selfie.toDataURL("image/jpeg");
-      console.log(this.jpg);
-      //this.savePicture();
-      this.picture.emit(this.jpg);
-    }
+    let canvas = this.trimmer.drawImage(this.videoelement);
+    this.jpg = canvas.toDataURL("image/jpeg");
+    this.picture.emit(this.jpg);
   }
 
   clickVideo(event: any) {
@@ -83,6 +103,84 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
     //anchor.href = this.photo.nativeElement.src;
     anchor.download = 'selfie.jpeg';
     anchor.click();
+  }
+
+  clickDevice(device: MediaDeviceInfo) {
+    this.startCamera(device);
+  }
+
+  clickNoCamera() {
+    this.exit.emit();
+  }
+
+}
+
+export class VideoTrimmer {
+
+  pictureSize = 300;
+
+  track: MediaStreamTrack;
+  settings: MediaTrackSettings;
+  layout: 'portrait' | 'landscape';
+  ts: number;
+  top: number;
+  left: number;
+  th: number;
+  tw: number;
+  vh: number;
+  vw: number;
+  vs: number;
+  scale: number;
+  shift: number;
+
+  constructor(track: MediaStreamTrack) {
+    this.track = track;
+    this.vh = window.innerHeight;
+    this.vw = window.innerWidth;
+    this.vs = Math.min(this.vh, this.vw);
+    this.settings = this.track.getSettings();
+    if (this.settings.height && this.settings.width) {
+      this.th = this.settings.height;
+      this.tw = this.settings.width;
+      this.ts = Math.min( this.th, this.tw);
+      this.scale = this.vs / this.ts;
+      this.shift = this.vs / 2;
+      if (this.settings.height > this.settings.width) {
+        this.layout = 'portrait';
+        this.top = (this.vh - this.vs) / 2;
+        this.left = 0;
+      } else {
+        this.layout = 'landscape';
+        this.top = 0;
+        this.left = (this.vw - this.vs) / 2;
+      }
+    }
+  }
+
+  style(): {[prop: string]: string} {
+    return {
+      'margin-left': `${this.left}px`, 
+      'margin-top': `${this.top}px`, 
+      width: `${this.vs}px`, 
+      height: `${this.vs}px`, 
+      overflow: 'hidden',
+    }; 
+  }
+
+  fixVideo(video: HTMLVideoElement) {
+    video.style.marginLeft = `${-this.left}px`;
+    video.style.marginTop = `${-this.top}px`;
+  }
+
+  drawImage(videoelement: HTMLVideoElement): HTMLCanvasElement {
+    let canvas = document.createElement('canvas');
+    canvas.width = this.pictureSize;
+    canvas.height = this.pictureSize;
+    let c2d = canvas.getContext("2d");
+    if (c2d) {
+      c2d.drawImage(videoelement, (this.tw - this.ts) / 2, (this.th - this.ts) / 2, this.ts, this.ts, 0,0,this.pictureSize,this.pictureSize);
+    }
+    return canvas;
   }
 
 }

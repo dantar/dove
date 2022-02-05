@@ -10,5 +10,5 @@
     <div app-qr-code-popup (qrcode)="moveToCode($event)" (cancel)="moving = false"></div>
 </div>
 <div *ngIf="shooting">
-    <div app-camera-popup (picture)="loadPicture($event)"></div>
+    <div app-camera-popup (picture)="loadPicture($event)" (exit)="shooting = false"></div>
 </div>
