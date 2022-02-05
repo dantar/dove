@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Oggetto } from 'src/app/model/dove.model';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import { environment } from 'src/environments/environment';
@@ -17,6 +18,7 @@ export class ListAccessorioComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private shared: SharedDataService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -28,6 +30,10 @@ export class ListAccessorioComponent implements OnInit {
       },
       error: this.shared.httpError
     });
+  }
+
+  clickOggetto(oggetto: Oggetto) {
+    this.router.navigate(['oggetto', oggetto.id]);
   }
 
 }

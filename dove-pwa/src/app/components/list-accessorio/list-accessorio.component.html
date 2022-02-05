@@ -1,13 +1,15 @@
 <p-table [value]="lista" responsiveLayout="stack">
     <ng-template pTemplate="header">
         <tr>
+            <th>ID</th>
             <th>Nome</th>
             <th>Condizioni</th>
             <th>Descrizione</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-oggetto>
-        <tr>
+        <tr (click)="clickOggetto(oggetto)">
+            <td><span class="p-column-title">ID</span>{{oggetto.id}}</td>
             <td><span class="p-column-title">Nome</span>{{oggetto.nome}}</td>
             <td><span class="p-column-title">Condizioni</span>{{oggetto.scheda.condizioni}}</td>
             <td><span class="p-column-title">Descrizione</span>{{oggetto.scheda.descrizione}}</td>
