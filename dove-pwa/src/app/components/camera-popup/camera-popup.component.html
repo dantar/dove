@@ -1,6 +1,8 @@
 <div class="fullpage modal">
-    <div class="mycamera">
-        <video (click)="clickVideo($event)" #capture autoplay class="myvideo"></video>
+    <div class="mycamera" (click)="clickVideo($event)">
+        <div>
+            <video #capture autoplay class="myvideo"></video>
+        </div>
     </div>
     <div style="visibility: 'hidden'">
         <h2>Scarica la foto!</h2>

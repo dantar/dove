@@ -15,6 +15,8 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
   jpg: string;
   clicked: boolean;
 
+  pictureSize = 300;
+
   constructor() { }
 
   ngOnDestroy(): void {
@@ -29,26 +31,30 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.capture);
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({video: { facingMode: "environment" }}).then((stream) => {
-        this.stream = stream;
-        this.capture.nativeElement.srcObject = stream;
-        let streamh = stream.getVideoTracks()[0].getSettings().height;
-        let captureh = this.capture.nativeElement.clientHeight;
-        console.log (captureh, streamh);
-        let cam = this.capture.nativeElement as HTMLVideoElement;
-        console.log(cam, cam.clientHeight, cam.clientWidth);
+        this.startStream(stream);
       });
     }
+  }
+
+  startStream(stream: MediaStream) {
+    this.stream = stream;
+    this.capture.nativeElement.srcObject = stream;
+    let settings: MediaTrackSettings = stream.getVideoTracks()[0].getSettings();
+    let streamh = settings.height;
+    let captureh = this.capture.nativeElement.clientHeight;
+    console.log (captureh, streamh);
+    let cam = this.capture.nativeElement as HTMLVideoElement;
+    console.log(cam, cam.clientHeight, cam.clientWidth);
   }
 
   ngOnInit(): void {
   }
 
-  clickVideo(event: any) {
-    //this.clicked = true;
+  snapshot() {
     let selfie = document.createElement('canvas');
     let video = this.capture.nativeElement;
-    selfie.width = 300;
-    selfie.height = 300;
+    selfie.width = this.pictureSize;
+    selfie.height = this.pictureSize;
     //selfie.width = video.videoWidth;
     //selfie.height = video.videoHeight;
     let c2d = selfie.getContext("2d");
@@ -61,6 +67,10 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
       //this.savePicture();
       this.picture.emit(this.jpg);
     }
+  }
+
+  clickVideo(event: any) {
+    this.snapshot();
   }
 
   clickImage(event: any) {
