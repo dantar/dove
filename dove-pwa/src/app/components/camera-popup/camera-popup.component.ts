@@ -28,7 +28,7 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clicked = false;
     console.log(this.capture);
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
+      navigator.mediaDevices.getUserMedia({video: { facingMode: "environment" }}).then((stream) => {
         this.stream = stream;
         this.capture.nativeElement.srcObject = stream;
         let streamh = stream.getVideoTracks()[0].getSettings().height;
