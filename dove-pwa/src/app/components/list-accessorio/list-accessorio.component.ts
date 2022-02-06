@@ -36,4 +36,7 @@ export class ListAccessorioComponent implements OnInit {
     this.router.navigate(['oggetto', oggetto.id]);
   }
 
+  imgSrc(oggetto: Oggetto): string {
+    return `${environment.imgsUrl}/${oggetto.id}/${oggetto.thumbnail}`
+  }
 }

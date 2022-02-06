@@ -1,42 +1,53 @@
 <p-dataView [value]="lista">
     <ng-template pTemplate="header">
+        <h1>Accessori</h1>
         <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
     </ng-template>
     <ng-template let-oggetto pTemplate="listItem">
-        <div>
-            <div class="grid">
-                <div class="col-4">ID</div>
-                <div class="col-8">{{oggetto.id}}</div>
+        <div class="grid col-12" (click)="clickOggetto(oggetto)">
+            <div class="col-2">
+                <div *ngIf="oggetto.thumbnail">
+                    <img [src]="imgSrc(oggetto)" class="inlineimage" />
+                </div>
             </div>
-            <div class="grid">
-                <div class="col-4">Nome</div>
-                <div class="col-8">{{oggetto.nome}}</div>
-            </div>
-            <div class="grid">
-                <div class="col-4">Condizioni</div>
-                <div class="col-8">{{oggetto.scheda.condizioni}}</div>
-            </div>
-            <div class="grid">
-                <div class="col-4">Descrizione</div>
-                <div class="col-8">{{oggetto.scheda.descrizione}}</div>
+            <div class="col-10 grid">
+                <div class="grid col-12">
+                    <div class="col-4">ID</div>
+                    <div class="col-8">{{oggetto.id}}</div>
+                </div>
+                <div class="grid col-12">
+                    <div class="col-4">Nome</div>
+                    <div class="col-8">{{oggetto.nome}}</div>
+                </div>
+                <div class="grid col-12">
+                    <div class="col-4">Condizioni</div>
+                    <div class="col-8">{{oggetto.scheda.condizioni}}</div>
+                </div>
+                <div class="grid col-12">
+                    <div class="col-4">Descrizione</div>
+                    <div class="col-8">{{oggetto.scheda.descrizione}}</div>
+                </div>
             </div>
         </div>
     </ng-template>
     <ng-template let-oggetto pTemplate="gridItem">
-        <div>
-            <div class="">
+        <div class="col-6 grid" (click)="clickOggetto(oggetto)">
+            <div class="col-12" *ngIf="oggetto.thumbnail">
+                <img [src]="imgSrc(oggetto)" />
+            </div>
+            <div class="grid col-12">
                 <div class="col-4">ID</div>
                 <div class="col-8">{{oggetto.id}}</div>
             </div>
-            <div class="">
+            <div class="grid col-12">
                 <div class="col-4">Nome</div>
                 <div class="col-8">{{oggetto.nome}}</div>
             </div>
-            <div class="">
+            <div class="grid col-12">
                 <div class="col-4">Condizioni</div>
                 <div class="col-8">{{oggetto.scheda.condizioni}}</div>
             </div>
-            <div class="">
+            <div class="grid col-12">
                 <div class="col-4">Descrizione</div>
                 <div class="col-8">{{oggetto.scheda.descrizione}}</div>
             </div>

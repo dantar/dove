@@ -72,12 +72,32 @@ public class IngressoController {
 
 	@PostMapping("/oggetto/{uuid}/picture")
 	public List<String> postPicture(@PathVariable String uuid, @RequestBody String picture) throws IOException {
-		this.pictureService.savePicture(uuid, picture);
+		Optional<Oggetto> found = oggettoDao.findById(uuid);
+		if (found.isPresent()) {
+			Oggetto oggetto = found.get();
+			this.pictureService.caricaImmagini(oggetto);
+			String pictureId = this.pictureService.savePicture(uuid, picture);
+			if (oggetto.getImmagini().isEmpty()) {
+				oggetto.setThumbnail(pictureId);
+				oggettoDao.save(oggetto);
+			}
+		}
 		return this.pictureService.allPictureUuids(uuid);
 	}
 
 	@DeleteMapping("/oggetto/{uuid}/picture/{code}")
 	public Boolean deletePicture(@PathVariable("uuid") String uuid, @PathVariable("code") String code) throws IOException {
+		Optional<Oggetto> found = oggettoDao.findById(uuid);
+		if (found.isPresent()) {
+			Oggetto oggetto = found.get();
+			if (code.equals(oggetto.getThumbnail())) {
+				this.pictureService.caricaImmagini(oggetto);
+				if (!oggetto.getImmagini().isEmpty()) {
+					oggetto.setThumbnail(oggetto.getImmagini().get(0));
+					oggettoDao.save(oggetto);
+				}
+			}
+		}
 		return this.pictureService.deletePicture(uuid, code);
 	}
 

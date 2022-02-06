@@ -40,17 +40,15 @@ public class PicturesService {
 		}
 	}
 
-	public void savePicture(String uuid, String picture) throws IOException {
+	public String savePicture(String uuid, String picture) throws IOException {
 		File d = this.picturesDirectory(uuid);
-		String b64 = picture.substring(23);
-		System.out.println("------");
-		System.out.println(b64);
-		System.out.println("------");
-		UUID.randomUUID();
-		FileOutputStream fos = new FileOutputStream(new File(d, UUID.randomUUID().toString()));
+		String b64 = picture.substring(23); // base64 url jpeg header
+		String pictureId = UUID.randomUUID().toString();
+		FileOutputStream fos = new FileOutputStream(new File(d, pictureId));
 		byte[] decodedBytes = Base64.getDecoder().decode(b64);
 		fos.write(decodedBytes);
 		fos.close();
+		return pictureId;
 	}
 
 	public List<String> allPictureUuids(String uuid) {
