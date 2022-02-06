@@ -10,46 +10,20 @@
                     <img [src]="imgSrc(oggetto)" class="inlineimage" />
                 </div>
             </div>
-            <div class="col-10 grid">
-                <div class="grid col-12">
-                    <div class="col-4">ID</div>
-                    <div class="col-8">{{oggetto.id}}</div>
-                </div>
-                <div class="grid col-12">
-                    <div class="col-4">Nome</div>
-                    <div class="col-8">{{oggetto.nome}}</div>
-                </div>
-                <div class="grid col-12">
-                    <div class="col-4">Condizioni</div>
-                    <div class="col-8">{{oggetto.scheda.condizioni}}</div>
-                </div>
-                <div class="grid col-12">
-                    <div class="col-4">Descrizione</div>
-                    <div class="col-8">{{oggetto.scheda.descrizione}}</div>
-                </div>
+            <div class="col-10">
+                <div *ngIf="oggetto.nome">{{oggetto.nome}}</div>
+                <div app-scheda-accessorio-view [scheda]="oggetto.scheda"></div>
             </div>
         </div>
     </ng-template>
     <ng-template let-oggetto pTemplate="gridItem">
-        <div class="col-6 grid" (click)="clickOggetto(oggetto)">
+        <div class="col-12 md:col-4 grid" (click)="clickOggetto(oggetto)">
             <div class="col-12" *ngIf="oggetto.thumbnail">
                 <img [src]="imgSrc(oggetto)" />
             </div>
+            <div class="col-12" *ngIf="oggetto.nome">{{oggetto.nome}}</div>
             <div class="grid col-12">
-                <div class="col-4">ID</div>
-                <div class="col-8">{{oggetto.id}}</div>
-            </div>
-            <div class="grid col-12">
-                <div class="col-4">Nome</div>
-                <div class="col-8">{{oggetto.nome}}</div>
-            </div>
-            <div class="grid col-12">
-                <div class="col-4">Condizioni</div>
-                <div class="col-8">{{oggetto.scheda.condizioni}}</div>
-            </div>
-            <div class="grid col-12">
-                <div class="col-4">Descrizione</div>
-                <div class="col-8">{{oggetto.scheda.descrizione}}</div>
+                <div app-scheda-accessorio-view [scheda]="oggetto.scheda"></div>
             </div>
         </div>
     </ng-template>

@@ -1,17 +1,23 @@
-<div>
-    <div>
-        <span>Descrizione</span>
-        <span *ngIf="!editable">{{scheda.descrizione}}</span>
-        <input *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+<div class="grid">
+    <div class="grid col-12">
+        <div class="col-4">Descrizione</div>
+        <div class="col-8" *ngIf="!editable">{{scheda.descrizione}}</div>
+        <div class="col-8 grid" *ngIf="editable">
+            <input class="col-12" *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+        </div>
     </div>
-    <div>
-        <span>Condizioni</span>
-        <span *ngIf="!editable">{{scheda.condizioni}}</span>
-        <p-slider *ngIf="editable" [(ngModel)]="scheda.condizioni" [min]="0" [max]="5"></p-slider>
+    <div class="grid col-12">
+        <div class="col-4">Condizioni</div>
+        <div class="col-8" *ngIf="!editable">{{scheda.condizioni}}</div>
+        <div class="col-8 grid" *ngIf="editable">
+            <p-slider class="col-12" *ngIf="editable" [(ngModel)]="scheda.condizioni" [min]="0" [max]="5"></p-slider>
+        </div>
     </div>
-    <div>
-        <span>Note</span>
-        <span *ngIf="!editable">{{scheda.note}}</span>
-        <input *ngIf="editable" pInputText [(ngModel)]="scheda.note" />
+    <div class="grid col-12" *ngIf="scheda.note || editable">
+        <div class="col-4">Note</div>
+        <div class="col-8" *ngIf="!editable">{{scheda.note}}</div>
+        <div class="col-8 grid" *ngIf="editable">
+            <input class="col-12" *ngIf="editable" pInputText [(ngModel)]="scheda.note" />
+        </div>
     </div>
 </div>
