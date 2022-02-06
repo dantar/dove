@@ -79,20 +79,41 @@ export class OggettoViewComponent implements OnInit {
     });
   }
 
+  thumbnailSelectedImage() {
+    this.oggetto.thumbnail = this.gallery.selected()[0].id;
+    this.saving = true;
+    this.saveAndReload().subscribe(oggetto => {
+      this.saving = false;
+      this.oggetto.thumbnail = oggetto.thumbnail;
+      this.gallery = new GalleryCarousel(this.oggetto);
+    });
+  }
+
 }
 
 class GalleryCarousel {
   shown: GalleryImage[];
   more: GalleryImage[];
   zoomed: boolean;
+  imageMap: {[id: string]: GalleryImage};
 
   constructor(oggetto: Oggetto) {
     this.zoomed = false;
-    this.more = oggetto.immagini.map(p => new GalleryImage(oggetto, p));
+    this.imageMap = {};
+    this.more = oggetto.immagini.map(p => this.newGalleryImage(oggetto, p));
     this.shown = [];
-    if (oggetto.immagini.length > 0) {
+    if (oggetto.thumbnail && oggetto.immagini.indexOf(oggetto.thumbnail) >= 0) {
+      this.more.splice(oggetto.immagini.indexOf(oggetto.thumbnail), 1);
+      this.more.splice(0, 0, this.imageMap[oggetto.thumbnail]);
+    }
+    if (this.more.length > 0) {
       this.shown.push(...this.more.splice(0, 1));
     }
+  }
+  newGalleryImage(oggetto: Oggetto, p: string): GalleryImage {
+    let image = new GalleryImage(oggetto, p);
+    this.imageMap[p] = image;
+    return image;
   }
 
   showAll() {

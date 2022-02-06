@@ -10,6 +10,7 @@
             <div (click)="gallery.toggle()">zoom</div>
             <div *ngIf="gallery.more.length > 0" (click)="gallery.showAll()">Altre {{gallery.more.length}} foto</div>
             <div *ngIf="gallery.selected().length > 0" (click)="deleteSelectedImages()">Elimina foto</div>
+            <div *ngIf="gallery.selected().length == 1 && gallery.selected()[0].id != oggetto.thumbnail" (click)="thumbnailSelectedImage()">Foto principale</div>
         </div>
     </div>
     <div *ngIf="oggetto.scheda">

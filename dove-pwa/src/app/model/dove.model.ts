@@ -36,6 +36,7 @@ export class Oggetto {
     nome: string;
     scheda: SchedaOggetto;
     immagini: string[];
+    thumbnail: string;
 
 }
 

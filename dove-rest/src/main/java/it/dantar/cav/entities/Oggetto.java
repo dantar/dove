@@ -44,6 +44,7 @@ public class Oggetto {
 	String id;
 	String idPosto;
 	String nome;
+	String thumbnail;
 	@Type(type = "jsonb")
 	JsonNode scheda;
 	@Transient
