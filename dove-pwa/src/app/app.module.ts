@@ -14,7 +14,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import {InputTextModule} from 'primeng/inputtext';
 import {SliderModule} from 'primeng/slider';
 import {ButtonModule} from 'primeng/button';
-import {TableModule} from 'primeng/table';
+import {DataViewModule} from 'primeng/dataview';
 
 import { PostoViewComponent } from './components/posto-view/posto-view.component';
 import { PostoBrowseComponent } from './components/posto-browse/posto-browse.component';
@@ -61,7 +61,7 @@ import { ListAccessorioComponent } from './components/list-accessorio/list-acces
     FormsModule,
     ButtonModule,
     SliderModule,
-    TableModule,
+    DataViewModule,
     PaginatorModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

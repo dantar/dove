@@ -21,6 +21,7 @@
     "@angular/router": "~13.0.0",
     "@angular/service-worker": "~13.0.0",
     "html5-qrcode": "^2.1.6",
+    "primeflex": "^3.1.2",
     "primeicons": "^5.0.0",
     "primeng": "^13.0.0-rc.2",
     "rxjs": "~7.4.0",

@@ -1,18 +1,45 @@
-<p-table [value]="lista" responsiveLayout="stack">
+<p-dataView [value]="lista">
     <ng-template pTemplate="header">
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Condizioni</th>
-            <th>Descrizione</th>
-        </tr>
+        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
     </ng-template>
-    <ng-template pTemplate="body" let-oggetto>
-        <tr (click)="clickOggetto(oggetto)">
-            <td><span class="p-column-title">ID</span>{{oggetto.id}}</td>
-            <td><span class="p-column-title">Nome</span>{{oggetto.nome}}</td>
-            <td><span class="p-column-title">Condizioni</span>{{oggetto.scheda.condizioni}}</td>
-            <td><span class="p-column-title">Descrizione</span>{{oggetto.scheda.descrizione}}</td>
-        </tr>
+    <ng-template let-oggetto pTemplate="listItem">
+        <div>
+            <div class="grid">
+                <div class="col-4">ID</div>
+                <div class="col-8">{{oggetto.id}}</div>
+            </div>
+            <div class="grid">
+                <div class="col-4">Nome</div>
+                <div class="col-8">{{oggetto.nome}}</div>
+            </div>
+            <div class="grid">
+                <div class="col-4">Condizioni</div>
+                <div class="col-8">{{oggetto.scheda.condizioni}}</div>
+            </div>
+            <div class="grid">
+                <div class="col-4">Descrizione</div>
+                <div class="col-8">{{oggetto.scheda.descrizione}}</div>
+            </div>
+        </div>
     </ng-template>
-</p-table>
+    <ng-template let-oggetto pTemplate="gridItem">
+        <div>
+            <div class="">
+                <div class="col-4">ID</div>
+                <div class="col-8">{{oggetto.id}}</div>
+            </div>
+            <div class="">
+                <div class="col-4">Nome</div>
+                <div class="col-8">{{oggetto.nome}}</div>
+            </div>
+            <div class="">
+                <div class="col-4">Condizioni</div>
+                <div class="col-8">{{oggetto.scheda.condizioni}}</div>
+            </div>
+            <div class="">
+                <div class="col-4">Descrizione</div>
+                <div class="col-8">{{oggetto.scheda.descrizione}}</div>
+            </div>
+        </div>
+    </ng-template>
+</p-dataView>
