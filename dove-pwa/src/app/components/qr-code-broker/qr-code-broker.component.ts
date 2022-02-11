@@ -38,6 +38,10 @@ export class QrCodeBrokerComponent implements OnInit {
     });
   }
 
+  qrcodeCancel() {
+    this.router.navigate(['root']);
+  }
+
 }
 
 export class BrokerDto {

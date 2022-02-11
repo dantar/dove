@@ -30,8 +30,24 @@ export class AppComponent implements OnInit {
       this.router.navigate(['list', 'accessorio']);
     }));
   }
+  
   ngOnInit(): void {
     this.shared.loadUser();
+    if (this.shared.user) {
+      this.auth.getUser().subscribe({
+        next: details => {
+          this.shared.setDetails(details);
+        },
+        error: this.httpError
+      });
+    }
+  }
+
+  private httpError(error: any) {
+    console.log(error);
+    if (error.status === 401) {
+      this.shared.noUser();
+    }
   }
 
 }

@@ -1,6 +1,6 @@
 <div class="bg tiled">
   <div *ngIf="shared.user">
-    <div class="fullpage">
+    <div class="fullpage" *ngIf="shared.user">
       <router-outlet></router-outlet>
     </div>
     <div class="panel-menu-list top-left-menu">
