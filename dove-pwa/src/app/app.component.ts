@@ -38,15 +38,12 @@ export class AppComponent implements OnInit {
         next: details => {
           this.shared.setDetails(details);
         },
-        error: this.httpError
+        error: error => {
+          if (error.status === 401) {
+            this.shared.noUser();
+          }
+        }
       });
-    }
-  }
-
-  private httpError(error: any) {
-    console.log(error);
-    if (error.status === 401) {
-      this.shared.noUser();
     }
   }
 

@@ -8,6 +8,7 @@ import { UserinfoComponent } from './components/userinfo/userinfo.component';
 
 
 const routes: Routes = [
+  {path: '', component: PostoBrowseComponent},
   {path: 'broker', component: QrCodeBrokerComponent},
   {path: 'root', component: PostoBrowseComponent},
   {path: 'posto/:id', component: PostoBrowseComponent},
