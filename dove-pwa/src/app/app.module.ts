@@ -34,6 +34,7 @@ import { UserinfoComponent } from './components/userinfo/userinfo.component';
 import { QrCodeBrokerComponent } from './components/qr-code-broker/qr-code-broker.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { ListAccessorioComponent } from './components/list-accessorio/list-accessorio.component';
+import { ListOggettoComponent } from './components/list-oggetto/list-oggetto.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { ListAccessorioComponent } from './components/list-accessorio/list-acces
     UserinfoComponent,
     QrCodeBrokerComponent,
     ListAccessorioComponent,
+    ListOggettoComponent,
   ],
   imports: [
     BrowserModule,

@@ -26,17 +26,11 @@ export class ListAccessorioComponent implements OnInit {
     this.loading = true;
     this.http.get<Oggetto[]>(`${environment.restUrl}/oggetto/accessorio/list`).subscribe({
       next: lista => {
+        this.loading = false;
         this.lista = lista;
       },
       error: this.shared.httpError
     });
   }
 
-  clickOggetto(oggetto: Oggetto) {
-    this.router.navigate(['oggetto', oggetto.id]);
-  }
-
-  imgSrc(oggetto: Oggetto): string {
-    return `${environment.imgsUrl}/${oggetto.id}/${oggetto.thumbnail}`
-  }
 }

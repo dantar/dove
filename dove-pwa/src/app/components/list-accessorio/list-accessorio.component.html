@@ -1,30 +1,6 @@
-<p-dataView [value]="lista">
-    <ng-template pTemplate="header">
-        <h1>Accessori</h1>
-        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-    </ng-template>
-    <ng-template let-oggetto pTemplate="listItem">
-        <div class="grid col-12" (click)="clickOggetto(oggetto)">
-            <div class="col-2">
-                <div *ngIf="oggetto.thumbnail">
-                    <img [src]="imgSrc(oggetto)" class="inlineimage" />
-                </div>
-            </div>
-            <div class="col-10">
-                <div *ngIf="oggetto.nome">{{oggetto.nome}}</div>
-                <div app-scheda-accessorio-view [scheda]="oggetto.scheda" mode="list"></div>
-            </div>
-        </div>
-    </ng-template>
-    <ng-template let-oggetto pTemplate="gridItem">
-        <div class="col-12 md:col-4 grid" (click)="clickOggetto(oggetto)">
-            <div class="col-12" *ngIf="oggetto.thumbnail">
-                <img [src]="imgSrc(oggetto)" />
-            </div>
-            <div class="col-12" *ngIf="oggetto.nome">{{oggetto.nome}}</div>
-            <div class="grid col-12">
-                <div app-scheda-accessorio-view [scheda]="oggetto.scheda" mode="short"></div>
-            </div>
-        </div>
-    </ng-template>
-</p-dataView>
+<div *ngIf="lista">
+    <div app-list-oggetto [lista]="lista"></div>
+</div>
+<div *ngIf="loading">
+    Loading
+</div>

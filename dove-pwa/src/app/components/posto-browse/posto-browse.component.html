@@ -9,13 +9,14 @@
     <div class="posti-children">
         <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>
-    <div *ngFor="let oggetto of browse.oggetti">
-        <div app-oggetto-view [oggetto]="oggetto" (move)="itemMoved($event)"></div>
-    </div>
     <div>
-        <p-button label="+" (click)="adding = true" ></p-button>
+        <div app-list-oggetto [lista]="browse.oggetti"></div>
     </div>
 </div>
+<div class="panel-menu-list bottom-right-menu">
+    <p-button *ngIf="!adding" label="+" (click)="adding = true" ></p-button>
+</div>
+
 <div *ngIf="adding">
     <div app-qr-code-popup (qrcode)="addItem($event)" (cancel)="adding = false"></div>
 </div>
