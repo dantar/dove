@@ -9,6 +9,21 @@ body {
     font-family: 'Belleza';
 }
 
+.mode-short {
+    .item-detail {
+        display: none;
+    }
+}
+
+.mode-list {
+    .item-detail {
+        display: none;
+    }
+    .item-info {
+        display: none;
+    }
+}
+
 .p-dataview-content {
     background: none;
 }

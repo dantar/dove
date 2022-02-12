@@ -1,5 +1,9 @@
-<div>
-    <span>Descrizione</span>
-    <span *ngIf="!editable">{{scheda.descrizione}}</span>
-    <input *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+<div class="grid" class="mode-{{mode}}">
+    <div class="grid col-12 item-info">
+        <div class="col-4">Descrizione</div>
+        <div class="col-8" *ngIf="!editable">{{scheda.descrizione}}</div>
+        <div class="col-8 grid" *ngIf="editable">
+            <input class="col-12" *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+        </div>
+    </div>
 </div>
