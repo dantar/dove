@@ -4,6 +4,7 @@
     </ng-template>
     <ng-template let-oggetto pTemplate="listItem">
         <div class="grid col-12">
+            <div (click)="clickOggetto(oggetto)">Apri</div>
             <div app-oggetto-view [oggetto]="oggetto" mode="list"></div>
         </div>
     </ng-template>
