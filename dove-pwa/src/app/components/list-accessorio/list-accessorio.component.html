@@ -12,7 +12,7 @@
             </div>
             <div class="col-10">
                 <div *ngIf="oggetto.nome">{{oggetto.nome}}</div>
-                <div app-scheda-accessorio-view [scheda]="oggetto.scheda"></div>
+                <div app-scheda-accessorio-view [scheda]="oggetto.scheda" mode="list"></div>
             </div>
         </div>
     </ng-template>
@@ -23,7 +23,7 @@
             </div>
             <div class="col-12" *ngIf="oggetto.nome">{{oggetto.nome}}</div>
             <div class="grid col-12">
-                <div app-scheda-accessorio-view [scheda]="oggetto.scheda"></div>
+                <div app-scheda-accessorio-view [scheda]="oggetto.scheda" mode="short"></div>
             </div>
         </div>
     </ng-template>

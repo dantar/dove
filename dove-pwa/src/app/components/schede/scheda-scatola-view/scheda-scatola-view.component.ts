@@ -11,6 +11,7 @@ export class SchedaScatolaViewComponent implements OnInit, SchedaViewInterface {
 
   @Input() scheda: SchedaScatola;
   @Input() editable: boolean;
+  @Input() mode: 'full'|'short'|'list' = 'full';
 
   constructor() { }
 

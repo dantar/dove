@@ -12,6 +12,7 @@ export class SchedaViewComponent implements OnInit {
 
   @ViewChild(SchedaViewDirective, {static: true}) appSchedaView!: SchedaViewDirective;
   @Input() scheda: SchedaOggetto;
+  @Input() mode: 'full'|'short'|'list' = 'full';
   @Output() save: EventEmitter<SchedaOggetto> = new EventEmitter<SchedaOggetto>();
   @Output() move: EventEmitter<string> = new EventEmitter<string>();
   @Output() shoot: EventEmitter<string> = new EventEmitter<string>();
@@ -35,6 +36,7 @@ export class SchedaViewComponent implements OnInit {
     const componentRef = viewContainerRef.createComponent<SchedaViewInterface>(SchedaOggetto.component[data.tipo]);
     componentRef.instance.scheda = data;
     componentRef.instance.editable = editable;
+    componentRef.instance.mode = editable ? 'full' : this.mode;
   }
 
   schedaAsSchedaOggetto(): SchedaScatola {

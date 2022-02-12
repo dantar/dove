@@ -15,6 +15,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {SliderModule} from 'primeng/slider';
 import {ButtonModule} from 'primeng/button';
 import {DataViewModule} from 'primeng/dataview';
+import {TreeSelectModule} from 'primeng/treeselect';
 
 import { PostoViewComponent } from './components/posto-view/posto-view.component';
 import { PostoBrowseComponent } from './components/posto-browse/posto-browse.component';
@@ -63,6 +64,7 @@ import { ListAccessorioComponent } from './components/list-accessorio/list-acces
     SliderModule,
     DataViewModule,
     PaginatorModule,
+    TreeSelectModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

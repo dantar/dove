@@ -1,9 +1,9 @@
-<div class="grid">
+<div class="grid" class="mode-{{mode}}">
     <div class="grid col-12">
-        <div class="col-4">Descrizione</div>
-        <div class="col-8" *ngIf="!editable">{{scheda.descrizione}}</div>
+        <div class="col-4">Accessorio</div>
+        <div class="col-8" *ngIf="!editable">{{tipoSelected?.label}}</div>
         <div class="col-8 grid" *ngIf="editable">
-            <input class="col-12" *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+            <p-treeSelect [(ngModel)]="tipoSelected" [options]="tipoTree" (onNodeSelect)="tipoSelect($event)"></p-treeSelect>
         </div>
     </div>
     <div class="grid col-12">
@@ -13,7 +13,14 @@
             <p-slider class="col-12" *ngIf="editable" [(ngModel)]="scheda.condizioni" [min]="0" [max]="5"></p-slider>
         </div>
     </div>
-    <div class="grid col-12" *ngIf="scheda.note || editable">
+    <div class="grid col-12 item-info">
+        <div class="col-4">Descrizione</div>
+        <div class="col-8" *ngIf="!editable">{{scheda.descrizione}}</div>
+        <div class="col-8 grid" *ngIf="editable">
+            <input class="col-12" *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+        </div>
+    </div>
+    <div class="grid col-12 item-detail" *ngIf="scheda.note || editable">
         <div class="col-4">Note</div>
         <div class="col-8" *ngIf="!editable">{{scheda.note}}</div>
         <div class="col-8 grid" *ngIf="editable">
