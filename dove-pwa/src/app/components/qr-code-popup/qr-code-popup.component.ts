@@ -13,7 +13,7 @@ export class QrCodePopupComponent implements OnInit, OnDestroy {
   devices: CameraDevice[];
   device: CameraDevice;
   code: string;
-  ratio = 1.3333;
+  ratio = 1.0;
   emergency = '';
   noCamera: boolean;
 
