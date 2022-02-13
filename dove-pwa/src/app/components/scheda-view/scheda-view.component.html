@@ -1,6 +1,8 @@
-<div>
-    <p-button *ngIf="!edit" (click)="openEdit()" label="modifica"></p-button>
-    <p-button *ngIf="edit" (click)="cancelEdit()" label="annulla"></p-button>
-    <p-button *ngIf="edit" (click)="saveEdit()" label="salva"></p-button>
+<div class="button-icons">
+    <span *ngIf="!edit" class="button-icon"><i class="pi pi-pencil" (click)="openEdit()"></i></span>
 </div>
 <ng-template appSchedaView></ng-template>
+<div *ngIf="edit">
+    <span class="button-icon"><p-button (click)="cancelEdit()" label="annulla"></p-button></span>
+    <span class="button-icon"><p-button (click)="saveEdit()" label="salva"></p-button></span>
+</div>

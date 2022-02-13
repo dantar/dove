@@ -1,32 +1,38 @@
-<p-card [header]="oggetto.nome || oggetto.id">
-
-    <div class="linkto" (click)="browse()">{{oggetto.id}}</div>
-    <div *ngIf="gallery.mode != 'missing' && !saving">
-        <div app-oggetto-thumbnail [oggetto]="oggetto" *ngIf="gallery.mode === 'thumbnail'"></div>
-        <div class="gallery zoomed-{{gallery.zoomed}}" *ngIf="gallery.mode === 'full'">
-            <div class="images">
-                <div class="image" *ngFor="let image of gallery.shown" >
-                    <img class="selected-{{image.selected}}" [src]="image.src" (click)="image.toggle()" />
+<p-card>
+    <ng-template pTemplate="header">
+        <div class="button-icons">
+            <span class="button-icon" *ngIf="!moving" (click)="moving = true"><i class="pi pi-caret-right"></i></span>
+            <span class="button-icon" *ngIf="!shooting" (click)="shooting = true"><i class="pi pi-camera"></i></span>
+        </div>    
+        <h1 class="oggetto oggetto-{{oggetto.scheda.tipo}}" (click)="browse()">{{oggetto.nome || oggetto.id}}</h1>
+    </ng-template>
+    <div class="grid">
+        <div class="col-4">
+            <div *ngIf="gallery.mode != 'missing' && !saving">
+                <div app-oggetto-thumbnail [oggetto]="oggetto" *ngIf="gallery.mode === 'thumbnail'"></div>
+                <div class="gallery zoomed-{{gallery.zoomed}}" *ngIf="gallery.mode === 'full'">
+                    <div class="button-icons">
+                        <span class="button-icon" (click)="gallery.toggle()"><i class="pi pi-images"></i></span>
+                        <span class="button-icon" *ngIf="gallery.selected().length > 0" (click)="deleteSelectedImages()"><i class="pi pi-trash"></i></span>
+                        <span class="button-icon" *ngIf="gallery.selected().length == 1 && gallery.selected()[0].id != oggetto.thumbnail" (click)="thumbnailSelectedImage()"><i class="pi pi-star"></i></span>
+                    </div>
+                    <div class="images">
+                        <div class="image" *ngFor="let image of gallery.shown" >
+                            <img class="selected-{{image.selected}}" [src]="image.src" (click)="image.toggle()" />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="buttons">
-                <div (click)="gallery.toggle()">zoom</div>
-                <div *ngIf="gallery.selected().length > 0" (click)="deleteSelectedImages()">Elimina foto</div>
-                <div *ngIf="gallery.selected().length == 1 && gallery.selected()[0].id != oggetto.thumbnail" (click)="thumbnailSelectedImage()">Foto principale</div>
+        </div>        
+        <div class="col-8">
+            <div *ngIf="oggetto.scheda">
+                <div *ngIf="!saving" app-scheda-view [scheda]="oggetto.scheda" (save)="saveScheda($event)"></div>
             </div>
-        </div>
+            <div *ngIf="!oggetto.scheda">
+                <div *ngFor="let proto of allSchedaProto()" (click)="newSchedaAs(proto)">{{proto.nome}}</div>
+            </div>
+        </div>        
     </div>
-    <div *ngIf="oggetto.scheda">
-        <div>{{oggetto.scheda.tipo}}</div>
-        <div *ngIf="!saving" app-scheda-view [scheda]="oggetto.scheda" (save)="saveScheda($event)"></div>
-    </div>
-    <div *ngIf="!oggetto.scheda">
-        <div *ngFor="let proto of allSchedaProto()" (click)="newSchedaAs(proto)">{{proto.nome}}</div>
-    </div>
-    <div>
-        <p-button *ngIf="!moving" (click)="moving = true" label="sposta"></p-button>
-        <p-button *ngIf="!shooting" (click)="shooting = true" label="foto"></p-button>
-    </div>    
 </p-card>
 <div *ngIf="moving">
     <div app-qr-code-popup (qrcode)="moveScheda($event)" (cancel)="moving = false"></div>

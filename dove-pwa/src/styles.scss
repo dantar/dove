@@ -9,6 +9,23 @@ body {
     font-family: 'Belleza';
 }
 
+h1.oggetto::before {
+    padding: 2px;
+    font-size: 10px;
+}
+h1.oggetto-accessorio::before {
+    content: 'A';
+    color: blue;
+    background-color: lightblue;
+    border: 1px solid blue;
+}
+h1.oggetto-scatola::before {
+    content: 'S';
+    color: green;
+    background-color: lightgreen;
+    border: 1px solid green;
+}
+
 .mode-short {
     .item-detail {
         display: none;
@@ -21,6 +38,20 @@ body {
     }
     .item-info {
         display: none;
+    }
+}
+
+.button-icons {
+    background-color: lightpink;
+    .button-icon {
+        float: right;
+        padding: 1px;
+        border: 1px solid black;
+        margin: 1px;
+        background-color: white;
+        i {
+            font-size: 2rem;
+        }
     }
 }
 
@@ -54,10 +85,8 @@ body {
     flex-wrap: wrap;
 }
 
-.gallery.zoomed-false {
-    img{
-        width: 80px;
-    }
+img {
+    width: 100%;
 }
 
 .gallery.zoomed-true {
