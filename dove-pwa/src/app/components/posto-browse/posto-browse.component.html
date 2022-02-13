@@ -10,7 +10,7 @@
         <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>
     <div>
-        <div app-list-oggetto [lista]="browse.oggetti"></div>
+        <div app-list-oggetto [lista]="browse.oggetti" (move)="itemMoved($event)"></div>
     </div>
 </div>
 <div class="panel-menu-list bottom-right-menu">

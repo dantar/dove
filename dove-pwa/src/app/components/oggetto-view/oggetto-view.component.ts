@@ -16,6 +16,8 @@ export class OggettoViewComponent implements OnInit {
   @Output() move = new EventEmitter<string>();
   gallery: GalleryCarousel;
   saving: boolean;
+  moving: boolean;
+  shooting: boolean;
 
   constructor(
     private router: Router,
@@ -25,6 +27,8 @@ export class OggettoViewComponent implements OnInit {
   ngOnInit(): void {
     this.gallery = new GalleryCarousel(this.oggetto);
     this.saving = false;
+    this.moving = false;
+    this.shooting = false;
   }
 
   browse() {
@@ -33,7 +37,6 @@ export class OggettoViewComponent implements OnInit {
 
   saveScheda(scheda: SchedaOggetto) {
     this.oggetto.scheda = scheda;
-    this.saving = true;
     this.saveAndReload().subscribe(oggetto => {
       this.saving = false;
       this.oggetto.scheda = oggetto.scheda;
@@ -49,14 +52,17 @@ export class OggettoViewComponent implements OnInit {
   }
 
   moveScheda(code: string) {
+    this.moving = false;
     this.oggetto.idPosto = code;
     this.saveAndReload().subscribe(oggetto => {
+      this.saving = false;
       this.oggetto.idPosto = oggetto.idPosto;
       this.move.emit(this.oggetto.idPosto);
     });
   }
 
   shootPicture(jpeg: string) {
+    this.shooting = false;
     this.saving = true;
     this.http.post<string[]>(`${environment.restUrl}/oggetto/${this.oggetto.id}/picture`, jpeg)
     .subscribe(pictures => {
@@ -67,6 +73,7 @@ export class OggettoViewComponent implements OnInit {
   }
 
   private saveAndReload(): Observable<Oggetto> {
+    this.saving = true;
     return this.http.post<Oggetto>(`${environment.restUrl}/oggetto`, this.oggetto);
   }
 
@@ -81,7 +88,6 @@ export class OggettoViewComponent implements OnInit {
 
   thumbnailSelectedImage() {
     this.oggetto.thumbnail = this.gallery.selected()[0].id;
-    this.saving = true;
     this.saveAndReload().subscribe(oggetto => {
       this.saving = false;
       this.oggetto.thumbnail = oggetto.thumbnail;

@@ -4,11 +4,3 @@
     <p-button *ngIf="edit" (click)="saveEdit()" label="salva"></p-button>
 </div>
 <ng-template appSchedaView></ng-template>
-<p-button *ngIf="!moving" (click)="openMove()" label="sposta"></p-button>
-<p-button *ngIf="!shooting" (click)="openShoot()" label="foto"></p-button>
-<div *ngIf="moving">
-    <div app-qr-code-popup (qrcode)="moveToCode($event)" (cancel)="moving = false"></div>
-</div>
-<div *ngIf="shooting">
-    <div app-camera-popup (picture)="loadPicture($event)" (exit)="shooting = false"></div>
-</div>

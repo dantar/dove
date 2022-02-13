@@ -58,7 +58,7 @@ export class PostoBrowseComponent implements OnInit {
     });
   }
 
-  itemMoved(oggetto: string) {
+  itemMoved(oggetto: Oggetto) {
       this.loadBrowse();
   }
 

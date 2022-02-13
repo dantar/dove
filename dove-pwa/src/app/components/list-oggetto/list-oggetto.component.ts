@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Oggetto } from 'src/app/model/dove.model';
 import { environment } from 'src/environments/environment';
@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 export class ListOggettoComponent implements OnInit {
 
   @Input() lista: Oggetto[];
+  @Output() move = new EventEmitter<Oggetto>();
   loading: boolean;
 
   constructor(

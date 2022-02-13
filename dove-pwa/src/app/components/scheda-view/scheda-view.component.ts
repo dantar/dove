@@ -14,10 +14,6 @@ export class SchedaViewComponent implements OnInit {
   @Input() scheda: SchedaOggetto;
   @Input() mode: 'full'|'short'|'list' = 'full';
   @Output() save: EventEmitter<SchedaOggetto> = new EventEmitter<SchedaOggetto>();
-  @Output() move: EventEmitter<string> = new EventEmitter<string>();
-  @Output() shoot: EventEmitter<string> = new EventEmitter<string>();
-  moving: boolean;
-  shooting: boolean;
 
   edit: SchedaOggetto | null;
 
@@ -25,8 +21,6 @@ export class SchedaViewComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.moving = false;
-    this.shooting = false;
     this.loadComponent(this.scheda, false);
   }
 
@@ -41,24 +35,6 @@ export class SchedaViewComponent implements OnInit {
 
   schedaAsSchedaOggetto(): SchedaScatola {
     return this.scheda as SchedaScatola;
-  }
-
-  openMove() {
-    this.moving = true;
-  }
-
-  moveToCode(code: string) {
-    this.move.emit(code);
-    this.moving = false;
-  }
-
-  openShoot() {
-    this.shooting = true;
-  }
-
-  loadPicture(jpeg: string) {
-    this.shooting = false;
-    this.shoot.emit(jpeg);
   }
 
   openEdit() {
