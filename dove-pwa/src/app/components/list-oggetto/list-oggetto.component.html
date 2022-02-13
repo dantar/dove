@@ -4,12 +4,11 @@
     </ng-template>
     <ng-template let-oggetto pTemplate="listItem">
         <div class="grid col-12">
-            <div (click)="clickOggetto(oggetto)">Apri</div>
             <div app-oggetto-view [oggetto]="oggetto" mode="list" (move)="move.emit(oggetto)"></div>
         </div>
     </ng-template>
     <ng-template let-oggetto pTemplate="gridItem">
-        <div class="col-12 md:col-4 grid">
+        <div class="col-4 md:col-3 grid">
             <div app-oggetto-thumbnail [oggetto]="oggetto" (click)="clickOggetto(oggetto)"></div>
         </div>
     </ng-template>

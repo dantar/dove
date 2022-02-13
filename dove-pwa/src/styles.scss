@@ -49,15 +49,21 @@ h1.oggetto-scatola::before {
 }
 
 .button-icons {
-    background-color: lightpink;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    height: 0;
     .button-icon {
-        float: right;
-        padding: 1px;
+        padding: 2px;
         border: 1px solid black;
         margin: 1px;
         background-color: white;
+        height: 27px;
+        position: relative;
         i {
-            font-size: 2rem;
+            color: black;
+            font-size: 20px;
         }
     }
 }
