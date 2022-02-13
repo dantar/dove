@@ -99,37 +99,25 @@ export class OggettoViewComponent implements OnInit {
 
 class GalleryCarousel {
   shown: GalleryImage[];
-  more: GalleryImage[];
   zoomed: boolean;
   imageMap: {[id: string]: GalleryImage};
+  mode: 'full'|'thumbnail'|'missing';
 
   constructor(oggetto: Oggetto) {
     this.zoomed = false;
     this.imageMap = {};
-    this.more = oggetto.immagini.map(p => this.newGalleryImage(oggetto, p));
+    this.mode = oggetto.immagini.length > 0 ? 'full' : oggetto.thumbnail ? 'thumbnail': 'missing';
     this.shown = [];
     if (oggetto.thumbnail) {
-      if (oggetto.immagini.indexOf(oggetto.thumbnail) >= 0) {
-        this.more.splice(oggetto.immagini.indexOf(oggetto.thumbnail), 1);
-        this.more.splice(0, 0, this.imageMap[oggetto.thumbnail]);
-      } else {
-        this.shown.push(this.newGalleryImage(oggetto, oggetto.thumbnail));
-      }
+      this.shown.push(this.newGalleryImage(oggetto, oggetto.thumbnail));
     }
-    if (this.more.length > 0) {
-      this.shown.push(...this.more.splice(0, 1));
-    }
+    oggetto.immagini.filter(i => i!= oggetto.thumbnail).forEach(p => this.shown.push(this.newGalleryImage(oggetto, p)));
   }
 
   newGalleryImage(oggetto: Oggetto, p: string): GalleryImage {
     let image = new GalleryImage(oggetto, p);
     this.imageMap[p] = image;
     return image;
-  }
-
-  showAll() {
-    this.shown.push(...this.more);
-    this.more = [];
   }
 
   selected(): GalleryImage[] {

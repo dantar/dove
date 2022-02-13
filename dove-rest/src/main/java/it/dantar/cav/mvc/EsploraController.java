@@ -30,7 +30,7 @@ public class EsploraController {
 		return new PostoBrowseDto(
 				new ArrayList<Posto>(),
 				posto, 
-				this.picturesService.caricaImmagini(oggettoDao.findByIdPosto(posto.getId())),
+				oggettoDao.findByIdPosto(posto.getId()),
 				postoDao.findByPercorso(posto.getPathId())
 				);
 	}
@@ -41,7 +41,7 @@ public class EsploraController {
 		return new PostoBrowseDto(
 				postoDao.findPostoBreadcrumbs(uuid),
 				posto, 
-				this.picturesService.caricaImmagini(oggettoDao.findByIdPosto(uuid)),
+				oggettoDao.findByIdPosto(uuid),
 				postoDao.findByPercorso(
 						posto.getPercorso() == null ? 
 								posto.getPathId() 
