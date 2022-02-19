@@ -47,6 +47,17 @@ public class IngressoController {
 		return posto;
 	}
 
+	@PostMapping("/posto/{main}/{branch}")
+	public Posto nuovoBranch(@PathVariable String main, @PathVariable String branch) {
+		Posto mainPosto = postoDao.findById(main).orElseThrow(IllegalArgumentException::new);
+		Posto posto = new Posto();
+		posto.setId(branch);
+		posto.setNome("Nuovo posto");
+		posto.setPercorso(mainPosto.getPercorso() == null ? mainPosto.getPathId() : String.format("%s.%s", mainPosto.getPercorso(), mainPosto.getPathId()));
+		postoDao.save(posto);
+		return posto;
+	}
+
 	@GetMapping("/oggetto/{uuid}")
 	public Oggetto getOggetto(@PathVariable("uuid") String uuid) {
 		Optional<Oggetto> found = oggettoDao.findById(uuid);
