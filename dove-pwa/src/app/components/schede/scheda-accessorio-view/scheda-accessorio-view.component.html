@@ -8,10 +8,10 @@
     </div>
     <div class="grid col-12 item-info" *ngIf="editable || scheda.descrizione">
         <div *ngIf="!editable">{{scheda.descrizione}}</div>
-        <input *ngIf="editable" class="col-12" pInputText [(ngModel)]="scheda.descrizione" />
+        <input *ngIf="editable" class="col-12" pInputText placeholder="descrizione" [(ngModel)]="scheda.descrizione" />
     </div>
     <div class="grid col-12 item-info" *ngIf="editable || scheda.note">
         <div *ngIf="!editable" class="comments">{{scheda.note}}</div>
-        <input *ngIf="editable" class="col-12 comments" pInputText [(ngModel)]="scheda.note" />
+        <input *ngIf="editable" class="col-12 comments" pInputText  placeholder="note" [(ngModel)]="scheda.note" />
     </div>
 </div>
