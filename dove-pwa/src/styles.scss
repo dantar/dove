@@ -16,21 +16,36 @@ body {
                                     supported by Chrome, Edge, Opera and Firefox */
 }
 
+h1 {
+    margin: 0px;
+    width: 100%;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 1.2rem;
+}
 h1.oggetto::before {
     padding: 2px;
     font-size: 10px;
+    margin-right: 2px;
 }
-h1.oggetto-accessorio::before {
-    content: 'A';
-    color: blue;
-    background-color: lightblue;
-    border: 1px solid blue;
+h1.oggetto-accessorio {
+    text-decoration: 2px underline blue;    
+    &::before {
+        content: 'A';
+        color: blue;
+        background-color: lightblue;
+        border: 1px solid blue;
+    }
 }
-h1.oggetto-scatola::before {
-    content: 'S';
-    color: green;
-    background-color: lightgreen;
-    border: 1px solid green;
+h1.oggetto-scatola {
+    text-decoration: 2px underline green;    
+    &::before {
+        content: 'S';
+        color: green;
+        background-color: lightgreen;
+        border: 1px solid green;
+    }
 }
 
 .mode-short {
@@ -204,12 +219,6 @@ img {
         height: 100vh;
         width: 100vw;
     }
-}
-
-h1 {
-    margin: 0px;
-    width: 100%;
-    text-align: center;
 }
 
 .fullpage {

@@ -95,6 +95,11 @@ export class OggettoViewComponent implements OnInit {
     });
   }
 
+  nomeOggetto(): string {
+    return SchedaOggetto.nomeOf(this.oggetto);
+  }
+
+
 }
 
 class GalleryCarousel {

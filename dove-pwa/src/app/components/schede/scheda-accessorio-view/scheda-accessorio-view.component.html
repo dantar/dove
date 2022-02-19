@@ -1,7 +1,6 @@
 <div class="grid" class="mode-{{mode}}">
-    <div class="grid col-12">
-        <div *ngIf="!editable">{{tipoSelected?.label}}</div>
-        <p-treeSelect *ngIf="editable" [(ngModel)]="tipoSelected" [options]="tipoTree" (onNodeSelect)="tipoSelect($event)"></p-treeSelect>
+    <div class="grid col-12" *ngIf="editable">
+        <p-treeSelect [(ngModel)]="tipoSelected" [options]="tipoTree" (onNodeSelect)="tipoSelect($event)"></p-treeSelect>
     </div>
     <div class="grid col-12">
         <p-rating class="col-12" [readonly]="!editable" [cancel]="false" [(ngModel)]="scheda.condizioni"></p-rating>
