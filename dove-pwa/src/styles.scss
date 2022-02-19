@@ -68,6 +68,44 @@ h1.oggetto-scatola::before {
     }
 }
 
+.chip-wrapper {
+    margin-left: 1px;
+    margin-right: 1px;
+}
+.chip-editable-true {
+    .chip-selected-false {
+        opacity: 0.3;
+    };
+}
+.chip-editable-false {
+    .chip-selected-false {
+        display: none
+    };
+}
+
+.chip-block.chip-editable-true {
+    display: block;
+}
+
+.chip-sesso-maschio {
+    background-color: lightblue;
+}
+.chip-sesso-femmina {
+    background-color: pink;
+}
+.chip-sesso-unisex {
+    background-color: lightgreen;
+}
+.chip-stagione-estate {
+    background-color: yellow;
+}
+.chip-stagione-inverno {
+    background-color: lightgray;
+}
+.chip-eta {
+    background-color: orange;
+}
+
 .p-dataview-content {
     background: none;
 }

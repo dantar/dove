@@ -1,9 +1,45 @@
 <div class="grid" class="mode-{{mode}}">
-    <div class="grid col-12 item-info">
-        <div class="col-4">Descrizione</div>
-        <div class="col-8" *ngIf="!editable">{{scheda.descrizione}}</div>
-        <div class="col-8 grid" *ngIf="editable">
-            <input class="col-12" *ngIf="editable" pInputText [(ngModel)]="scheda.descrizione" />
+    <div class="grid col-12 box-contents">
+        <div class="col-12" *ngIf="scheda.contenuti.length === 0">Scatola vuota</div>
+        <div class="col-12" *ngFor="let content of scheda.contenuti" [ngSwitch]="content.tipo">
+            <div *ngSwitchCase="'vestiti'">
+                <ng-container *ngTemplateOutlet="vestititemplate;context:{content}"></ng-container>
+            </div>
+        </div>
+        <div class="col-12" *ngIf="editable">
+            <span class="button-icon"><i class="pi pi-plus" (click)="addItem('vestiti')"></i> vestiti</span>
         </div>
     </div>
+    <div class="grid col-12 item-info" *ngIf="editable || scheda.descrizione">
+        <div *ngIf="!editable">{{scheda.descrizione}}</div>
+        <input *ngIf="editable" class="col-12" pInputText placeholder="descrizione" [(ngModel)]="scheda.descrizione" />
+    </div>
+    <div class="grid col-12 item-info" *ngIf="editable || scheda.note">
+        <div *ngIf="!editable" class="comments">{{scheda.note}}</div>
+        <input *ngIf="editable" class="col-12 comments" pInputText  placeholder="note" [(ngModel)]="scheda.note" />
+    </div>
 </div>
+
+<ng-template #vestititemplate let-content="content">
+    <div>
+        <div>
+            <span>{{content.tipo}}</span>
+            <span *ngIf="editable" class="button-icon" (click)="vestitiDelete(content)"><i class="pi pi-trash"></i></span>
+        </div>
+        <span class="chip-block chip-editable-{{editable}}">
+            <span *ngFor="let chip of vestitiSessoChips(content)" class="chip-wrapper chip-selected-{{chip.selected}}">
+                <p-chip styleClass="chip-sesso chip-sesso-{{chip.text}}" [label]="chip.text" (click)="content.sesso = chip.select()"></p-chip>
+            </span>
+        </span>
+        <span class="chip-block chip-editable-{{editable}}">
+            <span *ngFor="let chip of vestitiStagioneChips(content)" class="chip-wrapper chip-selected-{{chip.selected}}">
+                <p-chip styleClass="chip-stagione chip-stagione-{{chip.text}}" [label]="chip.text" (click)="chip.toggle()"></p-chip>
+            </span>
+        </span>
+        <span class="chip-block chip-editable-{{editable}}">
+            <span *ngFor="let chip of vestitiEtaChips(content)" class="chip-wrapper chip-selected-{{chip.selected}}">
+                <p-chip styleClass="chip-eta chip-eta-{{chip.text}}" [label]="chip.text" (click)="chip.toggle()"></p-chip>
+            </span>
+        </span>
+    </div>
+</ng-template>

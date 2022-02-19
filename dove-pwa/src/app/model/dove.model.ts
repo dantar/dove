@@ -76,13 +76,39 @@ export class SchedaScatola extends SchedaOggetto {
         super();
         this.tipo = 'scatola';
     }
+    static fix(scheda: SchedaScatola) {
+      if (!scheda.contenuti) {
+          scheda.contenuti = [];
+      }
+    }
 }
 SchedaOggetto.component['scatola'] = SchedaScatolaViewComponent;
 SchedaOggetto.protos.push(new SchedaOggettoProto("Scatola", new SchedaScatola()));
 
 export class ContenutoScatola {
-
+    tipo: string;
+    static protos: {[id:string]: () => ContenutoScatola} = {};
 }
+
+export class ContenutoScatolaVestiti extends ContenutoScatola {
+    sesso: 'maschio'|'femmina'|'unisex';
+    stagione: 'estate'|'inverno' [];
+    eta: '0'|'3m'|'6m'|'9m'|'12m'|'18m'|'3a'|'4a'|'5a'|'6a+' [];
+    static options = {
+        sesso: ['maschio','femmina','unisex'],
+        stagione: ['estate','inverno'],
+        eta: ['0','3m','6m','9m','12m','18m','3a','4a','5a','6a+'],
+    };
+    constructor() {
+        super();
+        this.tipo = 'vestiti';
+        this.sesso = 'unisex';
+        this.stagione = [];
+        this.eta = [];
+    }
+}
+ContenutoScatola.protos['vestiti'] = () => new ContenutoScatolaVestiti();
+
 
 export class PostoBrowse {
 

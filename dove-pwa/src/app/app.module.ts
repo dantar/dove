@@ -18,6 +18,8 @@ import {DataViewModule} from 'primeng/dataview';
 import {TreeSelectModule} from 'primeng/treeselect';
 import {CardModule} from 'primeng/card';
 import {RatingModule} from 'primeng/rating';
+import {SplitButtonModule} from 'primeng/splitbutton';
+import {ChipModule} from 'primeng/chip';
 
 import { PostoViewComponent } from './components/posto-view/posto-view.component';
 import { PostoBrowseComponent } from './components/posto-browse/posto-browse.component';
@@ -73,6 +75,8 @@ import { OggettoThumbnailComponent } from './components/oggetto-thumbnail/oggett
     TreeSelectModule,
     CardModule,
     RatingModule,
+    SplitButtonModule,
+    ChipModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
