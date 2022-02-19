@@ -1,7 +1,7 @@
 <p-card>
     <ng-template pTemplate="header">
         <div class="button-icons">
-            <span class="button-icon" *ngIf="!moving" (click)="moving = true"><i class="pi pi-caret-right"></i></span>
+            <span class="button-icon" *ngIf="!moving" (click)="moving = true"><i class="pi pi-eject"></i></span>
             <span class="button-icon" *ngIf="!shooting" (click)="shooting = true"><i class="pi pi-camera"></i></span>
         </div>    
         <h1 class="oggetto oggetto-{{oggetto.scheda.tipo}}" (click)="browse()">{{oggetto.nome || oggetto.id}}</h1>

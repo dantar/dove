@@ -72,14 +72,31 @@ h1.oggetto-scatola::before {
     background: none;
 }
 
+.comments {
+    background-color: beige;
+}
+
+.posto {
+    padding-left: 2px;
+    padding-right: 5px;
+    text-decoration: underline 2px solid purple;
+}
+.posto::before {
+    content: 'P';
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 10px;
+    text-decoration: none;
+    color: purple;
+    background-color: pink;
+    border: 2px solid purple;
+}
+
 .breadcrumbs {
     display: flex;
     flex-direction: row;
     justify-content: left;
     flex-wrap: wrap;
-    .posto {
-        padding-left: 10px;
-    }
 }
 
 .posti-children{
@@ -87,9 +104,6 @@ h1.oggetto-scatola::before {
     flex-direction: row;
     justify-content: left;
     flex-wrap: wrap;
-    .posto {
-        padding-left: 10px;
-    }
 }
 
 .gallery .images {
