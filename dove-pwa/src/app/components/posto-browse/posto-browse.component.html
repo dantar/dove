@@ -1,11 +1,15 @@
 <div *ngIf="!browse" class="loading">Caricamento...</div>
 <div *ngIf="browse">
+    
     <div class="breadcrumbs">
-        <span app-posto-view *ngFor="let posto of browse.breadcrumbs" [posto]="posto"></span>
-    </div>
-    <h1>
-        <div app-posto-view [posto]="browse.posto"></div>
-    </h1>
+        <span *ngFor="let posto of browse.breadcrumbs">
+            <span app-posto-view [posto]="posto"></span>
+            <i class="pi pi-angle-right"></i>
+        </span>
+        <span class="head">
+            <div app-posto-view [posto]="browse.posto"></div>
+        </span>
+        </div>
     <div class="posti-children">
         <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>

@@ -1,6 +1,6 @@
 <div class="grid" class="mode-{{mode}}">
     <div class="grid col-12 box-contents">
-        <div class="col-12" *ngIf="scheda.contenuti.length === 0">Scatola vuota</div>
+        <div class="col-12" *ngIf="scheda.contenuti.length === 0">(scatola vuota)</div>
         <div class="col-12" *ngFor="let content of scheda.contenuti" [ngSwitch]="content.tipo">
             <div *ngSwitchCase="'vestiti'">
                 <ng-container *ngTemplateOutlet="vestititemplate;context:{content}"></ng-container>
