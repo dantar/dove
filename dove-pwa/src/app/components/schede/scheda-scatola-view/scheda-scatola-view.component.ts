@@ -47,6 +47,10 @@ export class SchedaScatolaViewComponent implements OnInit, SchedaViewInterface {
     return ChipsWrapper.wrap(ContenutoScatolaVestiti.options.eta, vestiti.eta as string[]);
   }
 
+  keyupEnter(event: any) {
+    if (event.target && event.target.blur) event.target.blur();
+  }
+
 }
 
 export class ChipsWrapper {
@@ -83,4 +87,5 @@ export class ChipsWrapper {
     this.values.splice(0, this.values.length, this.text);
     return this.text;
   }
+
 }

@@ -31,5 +31,9 @@ export class SchedaAccessorioViewComponent implements OnInit, SchedaViewInterfac
     this.scheda.accessorio = node.data;
   }
 
+  keyupEnter(event: any) {
+    if (event.target && event.target.blur) event.target.blur();
+  }
+
 }
 
