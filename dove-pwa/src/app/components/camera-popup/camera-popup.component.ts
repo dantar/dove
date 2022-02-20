@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
   selector: '[app-camera-popup]',
@@ -14,6 +15,7 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() exit = new EventEmitter<string>();
 
   stream: MediaStream;
+  deviceId: string;
   jpg: string;
   clicked: boolean;
   devices: MediaDeviceInfo[];
@@ -21,7 +23,14 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
   trimmer: VideoTrimmer;
   style: {[prop: string]: string};
 
-  constructor() { }
+  constructor(
+    private shared: SharedDataService,
+  ) { }
+
+  ngOnInit(): void {
+    this.style = {};
+    this.devices = [];
+  }
 
   ngOnDestroy(): void {
     if (this.stream) {
@@ -37,7 +46,12 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
       .then(devices => {
         this.devices = devices.filter(d => d.kind === 'videoinput');
         if (this.devices.length > 0) {
-          this.startCamera(this.devices[0]);
+          let match = this.devices.filter(d => d.deviceId === this.shared.settings.camera);
+          if (match.length > 0) {
+            this.startCamera(match[0]);
+          } else {
+            this.startCamera(this.devices[0]);
+          }
         }
       })
       ;
@@ -58,6 +72,8 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   startCamera(device: MediaDeviceInfo) {
+    this.shared.settings.camera = device.deviceId;
+    this.shared.updateSettings(this.shared.settings);
     this.removeVideo();
     this.videoelement = document.createElement('video');
     (this.videocontainer.nativeElement as HTMLDivElement).appendChild(this.videoelement);
@@ -77,10 +93,6 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.style = this.trimmer.style();
     this.trimmer.fixVideo(this.videoelement);
     console.log("style", this.style);
-  }
-
-  ngOnInit(): void {
-    this.style = {};
   }
 
   snapshot() {
@@ -105,8 +117,11 @@ export class CameraPopupComponent implements OnInit, AfterViewInit, OnDestroy {
     anchor.click();
   }
 
-  clickDevice(device: MediaDeviceInfo) {
-    this.startCamera(device);
+  toggleDevice() {
+    let index = this.devices.map(d => d.deviceId).indexOf(this.shared.settings.camera);
+    if (index >= 0) {
+      this.startCamera((index >= this.devices.length-1) ? this.devices[0] : this.devices[index + 1]);
+    }
   }
 
   clickNoCamera() {

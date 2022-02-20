@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.shared.loadUser();
+    this.shared.loadFromStorage();
     if (this.shared.user) {
       this.auth.getUser().subscribe({
         next: details => {

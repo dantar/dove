@@ -8,6 +8,7 @@ import { AuthRestService } from './auth-rest.service';
 export class SharedDataService {
 
   user: JwtUserData | null;
+  settings: UserSettings;
 
   constructor(
     private auth: AuthRestService,
@@ -19,9 +20,20 @@ export class SharedDataService {
     localStorage.setItem('dove-user', JSON.stringify(this.user));
   }
 
-  loadUser() {
+  loadFromStorage() {
     let saved = localStorage.getItem('dove-user');
-    this.user = JSON.parse(saved as string);
+    this.user = saved ? JSON.parse(saved as string) : null;
+    let settings = localStorage.getItem('dove-settings');
+    if (settings) {
+      this.settings = JSON.parse(settings as string);
+    } else {
+      this.updateSettings(new UserSettings());
+    }
+  }
+
+  updateSettings(arg0: UserSettings) {
+    this.settings = arg0;
+    localStorage.setItem('dove-settings', JSON.stringify(this.settings));
   }
 
   noUser() {
@@ -42,3 +54,8 @@ export class SharedDataService {
 
 }
 
+export class UserSettings {
+
+  camera: string;
+
+}
