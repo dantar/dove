@@ -1,6 +1,10 @@
-<div class="button-icons">
-    <span *ngIf="!edit" class="button-icon"><i class="pi pi-pencil" (click)="openEdit()"></i></span>
-    <span *ngIf="edit" class="button-icon"><i class="pi pi-times" (click)="cancelEdit()"></i></span>
-    <span *ngIf="edit" class="button-icon"><i class="pi pi-save" (click)="saveEdit()"></i></span>
+<div class="modal-{{edit && true || false}}">
+    <div class="{{edit && 'fullpage' || 'inlinepage'}} scheda-edit-{{edit && true || false}}">
+        <div class="button-icons">
+            <span *ngIf="!edit" class="button-icon"><i class="pi pi-pencil" (click)="openEdit()"></i></span>
+            <span *ngIf="edit" class="button-icon"><i class="pi pi-times" (click)="cancelEdit()"></i></span>
+            <span *ngIf="edit" class="button-icon"><i class="pi pi-save" (click)="saveEdit()"></i></span>
+        </div>
+        <ng-template appSchedaView></ng-template>
+    </div>
 </div>
-<ng-template appSchedaView></ng-template>

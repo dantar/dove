@@ -10,7 +10,7 @@
         <div class="col-4">
             <div *ngIf="gallery.mode != 'missing' && !saving">
                 <div app-oggetto-thumbnail (click)="browse()" [oggetto]="oggetto" *ngIf="gallery.mode === 'thumbnail'"></div>
-                <div class="gallery zoomed-{{gallery.zoomed}}" *ngIf="gallery.mode === 'full'">
+                <div class="gallery modal-{{gallery.zoomed}}" *ngIf="gallery.mode === 'full'">
                     <div class="button-icons">
                         <span class="button-icon" (click)="gallery.toggle()"><i class="pi pi-images"></i></span>
                         <span class="button-icon" *ngIf="gallery.selected().length > 0" (click)="deleteSelectedImages()"><i class="pi pi-trash"></i></span>
