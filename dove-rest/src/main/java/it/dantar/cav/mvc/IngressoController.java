@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -111,5 +113,13 @@ public class IngressoController {
 		}
 		return this.pictureService.deletePicture(uuid, code);
 	}
+
+	@PostMapping("/oggetto/{idOggetto}/drop/{prefix}")
+	@Transactional
+	public Oggetto dropOggetto(@PathVariable String idOggetto, @PathVariable String prefix) {
+		oggettoDao.dropOggetto(idOggetto, prefix);
+		return oggettoDao.findById(String.format("%s:%s", prefix, idOggetto)).orElseThrow(IllegalArgumentException::new);
+	}
+
 
 }
