@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Html5Qrcode } from "html5-qrcode"
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
   selector: '[app-qr-code-popup]',
@@ -20,9 +21,12 @@ export class QrCodePopupComponent implements OnInit, OnDestroy {
   @Output() qrcode = new EventEmitter<string>();
   @Output() cancel = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    private shared: SharedDataService,
+  ) { }
 
   ngOnInit(): void {
+    this.devices = [];
     this.noCamera = false;
     this.initCamera();
   }
@@ -36,8 +40,13 @@ export class QrCodePopupComponent implements OnInit, OnDestroy {
        */
       if (devices && devices.length) {
         this.devices = devices;
-        if (this.devices.length === 1) {
-          this.startCamera(this.devices[0]);
+        if (this.devices.length > 0) {
+          let match = this.devices.filter(d => d.id === this.shared.settings.camera);
+          if (match.length > 0) {
+            this.startCamera(match[0]);
+          } else {
+            this.startCamera(this.devices[0]);
+          }
         }
         // .. use this to start scanning.
       }
@@ -54,10 +63,15 @@ export class QrCodePopupComponent implements OnInit, OnDestroy {
   }
 
   clickNoCamera() {
-    if (this.scanner) {
-      this.stopCamera();
+    if (this.noCamera) {
+      this.noCamera = false;
+      this.initCamera();
+    } else {
+      if (this.scanner) {
+        this.stopCamera();
+      }
+      this.noCamera = true;
     }
-    this.noCamera = true;
   }
 
   clickCancel() {
@@ -69,6 +83,8 @@ export class QrCodePopupComponent implements OnInit, OnDestroy {
   }
 
   startCamera(device: CameraDevice) {
+    this.shared.settings.camera = device.id;
+    this.shared.updateSettings(this.shared.settings);
     this.device = device;
     if (this.scanner) {
       this.stopCamera();
@@ -99,9 +115,12 @@ export class QrCodePopupComponent implements OnInit, OnDestroy {
     });
   }
 
-  clickDevice(device: CameraDevice) {
+  toggleDevice() {
     this.noCamera = false;
-    this.startCamera(device);
+    let index = this.devices.map(d => d.id).indexOf(this.shared.settings.camera);
+    if (index >= 0) {
+      this.startCamera((index >= this.devices.length-1) ? this.devices[0] : this.devices[index + 1]);
+    }
   }
 
   stopCamera() {
