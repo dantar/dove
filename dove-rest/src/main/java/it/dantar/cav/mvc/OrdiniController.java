@@ -34,21 +34,32 @@ public class OrdiniController {
 	@Autowired
 	private ObjectMapper mapper; 
 
-	@GetMapping("/orders")
+	@GetMapping("/ordine/aperti")
 	public List<OrdineBrowseDto> browseOrders() {
-		List<Object[]> rows = ordineDao.findByUtente(AppUserDetails.loggedUser().getUtente().getId());
+		List<Object[]> rows = ordineDao.findByUtenteAndStato(AppUserDetails.loggedUser().getUtente().getId(), "nuovo");
 		return rows.stream()
 				.map(row -> OrdineBrowseDto.rowNew(row))
-				.map(ordine -> ordine.setOggetti(oggettoOrdineDao.findOggettiByOrdine(ordine.getOrdine().getId())
-						.stream()
-						.map(row -> new OggettoInOrdineDto(row))
-						.collect(Collectors.toList())
-						))
+				.map(ordine -> ordine.setOggetti(this.findOggettoInOrdineRows(ordine.getOrdine())))
 				.collect(Collectors.toList())
 				;
 	}
 
-	@PostMapping("/orders/{idOrdine}/{idOggetto}")
+	@GetMapping("/ordine/{idOrdine}")
+	public OrdineBrowseDto getOrdine(@PathVariable String idOrdine) {
+		Ordine ordine = ordineDao.findById(idOrdine).orElseThrow(IllegalArgumentException::new);
+		Cliente cliente = clienteDao.findById(ordine.getIdCliente()).orElseThrow(IllegalArgumentException::new);
+		return new OrdineBrowseDto(ordine, cliente, findOggettoInOrdineRows(ordine));
+	}
+
+	private List<OggettoInOrdineDto> findOggettoInOrdineRows(Ordine ordine) {
+		List<OggettoInOrdineDto> rows = oggettoOrdineDao.findOggettiByOrdine(ordine.getId())
+				.stream()
+				.map(row -> new OggettoInOrdineDto(row))
+				.collect(Collectors.toList());
+		return rows;
+	}
+
+	@PostMapping("/ordine/{idOrdine}/{idOggetto}")
 	public List<OggettoInOrdineDto> addOggettoToOrdine(@PathVariable String idOrdine, @PathVariable String idOggetto) {
 		OggettoOrdine oggettoInOrdine = new OggettoOrdine(idOggetto, idOrdine);
 		oggettoOrdineDao.save(oggettoInOrdine);
@@ -59,7 +70,7 @@ public class OrdiniController {
 				;
 	}
 
-	@PostMapping("/orders/new/{idCliente}")
+	@PostMapping("/ordine/new/{idCliente}")
 	public OrdineBrowseDto newOrder(@PathVariable String idCliente) {
 		Cliente cliente = clienteDao.findById(idCliente).orElseThrow(IllegalArgumentException::new);
 		Ordine ordine = new Ordine(UUID.randomUUID().toString(), idCliente, mapper.createObjectNode(), "nuovo");

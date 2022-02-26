@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Oggetto, SchedaOggetto, SchedaOggettoProto } from 'src/app/model/dove.model';
 import { environment } from 'src/environments/environment';

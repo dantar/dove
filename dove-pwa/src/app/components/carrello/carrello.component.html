@@ -1,0 +1,14 @@
+<div *ngIf="ordine">
+    <div>
+        {{ordine.ordine.id}} {{ordine.ordine.stato}}
+    </div>
+    <div>
+        {{ordine.cliente.id}} {{ordine.cliente.nome}}
+    </div>
+    <div *ngFor="let row of ordine.oggetti">
+        <div>
+            {{row.relazione.stato}}
+        </div>
+        <div app-oggetto-view [oggetto]="row.oggetto"></div>
+    </div>
+</div>

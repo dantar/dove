@@ -107,3 +107,38 @@ export class OggettoBrowse {
     oggetto: Oggetto;
 
 }
+
+export class Ordine {
+    id: string;
+    idCliente: string;
+    stato: string;
+}
+
+export class Cliente {
+    id: string;
+    nome: string;
+}
+
+export class OggettoOrdine {
+    id: string;
+    idOggetto: string;
+    idOrdine: string;
+    stato: string;
+}
+
+export class OggettoInOrdine {
+    oggetto: Oggetto;
+    relazione: OggettoOrdine;
+}
+
+export class OrdineBrowse {
+
+    ordine: Ordine;
+    cliente: Cliente;
+    oggetti: OggettoInOrdine[];
+
+    constructor() {
+        this.oggetti = [];
+    }
+
+}

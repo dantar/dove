@@ -44,6 +44,7 @@ import { SchedaAccessorioFilterComponent } from './components/schede/scheda-acce
 import { SchedaFilterDirective } from './directives/scheda-filter.directive';
 import { SchedaFilterComponent } from './components/scheda-filter/scheda-filter.component';
 import { SchedaScatolaFilterComponent } from './components/schede/scheda-scatola-filter/scheda-scatola-filter.component';
+import { CarrelloComponent } from './components/carrello/carrello.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { SchedaScatolaFilterComponent } from './components/schede/scheda-scatola
     SchedaFilterDirective,
     SchedaFilterComponent,
     SchedaScatolaFilterComponent,
+    CarrelloComponent,
   ],
   imports: [
     BrowserModule,

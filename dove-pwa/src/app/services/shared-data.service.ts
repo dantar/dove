@@ -31,8 +31,8 @@ export class SharedDataService {
     }
   }
 
-  updateSettings(arg0: UserSettings) {
-    this.settings = arg0;
+  updateSettings(settings: UserSettings) {
+    this.settings = settings;
     localStorage.setItem('dove-settings', JSON.stringify(this.settings));
   }
 

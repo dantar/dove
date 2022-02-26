@@ -1,5 +1,6 @@
 package it.dantar.cav.mvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -33,7 +34,12 @@ public class SearchController {
 	
 	@GetMapping("/oggetto/list")
 	public List<Oggetto> browseAll() {
-		return oggettoDao.findAll();
+		List<Oggetto> result = new ArrayList<>();
+		List<Oggetto> all = oggettoDao.findAll();
+		for(int i = 0; i<1; i++) {
+			result.addAll(all);
+		}
+		return result;
 	}
 	
 }

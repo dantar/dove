@@ -31,7 +31,10 @@ export class AppComponent implements OnInit {
       this.router.navigate(['userinfo']);
     }));
     this.menu.buttons.push(new MenuButton('A', () => {
-      this.router.navigate(['list', 'accessorio']);
+      this.router.navigate(['ricerca']);
+    }));
+    this.menu.buttons.push(new MenuButton('C', () => {
+      this.router.navigate(['carrello']);
     }));
   }
   
