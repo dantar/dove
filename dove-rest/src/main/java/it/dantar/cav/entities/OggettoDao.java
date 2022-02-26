@@ -13,5 +13,5 @@ public interface OggettoDao extends JpaRepository<Oggetto, String> {
 	@Modifying
 	@Query("update Oggetto o set o.id = :prefix || ':' || o.id where o.id = :idOggetto")
 	void dropOggetto(String idOggetto, String prefix);
-	
+
 }

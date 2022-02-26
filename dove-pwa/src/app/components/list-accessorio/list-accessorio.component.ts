@@ -24,7 +24,7 @@ export class ListAccessorioComponent implements OnInit {
   ngOnInit(): void {
     this.lista = [];
     this.loading = true;
-    this.http.get<Oggetto[]>(`${environment.restUrl}/oggetto/accessorio/list`).subscribe({
+    this.http.get<Oggetto[]>(`${environment.restUrl}/oggetto/list`).subscribe({
       next: lista => {
         this.loading = false;
         this.lista = lista;

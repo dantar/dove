@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 
 @NamedNativeQuery(
 		name = "Oggetto.allByTipo",
-		query = "select * from oggetto o where o.scheda->>'tipo' = :tipo",
+		query = "select * from oggetto o where o.scheda->>'tipo' = :tipo or true",
 		resultClass = Oggetto.class
 )
 

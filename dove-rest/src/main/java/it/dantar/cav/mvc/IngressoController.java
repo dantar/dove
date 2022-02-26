@@ -90,7 +90,7 @@ public class IngressoController {
 			Oggetto oggetto = found.get();
 			this.pictureService.caricaImmagini(oggetto);
 			String pictureId = this.pictureService.savePicture(uuid, picture);
-			if (oggetto.getImmagini().isEmpty()) {
+			if (oggetto.getImmagini().isEmpty() || oggetto.getThumbnail() == null) {
 				oggetto.setThumbnail(pictureId);
 				oggettoDao.save(oggetto);
 			}
@@ -105,10 +105,12 @@ public class IngressoController {
 			Oggetto oggetto = found.get();
 			if (code.equals(oggetto.getThumbnail())) {
 				this.pictureService.caricaImmagini(oggetto);
-				if (!oggetto.getImmagini().isEmpty()) {
+				if (oggetto.getImmagini().isEmpty()) {
+					oggetto.setThumbnail(null);
+				} else {
 					oggetto.setThumbnail(oggetto.getImmagini().get(0));
-					oggettoDao.save(oggetto);
 				}
+				oggettoDao.save(oggetto);
 			}
 		}
 		return this.pictureService.deletePicture(uuid, code);
