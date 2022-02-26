@@ -1,5 +1,8 @@
+import { SchedaAccessorioFilterComponent } from "../components/schede/scheda-accessorio-filter/scheda-accessorio-filter.component";
 import { SchedaAccessorioViewComponent } from "../components/schede/scheda-accessorio-view/scheda-accessorio-view.component";
-import { FilterSchedaOggetto, SchedaOggetto, SchedaOggettoProto, TreeNodeData } from "./dove.model";
+import { SchedaOggetto, SchedaOggettoProto, TreeNodeData } from "./dove.model";
+
+const KEY = 'accessorio';
 
 export let accessorioTreeNode = new TreeNodeData(
     [
@@ -21,20 +24,13 @@ export class SchedaAccessorio extends SchedaOggetto {
     note: string;
     constructor() {
         super();
-        this.tipo = 'accessorio';
+        this.tipo = KEY;
+    }
+    static register() {
+        SchedaOggetto.filter[KEY] = SchedaAccessorioFilterComponent;
+        SchedaOggetto.view[KEY] = SchedaAccessorioViewComponent;
+        SchedaOggetto.protos.push(new SchedaOggettoProto("Accessorio", new SchedaAccessorio()));
+        SchedaOggetto.nameResolver[KEY] = (oggetto) => accessorioTreeNode.findTreeNode((oggetto as SchedaAccessorio).accessorio).label || 'Accessorio';
     }
 }
-SchedaOggetto.component['accessorio'] = SchedaAccessorioViewComponent;
-SchedaOggetto.protos.push(new SchedaOggettoProto("Accessorio", new SchedaAccessorio()));
-SchedaOggetto.nameResolver['accessorio'] = (oggetto) => accessorioTreeNode.findTreeNode((oggetto as SchedaAccessorio).accessorio).label || 'Accessorio';
-
-export class FilterSchedaAccessorio extends FilterSchedaOggetto {
-
-    static KEY = 'accessorio';
-
-    constructor() {
-        super(FilterSchedaAccessorio.KEY);
-        FilterSchedaOggetto.filters[FilterSchedaAccessorio.KEY] = this;
-    }
-
-}
+SchedaOggetto.registers.push(SchedaAccessorio.register)

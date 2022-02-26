@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { accessorioTreeNode, SchedaAccessorio } from 'src/app/model/accessorio.model';
 import { Oggetto } from 'src/app/model/dove.model';
+import { SchedaFilterInterface } from '../../interfaces/scheda-filter-interface';
 
 @Component({
   selector: '[app-scheda-accessorio-filter]',
   templateUrl: './scheda-accessorio-filter.component.html',
   styleUrls: ['./scheda-accessorio-filter.component.scss']
 })
-export class SchedaAccessorioFilterComponent implements OnInit {
+export class SchedaAccessorioFilterComponent implements OnInit, SchedaFilterInterface {
 
   tipoTree: TreeNode[];
   tipoSelected: TreeNode | null;

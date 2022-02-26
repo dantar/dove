@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SchedaOggetto } from './model/dove.model';
 import { AuthRestService } from './services/auth-rest.service';
 import { MenuButton, MenuButtonsService } from './services/menu-buttons.service';
 import { SharedDataService } from './services/shared-data.service';
@@ -17,6 +18,9 @@ export class AppComponent implements OnInit {
     public auth: AuthRestService,
     private router: Router,
   ) {
+
+    SchedaOggetto.registerall();
+
     this.menu.buttons.push(new MenuButton('Q', () => {
       this.router.navigate(['broker']);
     }));

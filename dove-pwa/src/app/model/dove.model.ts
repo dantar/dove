@@ -42,13 +42,18 @@ export class Oggetto {
 }
 
 export class SchedaOggetto {
-    static component: {[id:string]: Type<any>} = {};
+    static view: {[id:string]: Type<any>} = {};
+    static filter: {[id:string]: Type<any>} = {};
     static protos: SchedaOggettoProto[] = [];
+    static registers: (()=>void)[] = [];
     tipo: string;
     static nameResolver: {[id: string]: (oggetto:SchedaOggetto) => string} = {};
     static nomeOf(oggetto: Oggetto): string {
       if (oggetto.nome) return oggetto.nome;
       return this.nameResolver[oggetto.scheda.tipo](oggetto.scheda);
+    }
+    static registerall() {
+        SchedaOggetto.registers.forEach(r => r());
     }
 }
 export class SchedaOggettoProto {
@@ -58,22 +63,6 @@ export class SchedaOggettoProto {
         this.nome = nome;
         this.proto = proto;
     }
-}
-
-export class FilterSchedaOggetto {
-
-    static filters: {[id:string]: FilterSchedaOggetto} = {};
-    static component: {[id:string]: Type<any>} = {};
-    tipo: string;
-
-    constructor(tipo: string) {
-        this.tipo = tipo;
-    }
-
-    filter(scheda: SchedaOggetto): boolean {
-        return scheda.tipo == this.tipo;
-    }
-
 }
 
 export class TreeNodeData {
@@ -117,7 +106,7 @@ export class SchedaScatola extends SchedaOggetto {
       }
     }
 }
-SchedaOggetto.component['scatola'] = SchedaScatolaViewComponent;
+SchedaOggetto.view['scatola'] = SchedaScatolaViewComponent;
 SchedaOggetto.protos.push(new SchedaOggettoProto("Scatola", new SchedaScatola()));
 SchedaOggetto.nameResolver['scatola'] = (oggetto) => `Scatola ${(oggetto as SchedaScatola).contenuti.length} cose`;
 

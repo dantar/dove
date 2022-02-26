@@ -27,7 +27,7 @@ export class SchedaViewComponent implements OnInit {
   loadComponent(data: SchedaOggetto, editable: boolean) {
     const viewContainerRef = this.appSchedaView.viewContainerRef;
     viewContainerRef.clear();
-    const componentRef = viewContainerRef.createComponent<SchedaViewInterface>(SchedaOggetto.component[data.tipo]);
+    const componentRef = viewContainerRef.createComponent<SchedaViewInterface>(SchedaOggetto.view[data.tipo]);
     componentRef.instance.scheda = data;
     componentRef.instance.editable = editable;
     componentRef.instance.mode = editable ? 'full' : this.mode;

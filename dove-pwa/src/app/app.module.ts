@@ -41,6 +41,8 @@ import { ListAccessorioComponent } from './components/list-accessorio/list-acces
 import { ListOggettoComponent } from './components/list-oggetto/list-oggetto.component';
 import { OggettoThumbnailComponent } from './components/oggetto-thumbnail/oggetto-thumbnail.component';
 import { SchedaAccessorioFilterComponent } from './components/schede/scheda-accessorio-filter/scheda-accessorio-filter.component';
+import { SchedaFilterDirective } from './directives/scheda-filter.directive';
+import { SchedaFilterComponent } from './components/scheda-filter/scheda-filter.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { SchedaAccessorioFilterComponent } from './components/schede/scheda-acce
     ListOggettoComponent,
     OggettoThumbnailComponent,
     SchedaAccessorioFilterComponent,
+    SchedaFilterDirective,
+    SchedaFilterComponent,
   ],
   imports: [
     BrowserModule,
