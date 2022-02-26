@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ContenutoScatola, ContenutoScatolaVestiti, SchedaAccessorio, SchedaOggetto, SchedaScatola } from 'src/app/model/dove.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { ContenutoScatola, ContenutoScatolaVestiti, SchedaScatola } from 'src/app/model/dove.model';
 import { SchedaViewInterface } from '../../interfaces/scheda-view-interface';
 
 @Component({

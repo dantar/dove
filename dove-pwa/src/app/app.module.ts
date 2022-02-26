@@ -40,6 +40,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { ListAccessorioComponent } from './components/list-accessorio/list-accessorio.component';
 import { ListOggettoComponent } from './components/list-oggetto/list-oggetto.component';
 import { OggettoThumbnailComponent } from './components/oggetto-thumbnail/oggetto-thumbnail.component';
+import { SchedaAccessorioFilterComponent } from './components/schede/scheda-accessorio-filter/scheda-accessorio-filter.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { OggettoThumbnailComponent } from './components/oggetto-thumbnail/oggett
     ListAccessorioComponent,
     ListOggettoComponent,
     OggettoThumbnailComponent,
+    SchedaAccessorioFilterComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,7 @@
-<p-dataView [value]="lista">
+<p-dataView [value]="shown()">
     <ng-template pTemplate="header">
+        {{shown().length}} / {{lista.length}}
+        <span app-scheda-accessorio-filter #accessoriofilter></span>
         <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
     </ng-template>
     <ng-template let-oggetto pTemplate="listItem">

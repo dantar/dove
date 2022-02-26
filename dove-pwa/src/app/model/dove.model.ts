@@ -60,6 +60,22 @@ export class SchedaOggettoProto {
     }
 }
 
+export class FilterSchedaOggetto {
+
+    static filters: {[id:string]: FilterSchedaOggetto} = {};
+    static component: {[id:string]: Type<any>} = {};
+    tipo: string;
+
+    constructor(tipo: string) {
+        this.tipo = tipo;
+    }
+
+    filter(scheda: SchedaOggetto): boolean {
+        return scheda.tipo == this.tipo;
+    }
+
+}
+
 export class TreeNodeData {
 
     tipoTree: TreeNode[];
@@ -85,33 +101,6 @@ export class TreeNodeData {
     }
 
 }
-
-export let accessorioTreeNode = new TreeNodeData(
-    [
-        {data: 'passeggino', label:'Passeggino', children: [
-          {data: 'passeggino-doppio-fila', label: 'Passeggino doppio in fila'},
-          {data: 'passeggino-doppio-affiancato', label: 'Passeggino doppio affiancato'},
-        ]},
-        {data: 'seggiolone', label: 'Seggiolone', children: [
-          {data: 'seggiolone-piccoli', label: 'Seggiolone bimbi piccoli'},
-          {data: 'seggiolone-grandi', label: 'Seggiolone bimbi grandi'},
-        ]},
-    ]    
-);
-
-export class SchedaAccessorio extends SchedaOggetto {
-    accessorio: string;
-    condizioni: number;
-    descrizione: string;
-    note: string;
-    constructor() {
-        super();
-        this.tipo = 'accessorio';
-    }
-}
-SchedaOggetto.component['accessorio'] = SchedaAccessorioViewComponent;
-SchedaOggetto.protos.push(new SchedaOggettoProto("Accessorio", new SchedaAccessorio()));
-SchedaOggetto.nameResolver['accessorio'] = (oggetto) => accessorioTreeNode.findTreeNode((oggetto as SchedaAccessorio).accessorio).label || 'Accessorio';
 
 export class SchedaScatola extends SchedaOggetto {
     scatola: string;

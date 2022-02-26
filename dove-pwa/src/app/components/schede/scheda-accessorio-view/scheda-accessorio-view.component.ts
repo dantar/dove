@@ -1,8 +1,7 @@
-import { emitDistinctChangesOnlyDefaultValue } from '@angular/compiler';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SelectItem, TreeNode } from 'primeng/api';
-import { accessorioTreeNode, SchedaAccessorio, SchedaOggetto, TreeNodeData } from 'src/app/model/dove.model';
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { TreeNode } from 'primeng/api';
 import { SchedaViewInterface } from '../../interfaces/scheda-view-interface';
+import { accessorioTreeNode, SchedaAccessorio } from 'src/app/model/accessorio.model';
 
 @Component({
   selector: '[app-scheda-accessorio-view]',
