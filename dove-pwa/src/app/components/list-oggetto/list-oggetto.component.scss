@@ -2,7 +2,15 @@
     width: 100%;
 }
 
-.filters {
+.filter-lines {
+    display: flex;
+    flex-direction: column;
+}
+.filter-line {
     display: flex;
     flex-direction: row;
+    .number-of-items {
+        font-size: 1.5em;
+        margin-right: 10px;
+    }
 }

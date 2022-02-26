@@ -1,19 +1,24 @@
-<p-dataView [value]="shown()">
-    <ng-template pTemplate="header">
-        <span class="filters">
-            <span>{{shown().length}} / {{lista.length}}</span>
-            <span app-scheda-filter #schedafilter [lista]="lista || []"></span>
-            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-        </span>
-    </ng-template>
-    <ng-template let-oggetto pTemplate="listItem">
-        <div class="grid col-12">
-            <div app-oggetto-view [oggetto]="oggetto" mode="list" (move)="move.emit(oggetto)"></div>
-        </div>
-    </ng-template>
-    <ng-template let-oggetto pTemplate="gridItem">
-        <div class="grid col-4 sm:col-6 p-1">
-            <div app-oggetto-thumbnail [oggetto]="oggetto" (click)="clickOggetto(oggetto)"></div>
-        </div>
-    </ng-template>
-</p-dataView>
+<ng-container *ngTemplateOutlet="itemstable;context:{items:shown()}"></ng-container>
+<ng-template #itemstable let-items="items">
+    <p-dataView [value]="items" [paginator]="items.length > 50" [rows]="50">
+        <ng-template pTemplate="header">
+            <span class="filter-lines">
+                <div class="filter-line">
+                    <span class="number-of-items">mostrati {{items.length}} / {{lista.length}}</span>
+                    <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                </div>
+                <span app-scheda-filter #schedafilter [lista]="lista || []"></span>
+            </span>
+        </ng-template>
+        <ng-template let-oggetto pTemplate="listItem">
+            <div class="grid col-12">
+                <div app-oggetto-view [oggetto]="oggetto" mode="list" (move)="move.emit(oggetto)"></div>
+            </div>
+        </ng-template>
+        <ng-template let-oggetto pTemplate="gridItem">
+            <div class="grid col-4 sm:col-6 p-1">
+                <div app-oggetto-thumbnail [oggetto]="oggetto" (click)="clickOggetto(oggetto)"></div>
+            </div>
+        </ng-template>
+    </p-dataView>
+</ng-template>
