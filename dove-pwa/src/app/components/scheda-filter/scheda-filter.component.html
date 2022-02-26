@@ -1,2 +1,2 @@
-<div *ngFor="let option of tipoOptions()" (click)="selectTipo(option.tipo)">{{option.label}}</div>
+<p-chip styleClass="chip-filter-{{option.tipo == tipo}}" [label]="option.label" *ngFor="let option of tipoOptions()" (click)="selectTipo(option.tipo)"></p-chip>
 <ng-template appSchedaFilter></ng-template>

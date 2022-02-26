@@ -1,8 +1,10 @@
 <p-dataView [value]="shown()">
     <ng-template pTemplate="header">
-        {{shown().length}} / {{lista.length}}
-        <span app-scheda-filter #schedafilter [lista]="lista || []"></span>
-        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        <span class="filters">
+            <span>{{shown().length}} / {{lista.length}}</span>
+            <span app-scheda-filter #schedafilter [lista]="lista || []"></span>
+            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </span>
     </ng-template>
     <ng-template let-oggetto pTemplate="listItem">
         <div class="grid col-12">
