@@ -14,7 +14,7 @@ export class ListOggettoComponent implements OnInit {
   @Input() lista: Oggetto[];
   @Output() move = new EventEmitter<Oggetto>();
   loading: boolean;
-  @ViewChild('accessoriofilter') accessoriofilter: SchedaAccessorioFilterComponent;
+  @ViewChild('schedafilter') schedafilter: SchedaAccessorioFilterComponent;
 
   constructor(
     private router: Router
@@ -32,7 +32,7 @@ export class ListOggettoComponent implements OnInit {
   }
 
   shown(): Oggetto[] {
-    return this.accessoriofilter ? this.accessoriofilter.filter(this.lista) : this.lista;
+    return this.schedafilter ? this.schedafilter.filter(this.lista) : this.lista;
   }
 
 }

@@ -43,6 +43,7 @@ import { OggettoThumbnailComponent } from './components/oggetto-thumbnail/oggett
 import { SchedaAccessorioFilterComponent } from './components/schede/scheda-accessorio-filter/scheda-accessorio-filter.component';
 import { SchedaFilterDirective } from './directives/scheda-filter.directive';
 import { SchedaFilterComponent } from './components/scheda-filter/scheda-filter.component';
+import { SchedaScatolaFilterComponent } from './components/schede/scheda-scatola-filter/scheda-scatola-filter.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { SchedaFilterComponent } from './components/scheda-filter/scheda-filter.
     SchedaAccessorioFilterComponent,
     SchedaFilterDirective,
     SchedaFilterComponent,
+    SchedaScatolaFilterComponent,
   ],
   imports: [
     BrowserModule,

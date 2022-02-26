@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { SchedaViewDirective } from 'src/app/directives/scheda-view.directive';
-import { SchedaOggetto, SchedaScatola } from 'src/app/model/dove.model';
+import { SchedaOggetto } from 'src/app/model/dove.model';
+import { SchedaScatola } from 'src/app/model/scatola.model';
 import { SchedaViewInterface } from '../interfaces/scheda-view-interface';
 
 @Component({

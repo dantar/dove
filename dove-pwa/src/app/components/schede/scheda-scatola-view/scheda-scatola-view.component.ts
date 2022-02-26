@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ContenutoScatola, ContenutoScatolaVestiti, SchedaScatola } from 'src/app/model/dove.model';
+import { ContenutoScatola, ContenutoScatolaVestiti, SchedaScatola } from 'src/app/model/scatola.model';
 import { SchedaViewInterface } from '../../interfaces/scheda-view-interface';
 
 @Component({
