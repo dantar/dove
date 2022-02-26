@@ -23,11 +23,13 @@ export class SchedaFilterComponent implements OnInit, SchedaFilterInterface {
   }
 
   loadComponent(tipo: string) {
-    const viewContainerRef = this.appSchedaFilter.viewContainerRef;
-    viewContainerRef.clear();
-    this.componentRef = viewContainerRef.createComponent<SchedaFilterInterface>(SchedaOggetto.filter[tipo]);
-    this.instance = this.componentRef.instance;
-    this.instance && this.instance.ngOnInit();
+    if (tipo) {
+      const viewContainerRef = this.appSchedaFilter.viewContainerRef;
+      viewContainerRef.clear();
+      this.componentRef = viewContainerRef.createComponent<SchedaFilterInterface>(SchedaOggetto.filter[tipo]);
+      this.instance = this.componentRef.instance;
+      this.instance && this.instance.ngOnInit();
+    }
   }
 
   flushComponent() {
@@ -36,6 +38,9 @@ export class SchedaFilterComponent implements OnInit, SchedaFilterInterface {
   }
 
   filter(lista: Oggetto[]): Oggetto[] {
+    if (this.tipo === '') {
+      return lista.filter(o => !o.scheda);
+    }
     return this.instance ? this.instance.filter(lista) : lista;
   };
 
@@ -50,8 +55,8 @@ export class SchedaFilterComponent implements OnInit, SchedaFilterInterface {
   }
 
   tipoOptions(): TipoOption[] {
-    return [...new Set(this.lista.map(o => o.scheda ? o.scheda.tipo : 'null'))]
-    .map(tipo => new TipoOption(tipo, SchedaOggetto.protos[tipo].nome));
+    return [...new Set(this.lista.map(o => o.scheda ? o.scheda.tipo : ''))]
+    .map(tipo => new TipoOption(tipo, SchedaOggetto.protos[tipo] ? SchedaOggetto.protos[tipo].nome : 'Senza tipo'));
   };
 
 }

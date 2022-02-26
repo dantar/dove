@@ -45,6 +45,10 @@ export class OggettoViewComponent implements OnInit {
 
   newSchedaAs(proto: SchedaOggettoProto) {
     this.oggetto.scheda = JSON.parse(JSON.stringify(proto.proto));
+    this.saveAndReload().subscribe(oggetto => {
+      this.saving = false;
+      this.oggetto.scheda = oggetto.scheda;
+    });
   }
 
   allSchedaProto(): SchedaOggettoProto[] {

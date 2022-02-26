@@ -12,6 +12,7 @@ export class SchedaScatola extends SchedaOggetto {
     constructor() {
         super();
         this.tipo = KEY;
+        this.contenuti = [];
     }
     static fix(scheda: SchedaScatola) {
       if (!scheda.contenuti) {

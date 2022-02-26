@@ -4,12 +4,12 @@
             <span class="button-icon" *ngIf="!moving" (click)="moving = true"><i class="pi pi-eject"></i></span>
             <span class="button-icon" *ngIf="!shooting" (click)="shooting = true"><i class="pi pi-camera"></i></span>
         </div>    
-        <h1 class="oggetto oggetto-{{oggetto.scheda.tipo}}" (click)="browse()">{{nomeOggetto()}}</h1>
+        <h1 *ngIf="oggetto.scheda" class="oggetto oggetto-{{oggetto.scheda.tipo}}" (click)="browse()">{{nomeOggetto()}}</h1>
     </ng-template>
     <div class="grid">
         <div class="col-4">
-            <div *ngIf="gallery.mode != 'missing' && !saving">
-                <div app-oggetto-thumbnail (click)="browse()" [oggetto]="oggetto" *ngIf="gallery.mode === 'thumbnail'"></div>
+            <div *ngIf="!saving">
+                <div app-oggetto-thumbnail (click)="browse()" [oggetto]="oggetto" *ngIf="gallery.mode != 'full'"></div>
                 <div class="gallery modal-{{gallery.zoomed}}" *ngIf="gallery.mode === 'full'">
                     <div class="button-icons">
                         <span class="button-icon" (click)="gallery.toggle()"><i class="pi pi-images"></i></span>
@@ -29,7 +29,8 @@
                 <div *ngIf="!saving" app-scheda-view [scheda]="oggetto.scheda" (save)="saveScheda($event)"></div>
             </div>
             <div *ngIf="!oggetto.scheda">
-                <div *ngFor="let proto of allSchedaProto()" (click)="newSchedaAs(proto)">{{proto.nome}}</div>
+                <div>Definisci un tipo scheda per questo oggetto</div>
+                <p-button *ngFor="let proto of allSchedaProto()" [label]="proto.nome" (click)="newSchedaAs(proto)" ></p-button>
             </div>
         </div>        
     </div>
