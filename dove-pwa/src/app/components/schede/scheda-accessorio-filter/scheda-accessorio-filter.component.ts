@@ -22,8 +22,8 @@ export class SchedaAccessorioFilterComponent implements OnInit, SchedaFilterInte
   }
 
   filter(lista: Oggetto[]): Oggetto[] {
-    return lista.filter(a => !this.tipoSelected || 
-      (a.scheda.tipo === 'accessorio' && (a.scheda as SchedaAccessorio).accessorio === this.tipoSelected.data) );
+    return lista.filter(a => a.scheda.tipo === 'accessorio' && (!this.tipoSelected || 
+      (a.scheda as SchedaAccessorio).accessorio === this.tipoSelected.data) );
   }
 
 }

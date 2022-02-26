@@ -29,7 +29,7 @@ export class SchedaAccessorio extends SchedaOggetto {
     static register() {
         SchedaOggetto.filter[KEY] = SchedaAccessorioFilterComponent;
         SchedaOggetto.view[KEY] = SchedaAccessorioViewComponent;
-        SchedaOggetto.protos.push(new SchedaOggettoProto("Accessorio", new SchedaAccessorio()));
+        SchedaOggetto.protos[KEY] = new SchedaOggettoProto("Accessorio", new SchedaAccessorio());
         SchedaOggetto.nameResolver[KEY] = (oggetto) => accessorioTreeNode.findTreeNode((oggetto as SchedaAccessorio).accessorio).label || 'Accessorio';
     }
 }

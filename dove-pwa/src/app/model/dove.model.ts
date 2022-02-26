@@ -44,7 +44,7 @@ export class Oggetto {
 export class SchedaOggetto {
     static view: {[id:string]: Type<any>} = {};
     static filter: {[id:string]: Type<any>} = {};
-    static protos: SchedaOggettoProto[] = [];
+    static protos: {[id:string]: SchedaOggettoProto} = {};
     static registers: (()=>void)[] = [];
     tipo: string;
     static nameResolver: {[id: string]: (oggetto:SchedaOggetto) => string} = {};

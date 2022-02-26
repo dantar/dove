@@ -48,7 +48,7 @@ export class OggettoViewComponent implements OnInit {
   }
 
   allSchedaProto(): SchedaOggettoProto[] {
-    return SchedaOggetto.protos;
+    return Object.values(SchedaOggetto.protos);
   }
 
   moveScheda(code: string) {

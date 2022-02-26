@@ -21,7 +21,7 @@ export class SchedaScatola extends SchedaOggetto {
     static register() {
         SchedaOggetto.filter[KEY] = SchedaScatolaFilterComponent;
         SchedaOggetto.view[KEY] = SchedaScatolaViewComponent;
-        SchedaOggetto.protos.push(new SchedaOggettoProto("Scatola", new SchedaScatola()));
+        SchedaOggetto.protos[KEY] = new SchedaOggettoProto("Scatola", new SchedaScatola());
         SchedaOggetto.nameResolver[KEY] = (oggetto) => `Scatola ${(oggetto as SchedaScatola).contenuti.length} cose`;
     }
 }
