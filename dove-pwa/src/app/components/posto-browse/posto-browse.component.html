@@ -8,6 +8,7 @@
         <span class="button-icon"><i class="pi pi-plus" (click)="branching = true"></i></span>
     </div>
     <div class="breadcrumbs">
+        <span>Luogo corrente:</span>
         <span *ngFor="let posto of browse.breadcrumbs">
             <span app-posto-view [posto]="posto"></span>
             <i class="pi pi-angle-right"></i>
@@ -20,6 +21,7 @@
         </span>
     </div>
     <div class="posti-children">
+        <span>Altri posti:</span>
         <div *ngFor="let posto of browse.posti" app-posto-view [posto]="posto"></div>
     </div>
     <div>
