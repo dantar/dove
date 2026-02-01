@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,7 @@ import it.dantar.cav.entities.Oggetto;
 import it.dantar.cav.entities.OggettoDao;
 import it.dantar.cav.entities.Posto;
 import it.dantar.cav.entities.PostoDao;
+import jakarta.transaction.Transactional;
 
 @RestController
 public class IngressoController {

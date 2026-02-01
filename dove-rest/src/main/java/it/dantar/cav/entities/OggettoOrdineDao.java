@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface OggettoOrdineDao extends JpaRepository<OggettoOrdine, String> {
+public interface OggettoOrdineDao extends JpaRepository<OggettoOrdine, Long> {
 
 	@Query("select o, oo from OggettoOrdine oo, Oggetto o "
 			+ "where oo.idOggetto = o.id and oo.idOrdine = :idOrdine ")

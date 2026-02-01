@@ -49,5 +49,15 @@ public class AppUserDetails extends User {
 	public boolean hasAuthority(String authority) {
 		return this.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(authority));
 	}
+
+	public boolean isMfaEnalbed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public String getMfaSecret() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
