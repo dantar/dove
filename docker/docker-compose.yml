@@ -1,0 +1,71 @@
+services:
+
+  frontend:
+    build:
+      context: ./dove-pwa
+      dockerfile: ./Dockerfile
+    ports:
+      - 8180:80
+    environment:
+      - APP_REST_URL=/rest
+    volumes:
+      - frontend-logs:/var/log/nginx/
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ../dove-rest/
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      DEPS_DB_URL: database:5432
+      DEPS_DB_DBNAME: dove
+      DEPS_DB_PASSWORD: dove
+      DEPS_DB_USERNAME: dove
+    volumes:
+      - /opt/dove/pictures:/opt/dove/pictures
+    depends_on:
+      database:
+        condition: service_healthy
+      flyway:
+        condition: service_completed_successfully
+
+  database:
+    build:
+      context: ../database/
+      dockerfile: ./Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      LANG: it_IT.utf8
+      POSTGRES_DB: dove
+      POSTGRES_USER: dove
+      POSTGRES_PASSWORD: dove
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=it_IT.utf8"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dove"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_volume:/var/lib/postgresql
+      - ../database/init:/docker-entrypoint-initdb.d:ro
+
+  flyway:
+    image: flyway/flyway:11
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./flyway/sql:/flyway/sql:ro
+    command: >
+      -url=jdbc:postgresql://database:5432/dove
+      -user=dove
+      -password=dove
+      -baselineOnMigrate=true
+      migrate
+
+volumes:
+  postgres_volume:
+  frontend-logs:

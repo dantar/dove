@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PicturesService {
 
-	@Value("${pictures.root}")
+	@Value("${app.pictures.dir}")
 	private String root;
 	File rootDir;
 	

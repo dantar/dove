@@ -189,23 +189,4 @@
 
 	</build>
 
-	<profiles>
-		<profile>
-			<id>boot</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<spring.profiles.active>db-local,pictures-local</spring.profiles.active>
-			</properties>
-		</profile>
-		<profile>
-			<id>production</id>
-			<properties>
-				<spring.profiles.active>db-local,pictures-prod</spring.profiles.active>
-			</properties>
-		</profile>
-	</profiles>
-
-
 </project>

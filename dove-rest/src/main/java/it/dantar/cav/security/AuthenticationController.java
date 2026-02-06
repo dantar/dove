@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.dantar.cav.security.jwt.JwtTokenService;
 import it.dantar.cav.security.jwt.JwtUser;
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @CrossOrigin
+@Slf4j
 public class AuthenticationController {
 	
 	@Autowired
@@ -36,6 +39,12 @@ public class AuthenticationController {
 	public static class LoginDataForm {
 		String username;
 		String password;
+	}
+	
+	@PostConstruct
+	private void postConstruct() {
+		AppUserDetails admin = this.userDetailsService.loadUserByUsername("admin");
+		log.info("Utente {} esiste", admin.getUsername());
 	}
 	
 	@PostMapping(value = "/authenticate")
