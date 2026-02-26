@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
@@ -18,12 +17,12 @@ public class AppUserDetails extends User {
 	
 	public AppUserDetails() {
 		// spring user
-		super("", "", new ArrayList<SimpleGrantedAuthority>());
+		super("", "", new ArrayList<>());
 	}
 	
 	public AppUserDetails(String username, String password) {
 		// spring user
-		super(username, password, new ArrayList<SimpleGrantedAuthority>());
+		super(username, password, new ArrayList<>());
 	}
 
 	public AppUserDetails(String username, String password,

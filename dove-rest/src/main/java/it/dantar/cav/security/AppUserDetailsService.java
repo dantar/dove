@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,12 @@ public class AppUserDetailsService implements UserDetailsService {
 		// authentication: should have username and encoded password
 		// authorization: should have appropriate grants
 		Utente utenti = utenteDao.findByUsername(username).get();
+		ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities.add(new SimpleGrantedAuthority("test"));
 		return new AppUserDetails(
 				utenti.getUsername(), hashPassword(utenti),
 				utenti.getAbilitato(), utenti.getAccountValido(), utenti.getCredenzialiValide(), utenti.getAccountAttivo(), 
-				new ArrayList<GrantedAuthority>()
+				authorities
 				)
 				.setUtente(utenti);
 	}

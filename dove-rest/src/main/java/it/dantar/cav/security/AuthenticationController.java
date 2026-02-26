@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -53,10 +54,12 @@ public class AuthenticationController {
 		if (user != null) {
 			String salt = user.getUtente().getSalt();
 			authenticate(form.getUsername(), salt != null ? form.getPassword() + salt: form.getPassword());
-			UserDetails details = user;
-			return ResponseEntity.ok(new JwtUser<UserDetails>()
-					.setDetails(details)
-					.setToken(jwtTokenUtil.generateAuthenticationTokenForUser(details)));
+			AppUserDetails details = user;
+			return ResponseEntity
+					.ok(new JwtUser<UserDetails>()
+							.setDetails(details)
+							.setToken(jwtTokenUtil.generateAuthenticationTokenForUser(details))
+							);
 		} else {
 			return  ResponseEntity
 	                .status(HttpStatus.UNAUTHORIZED)
