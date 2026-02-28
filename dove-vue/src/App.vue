@@ -7,6 +7,7 @@ import { MinionItem } from './models/minion-item';
 import LoginForm from './components/LoginForm.vue';
 import { useLoggedUser } from './stores/logged-user';
 import { useBackendConfig } from './stores/backend-config';
+import QrLauncher from './components/QrLauncher.vue';
 
 const loggedUser = useLoggedUser();
 const backend = useBackendConfig();
@@ -52,6 +53,7 @@ function minionSpeaks(minion: MinionItem) {
 
 <template>
   <h1>You did it!</h1>
+  <QrLauncher></QrLauncher>
   <div>{{ backend.url }}</div>
   <div v-if="loggedUser.user.username">
     {{ loggedUser.user.username }}
