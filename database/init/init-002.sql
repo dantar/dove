@@ -33,6 +33,15 @@ CREATE TABLE public.utente (
 	CONSTRAINT utente_pk PRIMARY KEY (id)
 );
 
+-- Drop table
+-- DROP TABLE public.token_blacklist;
+CREATE TABLE public.token_blacklist
+(
+    token text NOT NULL,
+    timestamp timestamp NOT NULL,
+    CONSTRAINT token_pk PRIMARY KEY (token)
+);
+
 -- public.breadcrumbs source
 
 CREATE OR REPLACE VIEW public.breadcrumbs
