@@ -43,10 +43,11 @@ public class PicturesService {
 		File d = this.picturesDirectory(uuid);
 		String b64 = picture.substring(23); // base64 url jpeg header
 		String pictureId = UUID.randomUUID().toString();
-		FileOutputStream fos = new FileOutputStream(new File(d, pictureId));
-		byte[] decodedBytes = Base64.getDecoder().decode(b64);
-		fos.write(decodedBytes);
-		fos.close();
+		File file = new File(d, pictureId);
+		try (FileOutputStream fos = new FileOutputStream(file);) {			
+			byte[] decodedBytes = Base64.getDecoder().decode(b64);
+			fos.write(decodedBytes);
+		}
 		return pictureId;
 	}
 
