@@ -1,8 +1,8 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useBackendConfig = defineStore('backendLogic', () => {
-  const url = ref(import.meta.env.VITE_BACKEND_LOGIC_URL || "http://localhost:8080");
+  const url = ref((window as any).__APP_CONFIG__.BACKEND_URL || "http://localhost:8080");
   const token = ref('');
   const bearer = () => {
     console.log("token", token.value);

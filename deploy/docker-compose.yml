@@ -2,29 +2,29 @@ services:
 
   frontend:
     build:
-      context: ../dove-vue
+      context: ./frontend
       dockerfile: ./Dockerfile
     ports:
-      - 19180:80
+      - 8180:80
     environment:
-      - BACKEND_URL=http://localhost:8080
+      - BACKEND_URL=/backend
     volumes:
       - frontend-logs:/var/log/nginx/
     restart: unless-stopped
 
   backend:
     build:
-      context: ../dove-rest/
+      context: ./backend
       dockerfile: ./Dockerfile
     ports:
-      - 8080:8080
+      - 8181:8080
     environment:
       DEPS_DB_URL: database:5432
       DEPS_DB_DBNAME: dove
       DEPS_DB_PASSWORD: dove
       DEPS_DB_USERNAME: dove
     volumes:
-      - /opt/dove/pictures:/opt/dove/pictures
+      - ./data/dove/pictures:/opt/dove/pictures
     depends_on:
       database:
         condition: service_healthy
@@ -33,10 +33,10 @@ services:
 
   database:
     build:
-      context: ../database/
+      context: ./database/
       dockerfile: ./Dockerfile
-    ports:
-      - 15432:5432
+    expose:
+      - 5432
     environment:
       LANG: it_IT.utf8
       POSTGRES_DB: dove
@@ -50,7 +50,7 @@ services:
       retries: 5
     volumes:
       - postgres_volume:/var/lib/postgresql
-      - ../database/init:/docker-entrypoint-initdb.d:ro
+      - ./database/init:/docker-entrypoint-initdb.d:ro
 
   flyway:
     image: flyway/flyway:11

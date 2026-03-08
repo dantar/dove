@@ -1,0 +1,3 @@
+window.__APP_CONFIG__ = {
+  BACKEND_URL: "${BACKEND_URL}"
+};
