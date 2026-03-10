@@ -1,6 +1,5 @@
 package it.dantar.cav.mvc;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +25,11 @@ public class EsploraController {
 
 	@GetMapping("/browse/root")
 	public PostoBrowseDto browseRoot() {
-		Posto posto = postoDao.findRoot().orElseThrow(() -> new IllegalArgumentException());
 		return new PostoBrowseDto(
-				new ArrayList<Posto>(),
-				posto, 
-				oggettoDao.findByIdPosto(posto.getId()),
-				postoDao.findByPercorso(posto.getPathId())
+				null,
+				null, 
+				null,
+				postoDao.findRoot()
 				);
 	}
 

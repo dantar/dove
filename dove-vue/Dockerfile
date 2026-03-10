@@ -16,9 +16,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 # copia configurazione nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY config.template.js /usr/share/nginx/html/config.template.js
 
 EXPOSE 80
-#CMD ["nginx", "-g", "daemon off;"]
-#CMD ["envsubst < /usr/share/nginx/html/config.template.js > /usr/share/nginx/html/config.js", "&&", "nginx", "-g", "daemon off;"]
-CMD ["/bin/sh", "-c", "envsubst < /usr/share/nginx/html/config.template.js > /usr/share/nginx/html/config.js && nginx -g 'daemon off;'"]
+ENV HTML=/usr/share/nginx/html
+CMD ["/bin/sh",  "-c",  "envsubst < $HTML/config.template.json > $HTML/config.json && nginx -g 'daemon off;'"]

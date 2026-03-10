@@ -1,22 +1,22 @@
-export class PostoObj {
-    id: string = '';
-    nome: string = '';
-    percorso: string = '';
-    pathId: string = '';
+export interface PostoObj {
+    id: string;
+    nome: string;
+    percorso: string;
+    pathId: string;
 }
 
-export class OggettoObj {
-    id: string = '';
-    idPosto: string = '';
-    nome: string = '';
-    thumbnail: string = '';
-    scheda: Object = {};
-    immagini: string[] = [];
+export interface OggettoObj {
+    id: string;
+    idPosto: string;
+    nome: string;
+    thumbnail: string;
+    scheda: Object;
+    immagini: string[];
 }
 
-export class PostoBrowseDto {
-    breadcrumbs: PostoObj[] = [];
-    posto: PostoObj = new PostoObj();
-    oggetti: OggettoObj[] = [];
-    posti: PostoObj[] = [];
+export interface PostoBrowseDto {
+    breadcrumbs: PostoObj[];
+    posto: PostoObj;
+    oggetti: OggettoObj[];
+    posti: PostoObj[];
 }

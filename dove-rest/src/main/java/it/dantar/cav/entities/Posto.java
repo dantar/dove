@@ -1,5 +1,7 @@
 package it.dantar.cav.entities;
 
+import java.util.Optional;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
@@ -23,6 +25,6 @@ public class Posto {
 	
 	@Transient
 	public String getPathId() {
-		return this.getId().replace("-", "_");
+		return Optional.ofNullable(this.getId()).map(i -> i.replace("-", "_")).orElse(null);
 	}
 }

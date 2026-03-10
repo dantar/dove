@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { PostoObj } from '@/models/browse-item';
+import type { OggettoObj } from '@/models/browse-item';
 interface Props {
-  posto: PostoObj
+    oggetto: OggettoObj
 }
 const props = defineProps<Props>()
 </script>
 
 <template>
-  <div>{{ posto?.nome || posto?.id }}</div>
+  <div>{{ oggetto?.nome || oggetto?.id }}</div>
 </template>
 
 <style scoped></style>
