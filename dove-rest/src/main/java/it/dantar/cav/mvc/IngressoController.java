@@ -82,6 +82,14 @@ public class IngressoController {
 		return oggetto;
 	}
 
+	@PostMapping("/gallery/{uuid}")
+	public List<String> uploadPictures(@PathVariable String uuid, @RequestBody List<String> pictures) throws IOException {
+		for (String picture: pictures) {
+			this.pictureService.savePicture(uuid, picture);
+		}
+		return this.pictureService.allPictureUuids(uuid);
+	}
+
 	@PostMapping("/oggetto/{uuid}/picture")
 	public List<String> postPicture(@PathVariable String uuid, @RequestBody String picture) throws IOException {
 		Optional<Oggetto> found = oggettoDao.findById(uuid);

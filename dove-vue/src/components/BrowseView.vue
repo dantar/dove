@@ -7,6 +7,7 @@ import QrLauncher from './QrLauncher.vue';
 import OggettoShort from './OggettoShort.vue';
 import { ref } from 'vue';
 import OggettoHeader from './OggettoHeader.vue';
+import AddPhotosButton from './AddPhotosButton.vue';
 
 const browse = useBrowseData();
 
@@ -45,11 +46,12 @@ const oggetti = ref<string[]>([]);
       <div v-for="oggetto in browse.current?.oggetti">
         <div v-if="!oggetti.includes(oggetto.id)">
           <OggettoShort :oggetto="oggetto"></OggettoShort>
-          <button @click="() => oggetti.push(oggetto.id)">▽</button>
+          <button @click="oggetti.push(oggetto.id)">▽</button>
         </div>
         <div v-if="oggetti.includes(oggetto.id)">
-          <button @click="() => oggetti.splice(oggetti.indexOf(oggetto.id), 1)">△</button>
+          <button @click="oggetti.splice(oggetti.indexOf(oggetto.id), 1)">△</button>
           <OggettoHeader :key="oggetto.id" :oggetto="oggetto"></OggettoHeader>
+          <RouterLink :to="`/oggetto/${oggetto.id}`">🔍</RouterLink>
         </div>
       </div>
     </div>

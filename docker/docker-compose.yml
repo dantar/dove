@@ -5,9 +5,9 @@ services:
       context: ../dove-vue
       dockerfile: ./Dockerfile
     ports:
-      - 19180:80
+      - 9180:80
     environment:
-      - BACKEND_URL=http://localhost:8080
+      - BACKEND_URL=http://localhost:9080
     volumes:
       - frontend-logs:/var/log/nginx/
     restart: unless-stopped
@@ -17,7 +17,7 @@ services:
       context: ../dove-rest/
       dockerfile: ./Dockerfile
     ports:
-      - 8080:8080
+      - 9181:8080
     environment:
       DEPS_DB_URL: database:5432
       DEPS_DB_DBNAME: dove

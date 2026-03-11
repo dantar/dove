@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useBackendConfig } from './backend-config';
 
 export const useBrowseData = defineStore('browseData', () => {
-  const current = ref<PostoBrowseDto|null>(null);
+  const current = ref<PostoBrowseDto>();
 
   function goToRoot(): void {
     console.log("Fetch root");
@@ -25,6 +25,12 @@ export const useBrowseData = defineStore('browseData', () => {
     .then((response) => {
         current.value = response.data;
     });
+  }
+
+  async function fetchOggettoDetails(uuid: string): Promise<OggettoObj> {
+    const config = useBackendConfig();
+    const response = await axios.get<OggettoObj>(`${config.url}/oggetto/${uuid}`, config.bearer());
+    return response.data;
   }
 
   function addPosto(main: string, branch: string): void {
@@ -85,8 +91,17 @@ export const useBrowseData = defineStore('browseData', () => {
     return o.data;
   }
 
+  async function uploadGallery(uuid:string, images:string[]): Promise<string[]> {
+    console.log(`Uploading gallery for ${uuid}`);
+    const config = useBackendConfig();
+    const o = await axios
+    .post<string[]>(`${config.url}/gallery/${uuid}`, images, config.bearer());
+    return o.data;
+  }
+
   return { current, goToRoot, goToPosto, 
     addPosto, updatePosto, 
-    addOggetto, updateOggetto 
+    addOggetto, updateOggetto,
+    uploadGallery, fetchOggettoDetails
   }
 })

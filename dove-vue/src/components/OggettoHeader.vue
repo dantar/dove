@@ -4,6 +4,7 @@ import type { OggettoObj } from '@/models/browse-item';
 import { useBackendConfig } from '@/stores/backend-config';
 import { useBrowseData } from '@/stores/browse-data';
 import { ref } from 'vue';
+import ImageThumb from './ImageThumb.vue';
 
 interface Props {
   oggetto: OggettoObj
@@ -33,9 +34,9 @@ const form = ref({...props.oggetto});
 
 <template>
   <div>ID: {{ oggetto.id }}</div>
-  <div><img :src="`${config.images}/avatar`"></div>
+  <ImageThumb :src="`${oggetto.id}/${oggetto.thumbnail}`"></ImageThumb>
   <div v-if="oggetto.thumbnail">
-    <img :src="`${config.images}/${oggetto.id}/${oggetto.thumbnail}`" />
+    <ImageThumb :src="`${oggetto.id}/${oggetto.thumbnail}`"></ImageThumb>
   </div>
   <div>
     Nome: 

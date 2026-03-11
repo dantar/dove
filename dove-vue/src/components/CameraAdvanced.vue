@@ -18,7 +18,7 @@
 
     <div class="controls">
       <button @click="takePhoto">📸 Scatta</button>
-      <button @click="stopCamera">⛔ Stop</button>
+      <button @click="donePictures">✓ OK</button>
     </div>
 
     <div class="gallery">
@@ -33,6 +33,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+const emit = defineEmits<{
+  (e: "done", value: string[]): void
+}>()
 
 const video = ref<HTMLVideoElement | null>(null)
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -53,7 +57,6 @@ let startZoom = 1
 const OUTPUT_SIZE = 1024
 
 async function startCamera(): Promise<void> {
-
   stream.value = await navigator.mediaDevices.getUserMedia({
     video: {
       facingMode: { ideal: "environment" },
@@ -69,6 +72,11 @@ async function startCamera(): Promise<void> {
         video.value.srcObject = stream.value
       }
   }
+}
+
+function donePictures(): void {
+    stopCamera();
+    emit('done', photos.value);
 }
 
 function stopCamera(): void {
@@ -117,7 +125,6 @@ function takePhoto(): void {
 }
 
 function flashAnimation() {
-
   flash.value = true
   setTimeout(() => flash.value = false, 120)
 }

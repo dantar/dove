@@ -3,6 +3,7 @@ import BrowseView from '@/components/BrowseView.vue'
 import CameraAdvanced from '@/components/CameraAdvanced.vue'
 import CameraSquare from '@/components/CameraSquare.vue'
 import HomeView from '@/components/HomeView.vue'
+import OggettoDetails from '@/components/OggettoDetails.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -13,6 +14,7 @@ const router = createRouter({
     { path: '/about', component: AboutView },
     { path: '/camera', component: CameraSquare },
     { path: '/advanced', component: CameraAdvanced },
+    { path: '/oggetto/:uuid', component: OggettoDetails },
   ],
 })
 
