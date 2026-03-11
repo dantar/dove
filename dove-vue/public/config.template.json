@@ -1,3 +1,4 @@
 {
+  "IMAGES_URL": "${IMAGES_URL}",
   "BACKEND_URL": "${BACKEND_URL}"
 }

@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import LoginForm from './components/LoginForm.vue';
-import QrLauncher from './components/QrLauncher.vue';
 import { useLoggedUser } from './stores/logged-user';
-import CameraUpload from './components/CameraUpload.vue';
 const loggedUser = useLoggedUser();
-const somecode = ref('(scan to get a value)');
-const decoded = (code:string) => {
-  somecode.value = code;
-};
+
 </script>
 
 <template>
@@ -28,13 +22,6 @@ const decoded = (code:string) => {
     <main>
       <RouterView />
     </main>
-    <div>
-      <CameraUpload></CameraUpload>
-    </div>
-    <div>
-      <div>{{ somecode }}</div>
-      <QrLauncher @decoded="decoded"></QrLauncher>
-    </div>
   </div>
   <div v-else="">
     <LoginForm></LoginForm>

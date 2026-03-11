@@ -5,9 +5,5 @@ interface Props {
 }
 const props = defineProps<Props>()
 </script>
-
-<template>
-  <div>{{ posto?.nome || posto?.id }}</div>
-</template>
-
+<template><span>{{ posto?.nome || posto?.id }}</span></template>
 <style scoped></style>

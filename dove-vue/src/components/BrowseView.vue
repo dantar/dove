@@ -31,12 +31,16 @@ const oggetti = ref<string[]>([]);
     <div v-if="browse.current?.posti">
       <div>Posti</div>
       <div v-for="posto in browse.current?.posti">
-        <PostoShort @click="browse.goToPosto(posto.id)" :posto="posto"></PostoShort>        
+        <span @click="browse.goToPosto(posto.id)">
+          <PostoShort :posto="posto"></PostoShort>
+        </span>
+        <button @click="browse.goToPosto(posto.id)">▷</button>
       </div>
     </div>
     <div v-if="browse.current?.posto">
       <QrLauncher @decoded="text => browse.addPosto(browse.current?.posto.id as string, text)"></QrLauncher>
     </div>
+    <div>Oggetti</div>
     <div v-if="browse.current?.oggetti">
       <div v-for="oggetto in browse.current?.oggetti">
         <div v-if="!oggetti.includes(oggetto.id)">

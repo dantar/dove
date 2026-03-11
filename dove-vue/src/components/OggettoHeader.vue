@@ -1,12 +1,15 @@
 <script setup lang="ts">
 
 import type { OggettoObj } from '@/models/browse-item';
+import { useBackendConfig } from '@/stores/backend-config';
 import { useBrowseData } from '@/stores/browse-data';
 import { ref } from 'vue';
 
 interface Props {
   oggetto: OggettoObj
 }
+
+const config = useBackendConfig();
 
 const props = defineProps<Props>()
 
@@ -30,6 +33,10 @@ const form = ref({...props.oggetto});
 
 <template>
   <div>ID: {{ oggetto.id }}</div>
+  <div><img :src="`${config.images}/avatar`"></div>
+  <div v-if="oggetto.thumbnail">
+    <img :src="`${config.images}/${oggetto.id}/${oggetto.thumbnail}`" />
+  </div>
   <div>
     Nome: 
     <span v-if="!editable" @click="editable = !editable">{{ oggetto.nome }}</span>

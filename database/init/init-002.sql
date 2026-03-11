@@ -4,8 +4,9 @@
 CREATE TABLE public.oggetto (
 	id varchar NOT NULL,
 	id_posto varchar NULL,
-	scheda jsonb NULL,
 	nome varchar NULL,
+	scheda jsonb NULL,
+	thumbnail varchar NULL,
 	CONSTRAINT oggetto_pk PRIMARY KEY (id)
 );
 

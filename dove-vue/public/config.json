@@ -1,3 +1,4 @@
   {
+    "IMAGES_URL": "http://localhost:80/dove/images",
     "BACKEND_URL": "http://localhost:8080"
   }

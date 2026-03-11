@@ -9,7 +9,7 @@ services:
     environment:
       - BACKEND_URL=/backend
     volumes:
-      - frontend-logs:/var/log/nginx/
+      - ./logs/nginx:/var/log/nginx/
     restart: unless-stopped
 
   backend:
@@ -23,8 +23,11 @@ services:
       DEPS_DB_DBNAME: dove
       DEPS_DB_PASSWORD: dove
       DEPS_DB_USERNAME: dove
+      APP_PICTURES_DIR: /data
+      LOGGING_FILE_NAME: /logs/backend.log
     volumes:
-      - ./data/dove/pictures:/opt/dove/pictures
+      - ./data/images:/data
+      - ./logs/backend:/logs
     depends_on:
       database:
         condition: service_healthy
@@ -49,7 +52,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - postgres_volume:/var/lib/postgresql
+      - ./data/postgres:/var/lib/postgresql
       - ./database/init:/docker-entrypoint-initdb.d:ro
 
   flyway:
@@ -65,7 +68,3 @@ services:
       -password=dove
       -baselineOnMigrate=true
       migrate
-
-volumes:
-  postgres_volume:
-  frontend-logs:
