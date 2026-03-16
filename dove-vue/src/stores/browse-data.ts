@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { PostoBrowseDto, PostoObj, OggettoObj } from '@/models/browse-item'
+import type { PostoBrowseDto, PostoObj, OggettoObj, OggettoBrowseDto, SchedaOggetto } from '@/models/browse-item'
 import axios from 'axios';
 import { useBackendConfig } from './backend-config';
 
@@ -33,14 +33,37 @@ export const useBrowseData = defineStore('browseData', () => {
     return response.data;
   }
 
+  async function browseRootDetails(): Promise<PostoBrowseDto> {
+    const config = useBackendConfig();
+    const response = await axios.get<PostoBrowseDto>(`${config.url}/browse/root`, config.bearer());
+    return response.data;
+  }
+
+  async function browsePostoDetails(uuid: string): Promise<PostoBrowseDto> {
+    const config = useBackendConfig();
+    const response = await axios.get<PostoBrowseDto>(`${config.url}/browse/posto/${uuid}`, config.bearer());
+    return response.data;
+  }
+
+  async function browseOggettoDetails(uuid: string): Promise<OggettoBrowseDto> {
+    const config = useBackendConfig();
+    const response = await axios.get<OggettoBrowseDto>(`${config.url}/browse/oggetto/${uuid}`, config.bearer());
+    return response.data;
+  }
+
+  async function doAddPosto(main: string, branch: string): Promise<PostoObj> {
+    const config = useBackendConfig();
+    const response = await axios
+    .post<PostoObj>(`${config.url}/posto/${main}/${branch}`, null, config.bearer());
+    return response.data;
+  }
+
   function addPosto(main: string, branch: string): void {
     console.log(`Creating new ${main}/${branch}`);
-    const config = useBackendConfig();
-    axios
-    .post<PostoObj>(`${config.url}/posto/${main}/${branch}`, null, config.bearer())
-    .then((response) => {
+    doAddPosto(main, branch)
+    .then((data) => {
         if (current.value) {
-          current.value.posti.push(response.data);
+          current.value.posti.push(data);
         }
     });
   }
@@ -63,16 +86,12 @@ export const useBrowseData = defineStore('browseData', () => {
     });
   }
 
-  function updatePosto(posto: PostoObj): void {
+  async function updatePosto(posto: PostoObj): Promise<PostoObj> {
     console.log(`Updating Posto ${posto.id}`);
     const config = useBackendConfig();
-    axios
+    const o = await axios
     .post<PostoObj>(`${config.url}/posto`, posto, config.bearer())
-    .then((response) => {
-        if (current.value) {
-          current.value.posto = response.data;
-        }
-    });
+    return o.data;
   }
 
   async function updateOggetto(oggetto: OggettoObj): Promise<OggettoObj> {
@@ -80,14 +99,6 @@ export const useBrowseData = defineStore('browseData', () => {
     const config = useBackendConfig();
     const o = await axios
     .post<OggettoObj>(`${config.url}/oggetto`, oggetto, config.bearer());
-    // .then((response) => {
-    //     if (current.value) {
-    //       const index = current.value.oggetti.map(o => o.id).indexOf(oggetto.id);
-    //       if (index >= 0) {
-    //         current.value.oggetti = current.value.oggetti.splice(index, 1, response.data);
-    //       }
-    //     }
-    // });
     return o.data;
   }
 
@@ -100,8 +111,9 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   return { current, goToRoot, goToPosto, 
-    addPosto, updatePosto, 
+    addPosto, updatePosto, doAddPosto,  
     addOggetto, updateOggetto,
-    uploadGallery, fetchOggettoDetails
+    uploadGallery, fetchOggettoDetails,
+    browseOggettoDetails, browsePostoDetails, browseRootDetails
   }
 })

@@ -16,9 +16,10 @@ const emit = defineEmits<{
 const showCamera = ref(false);
 
 const uploadPhotos = async (photos: string[]) => {
+    showCamera.value = false;
     const browse = useBrowseData();
     const ids = await browse.uploadGallery(props.uuid, photos);
-    props.gallery.push(...ids);
+    props.gallery.splice(0, props.gallery.length, ...ids);
 }
 
 </script>

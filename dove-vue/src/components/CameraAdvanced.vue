@@ -54,7 +54,7 @@ let startDistance = 0
 let startZoom = 1
 
 /* controlla risoluzione finale */
-const OUTPUT_SIZE = 1024
+const OUTPUT_SIZE = 600
 
 async function startCamera(): Promise<void> {
   stream.value = await navigator.mediaDevices.getUserMedia({

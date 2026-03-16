@@ -3,6 +3,7 @@
 import type { PostoObj } from '@/models/browse-item';
 import { useBrowseData } from '@/stores/browse-data';
 import { ref } from 'vue';
+import PostoShort from './PostoShort.vue';
 
 interface Props {
   posto: PostoObj
@@ -11,14 +12,14 @@ interface Props {
 const props = defineProps<Props>()
 
 const editable = ref(false);
+const saving = ref(false);
 
-const emitSave = () => {
+const saveData = async () => {
+  saving.value = true;
   const browse = useBrowseData();
-  browse.updatePosto(form.value);
-  editable.value = false;
-}
-
-const cancelEdit = () => {
+  const updated = await browse.updatePosto(form.value);
+  props.posto.nome = updated.nome;
+  saving.value = false;
   editable.value = false;
 }
 
@@ -29,16 +30,26 @@ const form = ref({...props.posto});
 <template>
   <div>ID: {{ posto.id }}</div>
   <div>
-    Nome: 
-    <span v-if="!editable" @click="editable = !editable">{{ posto.nome }}</span>
-    <span v-if="editable">
-      <input type="text" v-model="form.nome" />
-    </span>
-  </div>
-  <div>
-    <button @click="editable = !editable">🖉</button>
-    <button v-if="editable" @click="emitSave()">✓</button>
-    <button v-if="editable" @click="cancelEdit()">✗</button>
+    <form @submit.prevent="saveData()">
+      Nome: 
+      <RouterLink v-if="!editable" :to="`/posto/${posto.id}`">
+        <PostoShort :posto="posto"></PostoShort>
+      </RouterLink>
+      <span v-if="editable">
+        <input 
+          :disabled="saving"
+          type="text" 
+          v-model="form.nome" />
+      </span>
+      <button type="button"
+        @click="editable = !editable"
+        :disabled="saving"
+        >🖉</button>
+      <button type="submit"
+        v-if="editable" 
+        :disabled="saving" 
+        >✓</button>
+    </form>
   </div>
 </template>
 

@@ -5,5 +5,9 @@ interface Props {
 }
 const props = defineProps<Props>()
 </script>
-<template><span>{{ posto?.nome || posto?.id }}</span></template>
+<template>
+  <RouterLink :to="`/posto/${posto.id}`">
+    <span>{{ posto?.nome || posto?.id }}</span>
+  </RouterLink>
+</template>
 <style scoped></style>

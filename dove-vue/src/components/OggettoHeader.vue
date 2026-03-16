@@ -5,26 +5,23 @@ import { useBackendConfig } from '@/stores/backend-config';
 import { useBrowseData } from '@/stores/browse-data';
 import { ref } from 'vue';
 import ImageThumb from './ImageThumb.vue';
+import OggettoShort from './OggettoShort.vue';
 
 interface Props {
   oggetto: OggettoObj
 }
-
-const config = useBackendConfig();
-
 const props = defineProps<Props>()
 
 const editable = ref(false);
+const saving = ref(false);
 
-const emitSave = async () => {
+const saveData = async () => {
+  saving.value = true;
   const browse = useBrowseData();
-  const updated = browse.updateOggetto(form.value);
-  props.oggetto.nome = (await updated).nome;
-  props.oggetto.scheda = (await updated).scheda;
-  editable.value = false;
-}
-
-const cancelEdit = () => {
+  const updated = await browse.updateOggetto(form.value);
+  props.oggetto.nome = updated.nome;
+  props.oggetto.scheda = updated.scheda;
+  saving.value = false;
   editable.value = false;
 }
 
@@ -34,21 +31,21 @@ const form = ref({...props.oggetto});
 
 <template>
   <div>ID: {{ oggetto.id }}</div>
-  <ImageThumb :src="`${oggetto.id}/${oggetto.thumbnail}`"></ImageThumb>
   <div v-if="oggetto.thumbnail">
-    <ImageThumb :src="`${oggetto.id}/${oggetto.thumbnail}`"></ImageThumb>
+    <ImageThumb :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
   </div>
   <div>
-    Nome: 
-    <span v-if="!editable" @click="editable = !editable">{{ oggetto.nome }}</span>
-    <span v-if="editable">
-      <input type="text" v-model="form.nome" />
-    </span>
-  </div>
-  <div>
-    <button @click="editable = !editable">🖉</button>
-    <button v-if="editable" @click="emitSave()">✓</button>
-    <button v-if="editable" @click="cancelEdit()">✗</button>
+    <form @submit.prevent="saveData()">
+      Nome: 
+      <span v-if="!editable">
+        <OggettoShort :oggetto="oggetto"></OggettoShort>
+      </span>
+      <span v-if="editable">
+        <input type="text" v-model="form.nome" :disabled="saving"/>
+      </span>
+      <button @click="editable = !editable" type="button" :disabled="saving">🖉</button>
+      <button v-if="editable" type="submit" :disabled="saving">✓</button>
+    </form>
   </div>
 </template>
 
