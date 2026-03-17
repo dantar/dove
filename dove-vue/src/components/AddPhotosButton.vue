@@ -14,18 +14,22 @@ const emit = defineEmits<{
 }>()
 
 const showCamera = ref(false);
+const freeze = ref(false);
 
 const uploadPhotos = async (photos: string[]) => {
-    showCamera.value = false;
-    const browse = useBrowseData();
-    const ids = await browse.uploadGallery(props.uuid, photos);
-    props.gallery.splice(0, props.gallery.length, ...ids);
+  freeze.value = true;
+  showCamera.value = false;
+  const browse = useBrowseData();
+  const ids = await browse.uploadGallery(props.uuid, photos);
+  props.gallery.splice(0, props.gallery.length, ...ids);
+  freeze.value = false;
+  emit('upload', ids);
 }
 
 </script>
 <template>
-    <button @click="showCamera = ! showCamera">📷</button>
-    <CameraAdvanced v-if="showCamera" @done="uploadPhotos"></CameraAdvanced>
+  <button type="button" :disabled="freeze" @click="showCamera = ! showCamera">📷</button>
+  <CameraAdvanced v-if="showCamera" @done="uploadPhotos"></CameraAdvanced>
 </template>
 
 <style scoped>

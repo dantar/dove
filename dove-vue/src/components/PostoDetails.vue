@@ -8,6 +8,7 @@ import { ref, watch } from 'vue';
 import OggettoHeader from './OggettoHeader.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import type { OggettoObj, PostoBrowseDto, PostoObj } from '@/models/browse-item';
+import ImageThumb from './ImageThumb.vue';
 
 interface Props {
   uuid?: string,
@@ -76,6 +77,7 @@ const addingOggetto = ref(false);
       <div>Oggetti</div>
       <div v-if="browsed.oggetti">
         <div v-for="oggetto in browsed.oggetti">
+          <ImageThumb v-if="oggetto.thumbnail" :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
           <OggettoShort :oggetto="oggetto"></OggettoShort>
         </div>
       </div>

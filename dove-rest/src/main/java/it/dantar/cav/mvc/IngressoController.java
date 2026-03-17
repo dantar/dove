@@ -99,7 +99,16 @@ public class IngressoController {
 		for (String picture: pictures) {
 			this.pictureService.savePicture(uuid, picture);
 		}
-		return this.pictureService.allPictureUuids(uuid);
+		Optional<Oggetto> found = oggettoDao.findById(uuid);
+		List<String> all = this.pictureService.allPictureUuids(uuid);
+		if (found.isPresent() && !all.isEmpty()) {
+			Oggetto oggetto = found.get();
+			if (!all.get(0).equals(oggetto.getThumbnail())) {
+				oggetto.setThumbnail(all.get(0));
+				oggettoDao.save(oggetto);
+			}
+		}
+		return all;
 	}
 
 	@PostMapping("/oggetto/{uuid}/picture")
