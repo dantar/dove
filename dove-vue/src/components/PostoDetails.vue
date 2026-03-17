@@ -29,18 +29,34 @@ loadPosto(props.uuid)
 watch(() => props.uuid, loadPosto);
 
 async function addPosto(text: string) {
-  browse.addPosto(props.uuid || '', text)  
+  console.log("addPosto", text);
+  addingPosto.value = true;
+  const b = browsed.value as PostoBrowseDto;
+  if (b.posto) {
+    b.posti.push(await browse.addPosto(b.posto.id, text));
+  } else {
+    b.posti.push(await browse.addRoot(text));
+  }
+  addingPosto.value = false;
+  console.log("done addPosto");
 }
+
+async function addOggetto(text: string) {
+  addingOggetto.value = true;
+  const b = browsed.value as PostoBrowseDto;
+  const o = await browse.addOggetto(b.posto.id, text);
+  b.oggetti.push(o);
+  addingOggetto.value = false;
+}
+
+const addingPosto = ref(false);
+const addingOggetto = ref(false);
 
 </script>
 <template>
   <div v-if="browsed">
-    <div>
-      <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
-    </div>
-    <div v-if="browsed.posto">
-      <div>Posto</div>
-      <PostoHeader v-if="browsed.posto" :posto="browsed.posto" :key="browsed.posto.id"></PostoHeader>
+    <div v-if="browsed.breadcrumbs">
+      <PostoBreadcrumbs :posti="browsed.posto ? browsed.breadcrumbs.concat(browsed.posto) : browsed.breadcrumbs"></PostoBreadcrumbs>
     </div>
     <div v-if="browsed.posti">
       <div>Posti</div>
@@ -52,19 +68,22 @@ async function addPosto(text: string) {
         </span>
       </div>
     </div>
-    <div v-if="browsed.posto">
+    <div>
       <span>Aggiungi un posto</span>
-      <QrLauncher @decoded="text => addPosto(text)"></QrLauncher>
-    </div>
-    <div>Oggetti</div>
-    <div v-if="browsed.oggetti">
-      <div v-for="oggetto in browsed.oggetti">
-        <OggettoShort :oggetto="oggetto"></OggettoShort>
-      </div>
+      <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
     </div>
     <div v-if="browsed.posto">
-      <span>Aggiungi un oggetto:</span>
-      <QrLauncher @decoded="text => browse.addOggetto(browsed?.posto.id as string, text)"></QrLauncher>
+      <div>Oggetti</div>
+      <div v-if="browsed.oggetti">
+        <div v-for="oggetto in browsed.oggetti">
+          <OggettoShort :oggetto="oggetto"></OggettoShort>
+        </div>
+      </div>
+      <div v-else>Nessun oggetto presente</div>
+      <div>
+        <span>Aggiungi un oggetto:</span>
+        <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)"></QrLauncher>
+      </div>
     </div>
   </div>
   <div></div>

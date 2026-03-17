@@ -11,7 +11,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', component: HomeView },
-    { path: '/browse', component: PostoDetails },
+    { path: '/browse', component: PostoDetails, props: true },
     { path: '/about', component: AboutView },
     { path: '/camera', component: CameraSquare },
     { path: '/advanced', component: CameraAdvanced },

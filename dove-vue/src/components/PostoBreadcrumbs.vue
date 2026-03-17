@@ -9,11 +9,11 @@ interface Props {
   posti: PostoObj[],
 }
 const props = defineProps<Props>()
-console.log("nelle bc", props.posti);
 
 </script>
 <template>
   <div>Breadcrumbs</div>
+  <RouterLink to="/browse">/</RouterLink>
   <span v-for="posto in props.posti">
     <PostoShort :posto="posto"></PostoShort>
   </span>

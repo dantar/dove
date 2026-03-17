@@ -3,6 +3,11 @@ import { ref } from "vue"
 import QrScanner from "./QrScanner.vue"
 import {v4 as uuidv4} from 'uuid';
 
+interface Props {
+  disabled: boolean,
+}
+const props = defineProps<Props>();
+
 const emit = defineEmits<{
   (e: "decoded", value: string): void
 }>()
@@ -39,12 +44,14 @@ const emitInputCode = () => {
 
 </script>
 <template>
-  <button @click="launchScanner">Scanner</button>
-  <button @click="() => doShowInput(!showInput)">▽</button>
+  <button type="button" @click="launchScanner">Scanner</button>
+  <button type="button" @click="() => doShowInput(!showInput)">▽</button>
   <div v-if="showInput">
-    <input type="text" v-model.trim="currentCode" />
-    <button @click="() => currentCode = uuidv4()" >▣</button>
-    <button @click="() => emitInputCode()" v-bind:disabled="currentCode == ''">✓</button>
+    <form @submit.prevent="emitInputCode()">
+      <input type="text" v-model.trim="currentCode" />
+      <button type="button" @click="() => currentCode = uuidv4()" >▣</button>
+      <button type="submit" :disabled="!currentCode || disabled">✓</button>
+    </form>
   </div>
 
   <QrScanner v-if="visible"

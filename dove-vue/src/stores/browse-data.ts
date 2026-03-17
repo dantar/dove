@@ -51,24 +51,21 @@ export const useBrowseData = defineStore('browseData', () => {
     return response.data;
   }
 
-  async function doAddPosto(main: string, branch: string): Promise<PostoObj> {
+  async function addPosto(main: string, branch: string): Promise<PostoObj> {
     const config = useBackendConfig();
     const response = await axios
     .post<PostoObj>(`${config.url}/posto/${main}/${branch}`, null, config.bearer());
     return response.data;
   }
 
-  function addPosto(main: string, branch: string): void {
-    console.log(`Creating new ${main}/${branch}`);
-    doAddPosto(main, branch)
-    .then((data) => {
-        if (current.value) {
-          current.value.posti.push(data);
-        }
-    });
+  async function addRoot(branch: string): Promise<PostoObj> {
+    const config = useBackendConfig();
+    const response = await axios
+    .post<PostoObj>(`${config.url}/posto/${branch}`, null, config.bearer());
+    return response.data;
   }
 
-  function addOggetto(main: string, id: string): void {
+  async function addOggetto(main: string, id: string): Promise<OggettoObj> {
     console.log(`Creating oggetto ${main}>${id}`);
     const config = useBackendConfig();
     const oggetto = <OggettoObj>{
@@ -77,13 +74,9 @@ export const useBrowseData = defineStore('browseData', () => {
       nome: "Nuovo oggetto",
       scheda: {},
     };
-    axios
-    .post<OggettoObj>(`${config.url}/oggetto`, oggetto, config.bearer())
-    .then((response) => {
-        if (current.value) {
-          current.value.oggetti.push(response.data);
-        }
-    });
+    const o = await axios
+    .post<OggettoObj>(`${config.url}/oggetto`, oggetto, config.bearer());
+    return o.data;
   }
 
   async function updatePosto(posto: PostoObj): Promise<PostoObj> {
@@ -111,7 +104,7 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   return { current, goToRoot, goToPosto, 
-    addPosto, updatePosto, doAddPosto,  
+    addRoot, addPosto, updatePosto, 
     addOggetto, updateOggetto,
     uploadGallery, fetchOggettoDetails,
     browseOggettoDetails, browsePostoDetails, browseRootDetails

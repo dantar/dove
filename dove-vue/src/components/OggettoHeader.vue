@@ -9,23 +9,11 @@ import OggettoShort from './OggettoShort.vue';
 
 interface Props {
   oggetto: OggettoObj
+  editable: boolean,
+  saving: boolean,
+  form: OggettoObj,
 }
-const props = defineProps<Props>()
-
-const editable = ref(false);
-const saving = ref(false);
-
-const saveData = async () => {
-  saving.value = true;
-  const browse = useBrowseData();
-  const updated = await browse.updateOggetto(form.value);
-  props.oggetto.nome = updated.nome;
-  props.oggetto.scheda = updated.scheda;
-  saving.value = false;
-  editable.value = false;
-}
-
-const form = ref({...props.oggetto});
+const props = defineProps<Props>();
 
 </script>
 
@@ -35,17 +23,8 @@ const form = ref({...props.oggetto});
     <ImageThumb :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
   </div>
   <div>
-    <form @submit.prevent="saveData()">
-      Nome: 
-      <span v-if="!editable">
-        <OggettoShort :oggetto="oggetto"></OggettoShort>
-      </span>
-      <span v-if="editable">
-        <input type="text" v-model="form.nome" :disabled="saving"/>
-      </span>
-      <button @click="editable = !editable" type="button" :disabled="saving">🖉</button>
-      <button v-if="editable" type="submit" :disabled="saving">✓</button>
-    </form>
+      <span v-if="editable"><input type="text" v-model="form.nome" :disabled="saving"/></span>
+      <OggettoShort v-else :oggetto="oggetto"></OggettoShort>
   </div>
 </template>
 

@@ -26,7 +26,7 @@ async function loadOggetto(uuid?: string) {
     const bo = await browse.browseOggettoDetails(uuid);
     browsed.value = bo;
     form.value = {...bo.oggetto};
-    form.value.scheda = {...bo.oggetto.scheda};
+    (form.value as OggettoObj).scheda = {...bo.oggetto.scheda};
   }
 }
 loadOggetto(props.uuid)
@@ -55,11 +55,15 @@ const form = ref<OggettoObj>();
 
 <template>
     <div v-if="browsed">
-        <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
-        <PostoHeader :posto="browsed.posto"></PostoHeader>
-        <OggettoHeader :oggetto="browsed.oggetto"></OggettoHeader>
+        <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
         <div>
             <form @submit.prevent="saveData()">
+                <OggettoHeader 
+                    :oggetto="browsed.oggetto"
+                    :form="(form as OggettoObj)"
+                    :editable="editable"
+                    :saving="saving"
+                    ></OggettoHeader>
                 <SchedaOggettoView v-if="form?.scheda"
                     :scheda="browsed.oggetto.scheda"
                     :form="form?.scheda"
