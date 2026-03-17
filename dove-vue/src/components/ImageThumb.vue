@@ -14,6 +14,6 @@ const config = useBackendConfig();
 
 <style scoped>
 .imagethumb {
-    max-width:100px;
+    max-width:100%;
 }
 </style>

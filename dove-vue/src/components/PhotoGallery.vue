@@ -22,25 +22,20 @@ const mode = ref('double');
     <button type="button" @click="mode = 'triple'">x3</button>
   </div>
   <div class="gallery-box" :class="`stacking-${mode}`" >
-    <ImageThumb v-for="img in props.images" :uuid="`${props.id}`" :image="`${img}`"></ImageThumb>
+    <span v-for="img in props.images" class="gallery-img"><ImageThumb :uuid="`${props.id}`" :image="`${img}`"></ImageThumb></span>
   </div>
 </template>
 
 <style scoped>
+
 .gallery-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(var(--cols), 1fr);
 }
 
-.stacking-single img {
-  max-width: 100%;
-}
-.stacking-double img {
-  max-width: 50%;
-  border: 2px solid white;
-}
-.stacking-triple img {
-  max-width: 33%;
-}
+.stacking-single { --cols: 1; }
+.stacking-double { --cols: 2; }
+.stacking-triple { --cols: 3; }
+
 </style>
