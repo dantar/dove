@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useBrowseData } from '@/stores/browse-data';
 import OggettoHeader from './OggettoHeader.vue';
-import PhotoGallery from './PhotoGallery.vue';
 import { ref, watch } from 'vue';
 import type { OggettoBrowseDto, OggettoObj } from '@/models/browse-item';
 import AddPhotosButton from './AddPhotosButton.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
+import ItemsGallery from './ItemsGallery.vue';
+import ImageThumb from './ImageThumb.vue';
 
 interface Props {
   uuid: string,
@@ -76,7 +77,11 @@ async function refreshThumbnail() {
             </form>
         </div>
         <div>Galleria</div>
-        <PhotoGallery :id="browsed.oggetto.id" :images="browsed.oggetto.immagini"></PhotoGallery>
+        <ItemsGallery :items="browsed.oggetto.immagini">
+            <template #item="{ item }">
+                <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
+            </template>
+        </ItemsGallery>
         <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
     </div>
     <div v-else="">Loading...</div>

@@ -9,6 +9,7 @@ import OggettoHeader from './OggettoHeader.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import type { OggettoObj, PostoBrowseDto, PostoObj } from '@/models/browse-item';
 import ImageThumb from './ImageThumb.vue';
+import ItemsGallery from './ItemsGallery.vue';
 
 interface Props {
   uuid?: string,
@@ -75,13 +76,15 @@ const addingOggetto = ref(false);
     </div>
     <div v-if="browsed.posto">
       <div>Oggetti</div>
-      <div v-if="browsed.oggetti">
-        <div v-for="oggetto in browsed.oggetti">
-          <ImageThumb v-if="oggetto.thumbnail" :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
-          <OggettoShort :oggetto="oggetto"></OggettoShort>
-        </div>
-      </div>
-      <div v-else>Nessun oggetto presente</div>
+
+      <ItemsGallery :items="browsed.oggetti">
+        <template #item="{ item }">
+          <ImageThumb v-if="item.thumbnail" :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+          <OggettoShort :oggetto="item"></OggettoShort>
+        </template>
+        <template #empty><span>Nessun oggetto in questo posto</span></template>
+      </ItemsGallery>
+
       <div>
         <span>Aggiungi un oggetto:</span>
         <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)"></QrLauncher>
