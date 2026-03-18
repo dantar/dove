@@ -61,14 +61,8 @@ const addingOggetto = ref(false);
       <PostoBreadcrumbs :posti="browsed.posto ? browsed.breadcrumbs.concat(browsed.posto) : browsed.breadcrumbs"></PostoBreadcrumbs>
     </div>
     <div v-if="browsed.posti">
-      <div>Posti</div>
-      <div v-for="posto in browsed.posti">
-        <span>
-          <nav>
-            <PostoShort :posto="posto"></PostoShort>
-          </nav>
-        </span>
-      </div>
+      <span>Posti</span>
+      <span v-for="posto in browsed.posti" class="more-posto"><PostoShort :posto="posto"></PostoShort></span>
     </div>
     <div>
       <span>Aggiungi un posto</span>
@@ -79,7 +73,9 @@ const addingOggetto = ref(false);
 
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
-          <ImageThumb v-if="item.thumbnail" :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+          <RouterLink :to="`/oggetto/${item.id}`">
+            <ImageThumb v-if="item.thumbnail" :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+          </RouterLink>
           <OggettoShort :oggetto="item"></OggettoShort>
         </template>
         <template #empty><span>Nessun oggetto in questo posto</span></template>
@@ -93,4 +89,11 @@ const addingOggetto = ref(false);
   </div>
   <div></div>
 </template>
-<style scoped></style>
+<style scoped>
+.more-posto {
+  color: lightgreen;
+  border: 1px solid lightgreen;
+  padding: 2px;
+  margin: 1px;
+}
+</style>

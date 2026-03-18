@@ -13,9 +13,18 @@ const props = defineProps<Props>()
 </script>
 <template>
   <div>Breadcrumbs</div>
-  <RouterLink to="/browse">/</RouterLink>
-  <span v-for="posto in props.posti">
-    <PostoShort :posto="posto"></PostoShort>
-  </span>
+  <div>
+    <span class="breadcrumb"><RouterLink to="/browse">/</RouterLink></span>
+    <span class="breadcrumb" v-for="posto in props.posti">
+      <PostoShort :posto="posto"></PostoShort>
+    </span>
+  </div>
 </template>
-<style scoped></style>
+<style scoped>
+.breadcrumb {
+  color: green;
+  border: 1px solid green;
+  padding: 2px;
+  margin: 1px;
+}
+</style>
