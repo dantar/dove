@@ -12,19 +12,13 @@ const props = defineProps<Props>()
 
 </script>
 <template>
-  <div>Breadcrumbs</div>
-  <div>
-    <span class="breadcrumb"><RouterLink to="/browse">/</RouterLink></span>
-    <span class="breadcrumb" v-for="posto in props.posti">
+  <div class="breadcrumbs">
+    <span><RouterLink to="/browse"><span class="entity entity--posto"></span></RouterLink></span>
+    <span v-for="(posto, index) in props.posti">
+      <span class="separator">/</span>
       <PostoShort :posto="posto"></PostoShort>
     </span>
   </div>
 </template>
 <style scoped>
-.breadcrumb {
-  color: green;
-  border: 1px solid green;
-  padding: 2px;
-  margin: 1px;
-}
 </style>

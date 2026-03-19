@@ -12,7 +12,6 @@ const emit = defineEmits<{
   (e: "decoded", value: string): void
 }>()
 
-const scanner = ref<InstanceType<typeof QrScanner> | null>(null)
 const visible = ref<boolean>(false);
 const showInput = ref<boolean>(false);
 const currentCode = ref<string>('');
@@ -53,7 +52,6 @@ const emitInputCode = () => {
       <button type="submit" :disabled="!currentCode || disabled">✓</button>
     </form>
   </div>
-
   <QrScanner v-if="visible"
     ref="scanner"
     @decoded="handleQr"

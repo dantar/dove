@@ -1,0 +1,19 @@
+@use '../abstracts' as *;
+
+.title {
+  font-weight: 600;
+  margin-bottom: $spacing-md;
+
+  &--page {
+    font-size: 2rem;
+  }
+
+  &--section {
+    font-size: 1.5rem;
+  }
+
+  &--small {
+    font-size: 1.2rem;
+    color: $color-muted;
+  }
+}

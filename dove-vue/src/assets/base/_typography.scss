@@ -1,0 +1,15 @@
+@use '../abstracts' as *;
+
+body {
+  font-family: $font-base;
+  color: $color-text;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:visited {
+    color: inherit;
+  }
+}

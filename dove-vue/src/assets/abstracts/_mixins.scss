@@ -1,0 +1,13 @@
+@use './variables' as *;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin icon-before($content) {
+  &::before {
+    content: $content;
+    margin-right: $spacing-sm;
+  }
+}

@@ -179,9 +179,6 @@ onMounted(() => {
         🔦
       </button>
 
-      <button class="control-btn stop" @click="stopScanner">
-        Stop
-      </button>
     </div>
 
     <div v-if="error" class="error">

@@ -57,20 +57,21 @@ const addingOggetto = ref(false);
 </script>
 <template>
   <div v-if="browsed">
-    <div v-if="browsed.breadcrumbs">
+    <div v-if="browsed.breadcrumbs" class="pagesection">
       <PostoBreadcrumbs :posti="browsed.posto ? browsed.breadcrumbs.concat(browsed.posto) : browsed.breadcrumbs"></PostoBreadcrumbs>
     </div>
-    <div v-if="browsed.posti">
-      <span>Posti</span>
-      <span v-for="posto in browsed.posti" class="more-posto"><PostoShort :posto="posto"></PostoShort></span>
+    <div class="pagesection">      
+      <div v-if="browsed.posti && browsed.posti.length > 0" class="arrayitems">
+        <span v-for="posto in browsed.posti" class="moreposto"><PostoShort :posto="posto"></PostoShort></span>
+      </div>
+      <div v-else class="notimportant">Nessun altro posto dove andare</div>
+      <div class="overbuttons overbuttons--down">
+        <span>
+          <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
+        </span>
+      </div>
     </div>
-    <div>
-      <span>Aggiungi un posto</span>
-      <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
-    </div>
-    <div v-if="browsed.posto">
-      <div>Oggetti</div>
-
+    <div v-if="browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
           <RouterLink :to="`/oggetto/${item.id}`">
@@ -78,22 +79,20 @@ const addingOggetto = ref(false);
           </RouterLink>
           <OggettoShort :oggetto="item"></OggettoShort>
         </template>
-        <template #empty><span>Nessun oggetto in questo posto</span></template>
+        <template #empty><span class="notimportant">Nessun oggetto in questo posto</span></template>
       </ItemsGallery>
 
-      <div>
-        <span>Aggiungi un oggetto:</span>
-        <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)"></QrLauncher>
+      <div class="overbuttons overbuttons--down">
+        <span>
+          <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)"></QrLauncher>
+        </span>
       </div>
     </div>
   </div>
   <div></div>
 </template>
 <style scoped>
-.more-posto {
-  color: lightgreen;
-  border: 1px solid lightgreen;
-  padding: 2px;
-  margin: 1px;
+.moreposto {
+  font-size: 0.9rem;
 }
 </style>

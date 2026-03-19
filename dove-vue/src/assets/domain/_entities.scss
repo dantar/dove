@@ -1,0 +1,25 @@
+@use '../abstracts' as *;
+
+.entity {
+
+  &::before {
+    font-size: 0.9em;
+  }
+
+  &--posto::before {
+    content: "🏠";
+  }
+
+  &--order::before {
+    content: "📦";
+  }
+
+  &--accessorio::before {
+    content: "📦";
+  }
+
+  &--vestiti::before {
+    content: "👕";
+  }
+
+}

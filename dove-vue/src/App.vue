@@ -6,19 +6,10 @@ const loggedUser = useLoggedUser();
 </script>
 
 <template>
-  <h1>Dove</h1>
   <div v-if="loggedUser.user.username">
-    <div>
+    <div class="header">
       {{ loggedUser.user.username }}
     </div>
-    <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
-    <nav>
-      <RouterLink to="/">Go to Home</RouterLink>
-      <RouterLink to="/browse">Go to Browse</RouterLink>
-      <RouterLink to="/about">Go to About</RouterLink>
-      <RouterLink to="/camera">Go to camera</RouterLink>
-      <RouterLink to="/advanced">Go to advanced camera</RouterLink>
-    </nav>
     <main>
       <RouterView />
     </main>
@@ -28,4 +19,8 @@ const loggedUser = useLoggedUser();
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.header {
+  text-align: right;
+}
+</style>
