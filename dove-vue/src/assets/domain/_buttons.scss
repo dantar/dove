@@ -11,12 +11,12 @@
 
   // Variante: in alto a destra
   &--up {
-    top: 0;
+    top: $spacing-sm;
   }
 
   // Variante: in basso a destra
   &--down {
-    bottom: 0;
+    bottom: $spacing-sm;
   }
 
   // Se vuoi un minimo di margine dal bordo

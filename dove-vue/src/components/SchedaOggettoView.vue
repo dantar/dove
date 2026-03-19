@@ -22,7 +22,6 @@ function impostaTipo(tipo: string) {
 </script>
 <template>
   <div v-if="scheda && scheda.tipo">
-      Scheda!
       <SchedaAccessorioView v-if="SchedaAccessorio.isThis(scheda)" 
         :scheda="(scheda as SchedaAccessorio)"
         :form="(form as SchedaAccessorio)"

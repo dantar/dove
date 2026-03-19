@@ -10,7 +10,6 @@ const props = defineProps<Props>()
 
 </script>
 <template>
-    Accessorio
     <div>
         Condizioni: 
         <span v-if="editable"><input type="number" v-model="props.form.condizioni"></span>

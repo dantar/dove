@@ -18,14 +18,14 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <div>ID: {{ oggetto.id }}</div>
+  <div class="title title--page">
+    <span v-if="editable"><input type="text" v-model="form.nome" :disabled="saving"/></span>
+    <OggettoShort v-else :oggetto="oggetto"></OggettoShort>
+  </div>
   <div v-if="oggetto.thumbnail">
     <ImageThumb :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
   </div>
-  <div>
-      <span v-if="editable"><input type="text" v-model="form.nome" :disabled="saving"/></span>
-      <OggettoShort v-else :oggetto="oggetto"></OggettoShort>
-  </div>
+  <div class="notimportant">ID: {{ oggetto.id }}</div>
 </template>
 
 <style scoped></style>

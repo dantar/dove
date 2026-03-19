@@ -57,8 +57,13 @@ async function refreshThumbnail() {
 
 <template>
     <div v-if="browsed">
-        <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
-        <div>
+        <div class="pagesection">
+            <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
+        </div>
+        <div class="pagesection">
+            <div class="overbuttons overbuttons--up">
+                <button @click="editable = !editable" type="button" :disabled="freeze">🖉</button>
+            </div>
             <form @submit.prevent="saveData()">
                 <OggettoHeader 
                     :oggetto="browsed.oggetto"
@@ -72,17 +77,19 @@ async function refreshThumbnail() {
                     :editable="editable"
                     :saving="freeze"
                     ></SchedaOggettoView>
-                <button @click="editable = !editable" type="button" :disabled="freeze">🖉</button>
                 <button v-if="editable" type="submit" :disabled="freeze">✓</button>
             </form>
         </div>
-        <div>Galleria</div>
-        <ItemsGallery :items="browsed.oggetto.immagini">
-            <template #item="{ item }">
-                <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
-            </template>
-        </ItemsGallery>
-        <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
+        <div class="pagesection">
+            <ItemsGallery :items="browsed.oggetto.immagini">
+                <template #item="{ item }">
+                    <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
+                </template>
+            </ItemsGallery>
+            <div class="overbuttons overbuttons--down">
+                <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
+            </div>
+        </div>
     </div>
     <div v-else="">Loading...</div>
 </template>
