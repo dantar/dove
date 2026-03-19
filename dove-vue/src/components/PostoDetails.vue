@@ -10,6 +10,7 @@ import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import type { OggettoObj, PostoBrowseDto, PostoObj } from '@/models/browse-item';
 import ImageThumb from './ImageThumb.vue';
 import ItemsGallery from './ItemsGallery.vue';
+import SchedaOggettoView from './SchedaOggettoView.vue';
 
 interface Props {
   uuid?: string,
@@ -78,6 +79,12 @@ const addingOggetto = ref(false);
             <ImageThumb v-if="item.thumbnail" :uuid="item.id" :image="item.thumbnail"></ImageThumb>
           </RouterLink>
           <OggettoShort :oggetto="item"></OggettoShort>
+          <SchedaOggettoView v-if="item.scheda"
+              :scheda="item.scheda"
+              :form="item.scheda"
+              :editable="false"
+              :saving="false"
+              ></SchedaOggettoView>
         </template>
         <template #empty><span class="notimportant">Nessun oggetto in questo posto</span></template>
       </ItemsGallery>

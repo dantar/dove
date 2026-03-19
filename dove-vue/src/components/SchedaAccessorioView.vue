@@ -10,19 +10,19 @@ const props = defineProps<Props>()
 
 </script>
 <template>
-    <div>
-        Condizioni: 
+    <div class="data-panel">
+        <span class="data-panel-header">Condizioni</span> 
         <span v-if="editable"><input type="number" v-model="props.form.condizioni"></span>
         <span v-else>{{ scheda.condizioni }}</span>
     </div>
-    <div>
-        Descrizione: 
-        <span v-if="editable"><textarea v-model="props.form.descrizione"></textarea></span>
+    <div class="data-panel">
+        <span class="data-panel-header">Descrizione</span> 
+        <span v-if="editable" class="data-panel-line"><textarea v-model="props.form.descrizione"></textarea></span>
         <span v-else>{{ scheda.descrizione }}</span>
     </div>
-    <div>
-        Note: 
-        <span v-if="editable"><textarea v-model="props.form.note"></textarea></span>
+    <div class="data-panel">
+        <span class="data-panel-header">Note</span> 
+        <span v-if="editable" class="data-panel-line"><textarea v-model="props.form.note"></textarea></span>
         <span v-else>{{ scheda.note }}</span>
     </div>
 </template>

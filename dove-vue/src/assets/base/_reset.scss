@@ -8,6 +8,10 @@ body {
   margin: 2px;
 }
 
+textarea {
+    width: 100%;
+}
+
 .notimportant {
     font-size: 0.8rem;
     color: $color-muted;
@@ -29,12 +33,17 @@ body {
 .data-panel {
 
     display: flex;
-    gap: $spacing-md;
+    column-gap: $spacing-md;
+    row-gap: 0;
     flex-wrap: wrap;
 
     &-header {
         color: $color-secondary;
         max-width: 30%;
+    }
+
+    &-line {
+        width: 100%;
     }
 
 }
