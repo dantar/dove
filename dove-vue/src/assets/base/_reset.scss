@@ -25,3 +25,16 @@ body {
     margin: 2px;
     padding: 2px;
 }
+
+.data-panel {
+
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+
+    &-header {
+        color: $color-secondary;
+        max-width: 30%;
+    }
+
+}

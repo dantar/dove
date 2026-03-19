@@ -22,21 +22,26 @@ const data = ref(props.form);
 
 </script>
 <template>
-    <span v-if="editable">
+    <span v-if="editable" class="arrayitems">
         <span v-for="option in options" 
-            :class="`chip-active-${data.includes(option)} chip-disabled-${saving}`"
+            :class="`data-chip-item chip-active-${data.includes(option)} chip-disabled-${saving}`"
             @click="toggleOption(option)"> {{ option }} </span>
     </span>
-    <span v-else>
+    <span v-else class="arrayitems">
         <span v-for="option in options.filter(o => chips.includes(o))" class="chip-active-true"> {{ option }} </span>
     </span>
 </template>
 
 <style scoped>
+.data-chip-item {
+    margin: 1px;
+    padding: 1px 3px;
+}
 .chip-disabled-true {
     opacity: 0.5;
 }
 .chip-active-true {
+    padding: 0px 2px;
     border: 1px solid black;
 }
 </style>
