@@ -57,7 +57,10 @@ const addingOggetto = ref(false);
 <template>
   <div v-if="browsed">
     <div v-if="browsed.breadcrumbs" class="pagesection">
-      <PostoBreadcrumbs :posti="browsed.posto ? browsed.breadcrumbs.concat(browsed.posto) : browsed.breadcrumbs"></PostoBreadcrumbs>
+      <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
+    </div>
+    <div class="pagesection" v-if="browsed.posto">
+      <PostoHeader :posto="browsed.posto"></PostoHeader>
     </div>
     <div class="pagesection pagesection-with-buttons">
       <div v-if="browsed.posti && browsed.posti.length > 0" class="arrayitems">
@@ -69,9 +72,6 @@ const addingOggetto = ref(false);
           <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
         </span>
       </div>
-    </div>
-    <div class="pagesection" v-if="browsed.posto">
-      <PostoHeader :posto="browsed.posto"></PostoHeader>
     </div>
     <div v-if="browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">

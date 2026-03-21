@@ -60,12 +60,13 @@ textarea {
 // ===============================
 button,
 .btn {
-  @include button-base;
-  @include button-states;
-  svg {
-    width: 24px;
-    height: 24px;
-  }
+    @include button-base;
+    @include button-states;
+    background: white;
+    svg {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 

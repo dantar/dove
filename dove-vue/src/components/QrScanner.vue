@@ -176,7 +176,7 @@ function toggleShowInput() {
         </option>
       </select>
 
-      <button class="close-btn" @click="closeScanner">✕</button>
+      <button class="btn" @click="closeScanner">✕</button>
     </div>
 
     <!-- Scanner -->
@@ -192,7 +192,7 @@ function toggleShowInput() {
         🔦
       </button>
 
-      <button type="button" @click="toggleShowInput()">▽</button>
+      <button type="button" @click="toggleShowInput()">🖉</button>
       <span v-if="showInput">
         <form @submit.prevent="emitInputCode()">
           <input type="text" v-model.trim="currentCode" />
@@ -247,13 +247,6 @@ function toggleShowInput() {
 .camera-select {
   padding: 0.5rem;
   font-size: 1rem;
-}
-
-.close-btn {
-  font-size: 1.5rem;
-  background: transparent;
-  color: white;
-  border: none;
 }
 
 .control-btn {
