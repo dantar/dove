@@ -98,4 +98,8 @@ async function refreshThumbnail() {
     <div v-else="">Loading...</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.card-title {
+    font-size: 1.4rem;
+}
+</style>

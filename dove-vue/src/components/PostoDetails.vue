@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { useBrowseData } from '@/stores/browse-data';
 import PostoShort from './PostoShort.vue';
-import PostoHeader from './PostoHeader.vue';
 import QrLauncher from './QrLauncher.vue';
-import OggettoShort from './OggettoShort.vue';
 import { ref, watch } from 'vue';
 import OggettoHeader from './OggettoHeader.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
-import type { OggettoObj, PostoBrowseDto, PostoObj } from '@/models/browse-item';
-import ImageThumb from './ImageThumb.vue';
+import type { PostoBrowseDto } from '@/models/browse-item';
 import ItemsGallery from './ItemsGallery.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
 
@@ -66,7 +63,7 @@ const addingOggetto = ref(false);
         <span v-for="posto in browsed.posti" class="moreposto"><PostoShort :posto="posto"></PostoShort></span>
       </div>
       <div v-else class="notimportant">Nessun altro posto dove andare</div>
-      <div class="overbuttons overbuttons--down">
+      <div class="overbuttons overbuttons--up">
         <span>
           <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
         </span>
@@ -76,9 +73,8 @@ const addingOggetto = ref(false);
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
           <RouterLink :to="`/oggetto/${item.id}`">
-            <ImageThumb v-if="item.thumbnail" :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+            <OggettoHeader :form="item" :editable="false" :saving="false" :oggetto="item"></OggettoHeader>
           </RouterLink>
-          <OggettoShort :oggetto="item"></OggettoShort>
           <SchedaOggettoView v-if="item.scheda"
               :scheda="item.scheda"
               :form="item.scheda"
@@ -88,8 +84,7 @@ const addingOggetto = ref(false);
         </template>
         <template #empty><span class="notimportant">Nessun oggetto in questo posto</span></template>
       </ItemsGallery>
-
-      <div class="overbuttons overbuttons--down">
+      <div class="overbuttons overbuttons--up">
         <span>
           <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)"></QrLauncher>
         </span>

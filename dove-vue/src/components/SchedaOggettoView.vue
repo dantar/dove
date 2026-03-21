@@ -37,11 +37,14 @@ function impostaTipo(tipo: string) {
   </div>
   <div v-else>
       <span>Nessuna scheda presente. </span>
-      <span v-if="editable">
-        Crea una scheda:
-        <button type="button" @click="impostaTipo('accessorio')" :disabled="saving">Accessorio</button>
-        <button type="button" @click="impostaTipo('vestiti')" :disabled="saving">Vestiti</button>
-      </span>
+  </div>
+  <div v-if="editable" class="arrayitems">
+    <button type="button" @click="impostaTipo('accessorio')" :disabled="saving">
+      <span class="button entity entity--accessorio">Accessorio</span>
+    </button>
+    <button type="button" @click="impostaTipo('vestiti')" :disabled="saving">
+      <span class="button entity entity--vestiti">Vestiti</span>
+    </button>
   </div>
 
 </template>
