@@ -5,6 +5,7 @@ import {
   type CameraDevice,
   type Html5QrcodeCameraScanConfig,
 } from "html5-qrcode"
+import {v4 as uuidv4} from 'uuid';
 
 const emit = defineEmits<{
   (e: "decoded", value: string): void
@@ -143,6 +144,18 @@ onMounted(() => {
   openScanner();
 })
 
+const showInput = ref<boolean>(false);
+const currentCode = ref<string>('');
+const emitInputCode = () => {
+  emit("decoded", currentCode.value);
+  currentCode.value = '';
+  showInput.value = false;
+}
+
+function toggleShowInput() {
+  showInput.value = !showInput.value;
+}
+
 </script>
 
 <template>
@@ -178,6 +191,15 @@ onMounted(() => {
       >
         🔦
       </button>
+
+      <button type="button" @click="toggleShowInput()">▽</button>
+      <span v-if="showInput">
+        <form @submit.prevent="emitInputCode()">
+          <input type="text" v-model.trim="currentCode" />
+          <button type="button" @click="() => currentCode = uuidv4()" >▣</button>
+          <button type="submit" :disabled="!currentCode">✓</button>
+        </form>
+      </span>
 
     </div>
 

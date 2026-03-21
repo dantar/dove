@@ -60,7 +60,7 @@ async function refreshThumbnail() {
         <div class="pagesection">
             <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
         </div>
-        <div class="pagesection">
+        <div class="pagesection pagesection-with-buttons">
             <form @submit.prevent="saveData()">
             <div>
                 <OggettoHeader 
@@ -76,7 +76,7 @@ async function refreshThumbnail() {
                     :saving="freeze"
                     ></SchedaOggettoView>
             </div>
-            <div class="overbuttons overbuttons--down">
+            <div class="overbuttons overbuttons--up">
                 <span>
                     <button v-if="editable" type="submit" :disabled="freeze">✓</button>
                     <button @click="editable = !editable" type="button" :disabled="freeze">🖉</button>
@@ -84,13 +84,13 @@ async function refreshThumbnail() {
             </div>
             </form>
         </div>
-        <div class="pagesection">
+        <div class="pagesection pagesection-with-buttons">
             <ItemsGallery :items="browsed.oggetto.immagini">
                 <template #item="{ item }">
                     <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
                 </template>
             </ItemsGallery>
-            <div class="overbuttons overbuttons--down">
+            <div class="overbuttons overbuttons--up">
                 <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
             </div>
         </div>

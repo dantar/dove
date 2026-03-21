@@ -8,6 +8,7 @@ import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import type { PostoBrowseDto } from '@/models/browse-item';
 import ItemsGallery from './ItemsGallery.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
+import PostoHeader from './PostoHeader.vue';
 
 interface Props {
   uuid?: string,
@@ -58,7 +59,7 @@ const addingOggetto = ref(false);
     <div v-if="browsed.breadcrumbs" class="pagesection">
       <PostoBreadcrumbs :posti="browsed.posto ? browsed.breadcrumbs.concat(browsed.posto) : browsed.breadcrumbs"></PostoBreadcrumbs>
     </div>
-    <div class="pagesection">      
+    <div class="pagesection pagesection-with-buttons">
       <div v-if="browsed.posti && browsed.posti.length > 0" class="arrayitems">
         <span v-for="posto in browsed.posti" class="moreposto"><PostoShort :posto="posto"></PostoShort></span>
       </div>
@@ -68,6 +69,9 @@ const addingOggetto = ref(false);
           <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
         </span>
       </div>
+    </div>
+    <div class="pagesection" v-if="browsed.posto">
+      <PostoHeader :posto="browsed.posto"></PostoHeader>
     </div>
     <div v-if="browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">

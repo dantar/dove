@@ -20,8 +20,13 @@ textarea {
 .pagesection {
     border-top: 1px solid black;
     padding-top: 2px;
-    min-height: 1.1em;
     position: relative;
+    min-height: 1.2rem;
+
+    &-with-buttons {
+        min-height: 60px;
+    }
+
 }
 
 .boxed {
@@ -46,4 +51,69 @@ textarea {
         width: 100%;
     }
 
+}
+
+// BUTTONS
+
+// ===============================
+// Classe principale
+// ===============================
+button,
+.btn {
+  @include button-base;
+  @include button-states;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+
+// ===============================
+// Variante: solo icona
+// ===============================
+.btn-icon {
+  @include button-reset;
+
+  border: 1px solid $btn-border-color;
+  border-radius: $btn-border-radius;
+
+  svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  @include button-states;
+
+}
+
+// ===============================
+// Variante: compatta
+// ===============================
+.btn-sm {
+  padding: 0px 4px;
+  font-size: 0.875rem;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// ===============================
+// Variante: grande
+// ===============================
+.btn-lg {
+  padding: 8px 12px;
+  font-size: 1.1rem;
+  svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+// ===============================
+// Icone dentro button (Heroicons)
+// ===============================
+.btn svg {
+  flex-shrink: 0;
 }

@@ -16,6 +16,7 @@ CREATE TABLE public.posto (
 	id varchar NOT NULL,
 	nome varchar NULL,
 	percorso ltree NULL,
+	thumbnail varchar NULL,
 	CONSTRAINT posto_pk PRIMARY KEY (id)
 );
 

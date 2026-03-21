@@ -11,13 +11,11 @@ const mode = ref('double');
 </script>
 <template>
   <div v-if="items && items.length > 0" >
-    <div class="overbuttons overbuttons--up">
-      <span>
-        <button type="button" @click="mode = 'single'">x1</button>
-        <button type="button" @click="mode = 'double'">x2</button>
-        <button type="button" @click="mode = 'triple'">x3</button>
-        <button type="button" @click="mode = 'quadruple'">x4</button>
-      </span>
+    <div>
+      <button type="button" @click="mode = 'single'">x1</button>
+      <button type="button" @click="mode = 'double'">x2</button>
+      <button type="button" @click="mode = 'triple'">x3</button>
+      <button type="button" @click="mode = 'quadruple'">x4</button>
     </div>
     <div class="gallery-box" :class="`stacking-${mode}`" >
       <span v-for="item in items"><slot name="item" :item="item"></slot></span>

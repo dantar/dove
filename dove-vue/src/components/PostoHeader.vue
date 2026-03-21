@@ -2,7 +2,7 @@
 
 import type { PostoObj } from '@/models/browse-item';
 import { useBrowseData } from '@/stores/browse-data';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import PostoShort from './PostoShort.vue';
 
 interface Props {
@@ -23,15 +23,17 @@ const saveData = async () => {
   editable.value = false;
 }
 
+watch(() => props.posto, (newposto) => {
+  form.value = {...newposto};
+});
+
 const form = ref({...props.posto});
 
 </script>
 
 <template>
-  <div>ID: {{ posto.id }}</div>
   <div>
     <form @submit.prevent="saveData()">
-      Nome: 
       <RouterLink v-if="!editable" :to="`/posto/${posto.id}`">
         <PostoShort :posto="posto"></PostoShort>
       </RouterLink>
@@ -51,6 +53,7 @@ const form = ref({...props.posto});
         >✓</button>
     </form>
   </div>
+  <div class="notimportant">ID: {{ posto.id }}</div>
 </template>
 
 <style scoped></style>

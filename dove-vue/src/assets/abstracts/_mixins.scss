@@ -11,3 +11,73 @@
     margin-right: $spacing-sm;
   }
 }
+
+// ===============================
+// Mixin reset base
+// ===============================
+@mixin button-reset {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+
+// ===============================
+// Mixin base button
+// ===============================
+@mixin button-base {
+  @include button-reset;
+
+  gap: $btn-gap;
+  padding: $btn-padding-y $btn-padding-x;
+  border: 1px solid $btn-border-color;
+  border-radius: $btn-border-radius;
+  background: transparent;
+
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+
+// ===============================
+// Mixin stati
+// ===============================
+@mixin button-states {
+  &:hover {
+    background: $btn-hover-bg;
+    border-color: darken($btn-border-color, 10%);
+  }
+
+  &:active {
+    background: $btn-active-bg;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $btn-focus-color;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-base {
+  @include button-reset;
+
+  gap: $btn-gap;
+  padding: $btn-padding-y $btn-padding-x;
+
+  border: 1px solid $btn-border-color;
+  border-radius: $btn-border-radius;
+  background: transparent;
+
+  min-height: $btn-min-size; // 👈 area tappabile
+
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+
+  -webkit-tap-highlight-color: transparent; // 👈 elimina highlight blu mobile
+}

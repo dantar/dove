@@ -22,6 +22,7 @@ public class Posto {
 	String id;
 	String nome;
 	String percorso;
+	String thumbnail;
 	
 	@Transient
 	public String getPathId() {

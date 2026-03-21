@@ -68,6 +68,7 @@ public class IngressoController {
 		Posto posto = new Posto();
 		posto.setId(uuid);
 		posto.setNome("Nuovo posto");
+		posto.setThumbnail("");
 		return posto;
 	}
 
@@ -87,9 +88,8 @@ public class IngressoController {
 
 	@PostMapping("/oggetto")
 	public Oggetto nuovoOggetto(@RequestBody Oggetto oggetto) {
-		if (oggetto.getId() == null) {			
-			oggetto.setId(UUID.randomUUID().toString());
-		}
+		oggetto.setId(Optional.ofNullable(oggetto.getId()).orElse(UUID.randomUUID().toString()));
+		oggetto.setThumbnail(Optional.ofNullable(oggetto.getThumbnail()).orElse(""));
 		oggettoDao.save(oggetto);
 		return oggetto;
 	}
