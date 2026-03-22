@@ -8,7 +8,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', component: PostoDetails, props: true },
+    { path: '', component: PostoDetails, props: true },
     { path: '/browse', component: PostoDetails, props: true },
     { path: '/about', component: AboutView },
     { path: '/camera', component: CameraSquare },

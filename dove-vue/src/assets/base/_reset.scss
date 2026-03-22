@@ -12,6 +12,12 @@ textarea {
     width: 100%;
 }
 
+.title-short img {
+    max-height: 1.2rem;
+    position: relative;
+    top: 0.1rem;
+}
+
 .notimportant {
     font-size: 0.8rem;
     color: $color-muted;

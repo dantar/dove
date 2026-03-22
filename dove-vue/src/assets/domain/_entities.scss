@@ -7,15 +7,15 @@
   }
 
   &--posto::before {
+    content: "📦";
+  }
+
+  &--home::before {
     content: "🏠";
   }
 
-  &--order::before {
-    content: "📦";
-  }
-
   &--accessorio::before {
-    content: "📦";
+    content: "🔨";
   }
 
   &--vestiti::before {

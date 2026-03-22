@@ -8,16 +8,11 @@ const props = defineProps<Props>()
 </script>
 <template>
     <RouterLink :to="`/oggetto/${oggetto.id}`">
-        <span :class="`oggetto-short entity entity--${oggetto.scheda.tipo}`">
-            <ImageThumb :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
+        <span :class="`title-short entity entity--${oggetto.scheda.tipo}`">
+            <ImageThumb :uuid="oggetto.id" :image="''"></ImageThumb>
             {{ oggetto.nome || oggetto.id }}
         </span>
     </RouterLink>
 </template>
 <style scoped>
-.oggetto-short img {
-    max-height: 1.2rem;
-    position: relative;
-    top: 0.1rem;
-}
 </style>

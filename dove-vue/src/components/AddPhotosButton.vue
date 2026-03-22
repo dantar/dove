@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import CameraAdvanced from './CameraAdvanced.vue';
 import { useBrowseData } from '@/stores/browse-data';
+import HeroiconCamera from '@/heroicons/HeroiconCamera.vue';
 
 interface Props {
   uuid: string,
@@ -28,7 +29,7 @@ const uploadPhotos = async (photos: string[]) => {
 
 </script>
 <template>
-  <button type="button" :disabled="freeze" @click="showCamera = ! showCamera">📷</button>
+  <button type="button" :disabled="freeze" @click="showCamera = ! showCamera"><HeroiconCamera></HeroiconCamera></button>
   <CameraAdvanced v-if="showCamera" @done="uploadPhotos"></CameraAdvanced>
 </template>
 

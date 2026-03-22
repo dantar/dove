@@ -9,6 +9,11 @@ import SchedaOggettoView from './SchedaOggettoView.vue';
 import ItemsGallery from './ItemsGallery.vue';
 import ImageThumb from './ImageThumb.vue';
 import HeroiconTrash from '@/heroicons/HeroiconTrash.vue';
+import HeroiconPencil from '@/heroicons/HeroiconPencil.vue';
+import HeroiconCircle from '@/heroicons/HeroiconCircle.vue';
+import HeroiconCheckCircle from '@/heroicons/HeroiconCheckCircle.vue';
+import HeroiconPhoto from '@/heroicons/HeroiconPhoto.vue';
+import HeroiconCheck from '@/heroicons/HeroiconCheck.vue';
 
 interface Props {
   uuid: string,
@@ -102,8 +107,8 @@ function deleteThumbnail(image:string) {
             </div>
             <div class="overbuttons overbuttons--up">
                 <span>
-                    <button v-if="editable" type="submit" :disabled="freeze">✓</button>
-                    <button @click="editable = !editable" type="button" :disabled="freeze">🖉</button>
+                    <button v-if="editable" type="submit" :disabled="freeze"><HeroiconCheck/></button>
+                    <button @click="editable = !editable" type="button" :disabled="freeze"><HeroiconPencil></HeroiconPencil></button>
                 </span>
             </div>
             </form>
@@ -116,9 +121,14 @@ function deleteThumbnail(image:string) {
                         <span class="overbuttons overbuttons--up">
                             <button v-if="editable" @click="deleteThumbnail(item)">
                                 <HeroiconTrash></HeroiconTrash>
-                                {{ trash.includes(item) ? 'X': 'O' }}
+                                <HeroiconCheckCircle v-if="trash.includes(item)"></HeroiconCheckCircle>
+                                <HeroiconCircle v-else></HeroiconCircle>
                             </button>
-                            <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">{{ form?.thumbnail == item ? 'X': 'O' }}</button>
+                            <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">
+                                <HeroiconPhoto></HeroiconPhoto>
+                                <HeroiconCheckCircle v-if="form?.thumbnail == item"></HeroiconCheckCircle>
+                                <HeroiconCircle v-else></HeroiconCircle>
+                            </button>
                         </span>
                     </div>
                 </template>

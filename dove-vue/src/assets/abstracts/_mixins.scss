@@ -47,7 +47,6 @@
 @mixin button-states {
   &:hover {
     background: $btn-hover-bg;
-    border-color: darken($btn-border-color, 10%);
   }
 
   &:active {

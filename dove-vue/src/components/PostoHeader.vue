@@ -4,6 +4,8 @@ import type { PostoObj } from '@/models/browse-item';
 import { useBrowseData } from '@/stores/browse-data';
 import { ref, watch } from 'vue';
 import PostoShort from './PostoShort.vue';
+import HeroiconPencil from '@/heroicons/HeroiconPencil.vue';
+import HeroiconCheck from '@/heroicons/HeroiconCheck.vue';
 
 interface Props {
   posto: PostoObj
@@ -46,11 +48,11 @@ const form = ref({...props.posto});
       <button type="button"
         @click="editable = !editable"
         :disabled="saving"
-        >🖉</button>
+        ><HeroiconPencil></HeroiconPencil></button>
       <button type="submit"
         v-if="editable" 
         :disabled="saving" 
-        >✓</button>
+        ><HeroiconCheck/></button>
     </form>
   </div>
   <div class="notimportant">ID: {{ posto.id }}</div>
