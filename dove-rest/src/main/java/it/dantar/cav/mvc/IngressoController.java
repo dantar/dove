@@ -126,21 +126,8 @@ public class IngressoController {
 		return this.pictureService.allPictureUuids(uuid);
 	}
 
-	@DeleteMapping("/oggetto/{uuid}/picture/{code}")
+	@DeleteMapping("/picture/{uuid}/{code}")
 	public Boolean deletePicture(@PathVariable("uuid") String uuid, @PathVariable("code") String code) throws IOException {
-		Optional<Oggetto> found = oggettoDao.findById(uuid);
-		if (found.isPresent()) {
-			Oggetto oggetto = found.get();
-			if (code.equals(oggetto.getThumbnail())) {
-				this.pictureService.caricaImmagini(oggetto);
-				if (oggetto.getImmagini().isEmpty()) {
-					oggetto.setThumbnail(null);
-				} else {
-					oggetto.setThumbnail(oggetto.getImmagini().get(0));
-				}
-				oggettoDao.save(oggetto);
-			}
-		}
 		return this.pictureService.deletePicture(uuid, code);
 	}
 

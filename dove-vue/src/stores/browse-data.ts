@@ -66,7 +66,6 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   async function addOggetto(main: string, id: string): Promise<OggettoObj> {
-    console.log(`Creating oggetto ${main}>${id}`);
     const config = useBackendConfig();
     const oggetto = <OggettoObj>{
       id: id,
@@ -80,7 +79,6 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   async function updatePosto(posto: PostoObj): Promise<PostoObj> {
-    console.log(`Updating Posto ${posto.id}`);
     const config = useBackendConfig();
     const o = await axios
     .post<PostoObj>(`${config.url}/posto`, posto, config.bearer())
@@ -88,7 +86,6 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   async function updateOggetto(oggetto: OggettoObj): Promise<OggettoObj> {
-    console.log(`Updating Oggetto ${oggetto.id}`);
     const config = useBackendConfig();
     const o = await axios
     .post<OggettoObj>(`${config.url}/oggetto`, oggetto, config.bearer());
@@ -96,17 +93,25 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   async function uploadGallery(uuid:string, images:string[]): Promise<string[]> {
-    console.log(`Uploading gallery for ${uuid}`);
     const config = useBackendConfig();
     const o = await axios
     .post<string[]>(`${config.url}/gallery/${uuid}`, images, config.bearer());
     return o.data;
   }
 
+  async function deletePicture(uuid:string, image:string): Promise<Boolean> {
+    const config = useBackendConfig();
+    const o = await axios
+    .delete<Boolean>(`${config.url}/picture/${uuid}/${image}`, config.bearer());
+    return o.data;
+
+  }
+
   return { current, goToRoot, goToPosto, 
     addRoot, addPosto, updatePosto, 
     addOggetto, updateOggetto,
     uploadGallery, fetchOggettoDetails,
-    browseOggettoDetails, browsePostoDetails, browseRootDetails
+    browseOggettoDetails, browsePostoDetails, browseRootDetails,
+    deletePicture
   }
 })

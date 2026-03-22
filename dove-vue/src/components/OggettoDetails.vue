@@ -8,6 +8,7 @@ import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
 import ItemsGallery from './ItemsGallery.vue';
 import ImageThumb from './ImageThumb.vue';
+import HeroiconTrash from '@/heroicons/HeroiconTrash.vue';
 
 interface Props {
   uuid: string,
@@ -19,28 +20,34 @@ const browse = useBrowseData();
 const browsed = ref<OggettoBrowseDto>();
 const editable = ref(false);
 const freeze = ref(false);
+const trash = ref<string[]>([]);
 
 async function loadOggetto(uuid: string) {
     freeze.value = true;
     const bo = await browse.browseOggettoDetails(uuid);
+    setOggetto(bo.oggetto);
     browsed.value = bo;
-    form.value = {...bo.oggetto};
-    (form.value as OggettoObj).scheda = {...bo.oggetto.scheda};
     freeze.value = false;
 }
 loadOggetto(props.uuid)
 
 watch(() => props.uuid, loadOggetto);
 
+function setOggetto(o: OggettoObj) {
+    form.value = {...o};
+    (form.value as OggettoObj).scheda = {...o.scheda};
+    trash.value = [];
+}
 
 const saveData = async () => {
   freeze.value = true;
   const browse = useBrowseData();
   const updated = await browse.updateOggetto(form.value as OggettoObj);
-  if (browsed.value) {
-      browsed.value.oggetto.nome = updated.nome;
-      browsed.value.oggetto.scheda = updated.scheda;
+  for (let index = 0; index < trash.value.length; index++) {
+    const image = trash.value[index] as string;
+    await browse.deletePicture(updated.id, image);
   }
+  await loadOggetto(updated.id);
   freeze.value = false;
   editable.value = false;
 }
@@ -50,6 +57,23 @@ const form = ref<OggettoObj>();
 async function refreshThumbnail() {
     if (browsed.value && browsed.value.oggetto.immagini) {
         browsed.value.oggetto.thumbnail = browsed.value.oggetto.immagini[0] as string;
+    }
+}
+
+function selectThumbnail(image:string) {
+    if (form.value) {
+        form.value.thumbnail = (form.value.thumbnail == image? '': image);
+    }
+}
+
+function deleteThumbnail(image:string) {
+    if (form.value && form.value.thumbnail == image) {
+        form.value.thumbnail = '';
+    }
+    if (trash.value.includes(image)) {
+        trash.value.splice(trash.value.indexOf(image), 1);
+    } else {
+        trash.value.push(image);
     }
 }
 
@@ -64,7 +88,7 @@ async function refreshThumbnail() {
             <form @submit.prevent="saveData()">
             <div>
                 <OggettoHeader 
-                    :oggetto="browsed.oggetto"
+                    :oggetto="editable ? form || browsed.oggetto : browsed.oggetto"
                     :form="(form as OggettoObj)"
                     :editable="editable"
                     :saving="freeze"
@@ -87,7 +111,16 @@ async function refreshThumbnail() {
         <div class="pagesection pagesection-with-buttons">
             <ItemsGallery :items="browsed.oggetto.immagini">
                 <template #item="{ item }">
-                    <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
+                    <div style="position: relative;">
+                        <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
+                        <span class="overbuttons overbuttons--up">
+                            <button v-if="editable" @click="deleteThumbnail(item)">
+                                <HeroiconTrash></HeroiconTrash>
+                                {{ trash.includes(item) ? 'X': 'O' }}
+                            </button>
+                            <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">{{ form?.thumbnail == item ? 'X': 'O' }}</button>
+                        </span>
+                    </div>
                 </template>
             </ItemsGallery>
             <div class="overbuttons overbuttons--up">
