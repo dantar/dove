@@ -26,7 +26,7 @@ const props = defineProps<Props>();
 </template>
 
 <style scoped>
-.card-image .avatar {
+.card-image .identicon {
   padding: 15%;
 }
 </style>

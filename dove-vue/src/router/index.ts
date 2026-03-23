@@ -3,6 +3,7 @@ import CameraAdvanced from '@/components/CameraAdvanced.vue'
 import CameraSquare from '@/components/CameraSquare.vue'
 import OggettoDetails from '@/components/OggettoDetails.vue'
 import PostoDetails from '@/components/PostoDetails.vue'
+import PrintTemplate from '@/components/PrintTemplate.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -15,6 +16,7 @@ const router = createRouter({
     { path: '/advanced', component: CameraAdvanced },
     { path: '/oggetto/:uuid', component: OggettoDetails, props: true },
     { path: '/posto/:uuid', component: PostoDetails, props: true },
+    { path: '/print', component: PrintTemplate },
   ],
 })
 
