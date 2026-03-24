@@ -124,3 +124,20 @@ button,
 .btn svg {
   flex-shrink: 0;
 }
+
+@media print {
+
+  body {
+    margin: 0;
+  }
+
+  .controls, .noprint {
+    display: none;
+  }
+
+  #vue-inspector-container, #__vue-devtools-container__ {
+    display: none !important;
+  }
+
+}
+
