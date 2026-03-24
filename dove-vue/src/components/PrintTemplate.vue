@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {v4 as uuidv4} from 'uuid';
 import QrcodeVue from 'qrcode.vue'
-import ImageThumb from './ImageThumb.vue';
-import DicebearIdenticon from './DicebearIdenticon.vue';
 import { makeIdenticon } from '@/services/dicebear-identicon';
 
 const rows = ref(2);
@@ -16,14 +14,26 @@ interface Trbl {
   left: number;
 }
 
-const padding = ref<Trbl>({top: 0, right:0, bottom: 0, left:0});
+const padding = ref<Trbl>({top: 5, right:5, bottom: 5, left:5});
 const gapRows = ref(5);
 const gapColumns = ref(5);
 
 const codes = ref<string[][]>([[uuidv4(), uuidv4()],[uuidv4(), uuidv4()]])
 
-function mmUnit(n: number, zoom: number): string {
-  return `${n * zoom / 210}vw`;
+function codeWidth(): number {
+  const available = (210 - padding.value.left - padding.value.right);
+  return ((available + gapColumns.value) / columns.value) - gapColumns.value;
+}
+
+function codeHeight(): number {
+  const available = (297 - padding.value.top - padding.value.bottom);
+  return ((available + gapRows.value) / rows.value) - gapRows.value;
+}
+
+function codeSize(): number {
+  const w = codeWidth();
+  const h = codeHeight();
+  return w < h? w : h;
 }
 
 function newRow() {
@@ -92,7 +102,7 @@ function printCodes() {
 </script>
 <template>
   <div class="fullscreen">
-    <div class="controls">
+    <div class="controls noprint">
       <div>
         <span>Righe {{ rows }}</span>
         <button @click="rows = rows+1">+</button>
@@ -100,8 +110,8 @@ function printCodes() {
       </div>
       <div>
         <span>Colonne {{ columns }}</span>
-        <button @click="columns = columns+1">+</button>
-        <button @click="columns = columns-1">-</button>
+        <button @click="columns++">+</button>
+        <button @click="columns--">-</button>
       </div>
       <div>
         <button @click="printCodes()">Stampa</button>
@@ -120,28 +130,28 @@ function printCodes() {
       </div>
     </div>
     <div class="control-area" style="position: relative;">
-      <span class="control tlbr tlbr-top">
+      <span class="control tlbr tlbr-top noprint">
         <span>
           <button @click="padding.top--">-</button>
           <input class="trbl" type="number" v-model="padding.top" size="3"/>
           <button @click="padding.top++">+</button>
         </span>
       </span>
-      <span class="control tlbr tlbr-bottom">
+      <span class="control tlbr tlbr-bottom noprint">
         <span>
           <button @click="padding.bottom--">-</button>
           <input class="trbl" type="number" v-model="padding.bottom" size="3"/>
           <button @click="padding.bottom++">+</button>
         </span>
       </span>
-      <span class="control tlbr tlbr-left">
+      <span class="control tlbr tlbr-left noprint">
         <span>
           <button @click="padding.left--">-</button>
           <input class="trbl" type="number" v-model="padding.left" size="3"/>
           <button @click="padding.left++">+</button>
         </span>
       </span>
-      <span class="control tlbr tlbr-right">
+      <span class="control tlbr tlbr-right noprint">
         <span>
           <button @click="padding.right--">-</button>
           <input class="trbl" type="number" v-model="padding.right" size="3"/>
@@ -149,36 +159,44 @@ function printCodes() {
         </span>
       </span>
       <div class="preview-area">
-        <div class="page-a4 page-a4-portrait" 
-          :style="{
-            'padding': `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`
-            }">
-          <div class="grid"
-            :style="{
-              gridTemplateRows: `repeat(${rows}, 1fr)`,
-              gridTemplateColumns: `repeat(${columns}, 1fr)`,
-              'row-gap': `${gapRows}px`,
-              'column-gap': `${gapColumns}px`,
-            }"
-            >
-            <div class="cell" v-for="code in flatCodes">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-                <!-- QR -->
-                <foreignObject x="0" y="0" width="48" height="48">
-                  <qrcode-vue :value="code" :render-as="'svg'" />
-                </foreignObject>
-                <foreignObject x="52" y="0" width="48" height="48" v-html="makeIdenticon(code)" />
-                <!-- Testo -->
-                <text v-for="(part, index) in textrows(code)"
-                  x="50" 
-                  v-bind:y="70 + index*14" 
-                  text-anchor="middle" 
-                  v-bind:font-size="13 + (index > 0? 0: 10)"
-                >{{ part }}</text>
-              </svg>
-            </div>
-          </div>
-        </div>
+        <svg viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet">
+          <g v-for="(row, ridx) in codes">
+            <g v-for="(code, cidx) in row">
+              <rect fill="yellow" class="noprint"
+                v-bind="{
+                  x: (padding.left + cidx * (codeWidth() + gapColumns)), 
+                  y: (padding.top + ridx * (codeHeight() + gapRows)),
+                  width: codeWidth(),
+                  height: codeHeight(),
+                  }"
+              ></rect>
+              <foreignObject
+                v-bind="{
+                  x: (padding.left + cidx * (codeWidth() + gapColumns)) + (codeWidth() - codeSize()) / 2, 
+                  y: (padding.top + ridx * (codeHeight() + gapRows)) + (codeHeight() - codeSize()) / 2,
+                  width: codeSize(),
+                  height: codeSize(),
+                  }"
+              >
+                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                  <rect x="0" y="0" width="100" height="100" fill="white"></rect>
+                  <!-- QR -->
+                  <foreignObject x="0" y="0" width="48" height="48">
+                    <qrcode-vue :value="code" :render-as="'svg'" :size="48" />
+                  </foreignObject>
+                  <foreignObject x="52" y="0" width="48" height="48" v-html="makeIdenticon(code)" />
+                  <!-- Testo -->
+                  <text v-for="(part, index) in textrows(code)"
+                    x="50" 
+                    v-bind:y="70 + index*14" 
+                    text-anchor="middle" 
+                    v-bind:font-size="13 + (index > 0? 0: 10)"
+                  >{{ part }}</text>
+                </svg>
+              </foreignObject>
+            </g>
+          </g>
+        </svg>
       </div>
     </div>
   </div>
@@ -215,47 +233,21 @@ input.trbl{
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: auto;
-}
-.grid {
-  flex: 1;
-  display: grid;
-  /* utile per stampa */
-  box-sizing: border-box;
-}
-.cell {
-  border: 1px solid blue;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* evita overflow */
-  overflow: hidden;
-}
-.cell svg {
-  width: 100%;
-  height: 100%;
 }
 
 .preview-area {
   width: 100%;
   display: flex;
   justify-content: center; /* centro orizzontale */
+  flex-direction: column;
   background: lightgray; /* solo per vedere meglio */
 }
 
 .page-a4 {
-  overflow: hidden;
+  /* overflow: hidden; */
   background: white;
   border: 1px solid black;
   box-sizing: border-box;
-}
-
-.page-a4-portrait {
-  /* aspect-ratio: 210 / 297; */
-  width: 90vw;
-  /* height: 90 * 297 / 210 vw; */
-  height: 127.28vw;
-  max-height: 127.28vw;
 }
 
 /* PRINTABLE */
@@ -266,22 +258,13 @@ input.trbl{
     left: 0;
     top: 0;
     margin: 0;
-    position: absolute;
-    border: 1px solid gray;
-  }
-
-  .page-a4-portrait {
     width: 100vw;
-    height: 141.43vw;
-    max-height: 141.43vw;
-  }
-  
-  .controls {
-    display: none;
+    position: fixed;
+    /* border: 1px solid gray; */
   }
 
-  .cell {
-    border: 1px solid yellow;
+  .controls, .noprint, .header {
+    display: none;
   }
 
   #vue-inspector-container, #__vue-devtools-container__ {
