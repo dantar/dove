@@ -4,11 +4,27 @@ import {v4 as uuidv4} from 'uuid';
 import QrcodeVue from 'qrcode.vue'
 import ImageThumb from './ImageThumb.vue';
 import DicebearIdenticon from './DicebearIdenticon.vue';
+import { makeIdenticon } from '@/services/dicebear-identicon';
 
 const rows = ref(2);
 const columns = ref(2);
 
+interface Trbl {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+const padding = ref<Trbl>({top: 0, right:0, bottom: 0, left:0});
+const gapRows = ref(5);
+const gapColumns = ref(5);
+
 const codes = ref<string[][]>([[uuidv4(), uuidv4()],[uuidv4(), uuidv4()]])
+
+function mmUnit(n: number, zoom: number): string {
+  return `${n * zoom / 210}vw`;
+}
 
 function newRow() {
   const row: string[] = [];
@@ -90,30 +106,77 @@ function printCodes() {
       <div>
         <button @click="printCodes()">Stampa</button>
       </div>
+      <div>
+        <span>
+          <button @click="gapRows--">-</button>
+          <input class="trbl" type="number" v-model="gapRows" size="3"/>
+          <button @click="gapRows++">+</button>
+        </span>
+        <span>
+          <button @click="gapColumns--">-</button>
+          <input class="trbl" type="number" v-model="gapColumns" size="3"/>
+          <button @click="gapColumns++">+</button>
+        </span>
+      </div>
     </div>
-    <div class="preview-area">
-      <div class="page-a4 page-a4-portrait">
-        <div class="grid"
+    <div class="control-area" style="position: relative;">
+      <span class="control tlbr tlbr-top">
+        <span>
+          <button @click="padding.top--">-</button>
+          <input class="trbl" type="number" v-model="padding.top" size="3"/>
+          <button @click="padding.top++">+</button>
+        </span>
+      </span>
+      <span class="control tlbr tlbr-bottom">
+        <span>
+          <button @click="padding.bottom--">-</button>
+          <input class="trbl" type="number" v-model="padding.bottom" size="3"/>
+          <button @click="padding.bottom++">+</button>
+        </span>
+      </span>
+      <span class="control tlbr tlbr-left">
+        <span>
+          <button @click="padding.left--">-</button>
+          <input class="trbl" type="number" v-model="padding.left" size="3"/>
+          <button @click="padding.left++">+</button>
+        </span>
+      </span>
+      <span class="control tlbr tlbr-right">
+        <span>
+          <button @click="padding.right--">-</button>
+          <input class="trbl" type="number" v-model="padding.right" size="3"/>
+          <button @click="padding.right++">+</button>
+        </span>
+      </span>
+      <div class="preview-area">
+        <div class="page-a4 page-a4-portrait" 
           :style="{
-            gridTemplateRows: `repeat(${rows}, 1fr)`,
-            gridTemplateColumns: `repeat(${columns}, 1fr)`
-          }"
-          >
-          <div class="cell" v-for="code in flatCodes">
-            <svg viewBox="0 0 100 145" preserveAspectRatio="xMidYMid meet">
-              <!-- QR -->
-              <foreignObject x="0" y="0" width="100" height="100">
-                <qrcode-vue :value="code" :render-as="'svg'" />
-              </foreignObject>
-              <DicebearIdenticon :uuid="code" format="svg" />
-              <!-- Testo -->
-              <text v-for="(part, index) in textrows(code)"
-                x="50" 
-                v-bind:y="120 + index*10" 
-                text-anchor="middle" 
-                v-bind:font-size="10 + (index > 0? 0: 10)"
-              >{{ part }}</text>
-            </svg>
+            'padding': `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`
+            }">
+          <div class="grid"
+            :style="{
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, 1fr)`,
+              'row-gap': `${gapRows}px`,
+              'column-gap': `${gapColumns}px`,
+            }"
+            >
+            <div class="cell" v-for="code in flatCodes">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                <!-- QR -->
+                <foreignObject x="0" y="0" width="48" height="48">
+                  <qrcode-vue :value="code" :render-as="'svg'" />
+                </foreignObject>
+                <foreignObject x="52" y="0" width="48" height="48" v-html="makeIdenticon(code)" />
+                <!-- Testo -->
+                <text v-for="(part, index) in textrows(code)"
+                  x="50" 
+                  v-bind:y="70 + index*14" 
+                  text-anchor="middle" 
+                  v-bind:font-size="13 + (index > 0? 0: 10)"
+                >{{ part }}</text>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
@@ -121,6 +184,31 @@ function printCodes() {
   </div>
 </template>
 <style scoped>
+
+input.trbl{
+  width: 3em;
+  text-align: center;
+}
+
+.control.tlbr {
+  position: absolute;
+}
+.tlbr-top {
+  top: 0;
+  left: 50%;
+}
+.tlbr-bottom {
+  bottom: 0;
+  left: 50%;
+}
+.tlbr-left {
+  left: 0;
+  top: 50%;
+}
+.tlbr-right {
+  right: 0;
+  top: 50%;
+}
 
 .fullscreen {
   width: 100vw;
@@ -132,9 +220,6 @@ function printCodes() {
 .grid {
   flex: 1;
   display: grid;
-  /* opzionale: spazio tra etichette */
-  gap: 5px;
-
   /* utile per stampa */
   box-sizing: border-box;
 }
@@ -163,13 +248,12 @@ function printCodes() {
   background: white;
   border: 1px solid black;
   box-sizing: border-box;
-  padding: 25px 10px 25px 2px;
 }
 
 .page-a4-portrait {
   /* aspect-ratio: 210 / 297; */
   width: 90vw;
-  /* height: 90 * 210 / 297vw; */
+  /* height: 90 * 297 / 210 vw; */
   height: 127.28vw;
   max-height: 127.28vw;
 }
@@ -183,7 +267,7 @@ function printCodes() {
     top: 0;
     margin: 0;
     position: absolute;
-    border: 2px solid green;
+    border: 1px solid gray;
   }
 
   .page-a4-portrait {
@@ -197,8 +281,7 @@ function printCodes() {
   }
 
   .cell {
-    border: 0;
-    /* border: 1px solid yellow; */
+    border: 1px solid yellow;
   }
 
   #vue-inspector-container, #__vue-devtools-container__ {

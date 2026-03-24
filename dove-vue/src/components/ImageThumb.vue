@@ -12,7 +12,7 @@ const config = useBackendConfig();
 
 <template>
   <img v-if="props.uuid && props.image" :src="`${config.images}/${props.uuid}/${props.image}`" class="imagethumb"></img>
-  <DicebearIdenticon :uuid="props.uuid"></DicebearIdenticon>
+  <DicebearIdenticon v-else :uuid="props.uuid"></DicebearIdenticon>
 </template>
 
 <style scoped>
