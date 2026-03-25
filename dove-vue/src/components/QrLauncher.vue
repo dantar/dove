@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import QrScanner from "./QrScanner.vue"
-import HeroiconQrCode from "@/heroicons/HeroiconQrCode.vue";
+import Heroicon from "./Heroicon.vue";
 
 interface Props {
-  disabled: boolean,
+  disabled?: boolean,
 }
 const props = defineProps<Props>();
 
@@ -33,7 +33,7 @@ const handleQr = (value: string) => {
 </script>
 <template>
   <button class="btn" type="button" @click="launchScanner">
-    <HeroiconQrCode></HeroiconQrCode>
+    <Heroicon icon="qr-code"></Heroicon>
   </button>
   <QrScanner v-if="visible"
     ref="scanner"

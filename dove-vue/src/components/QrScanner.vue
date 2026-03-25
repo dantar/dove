@@ -6,9 +6,7 @@ import {
   type Html5QrcodeCameraScanConfig,
 } from "html5-qrcode"
 import {v4 as uuidv4} from 'uuid';
-import HeroiconPencil from "@/heroicons/HeroiconPencil.vue";
-import HeroiconCheck from "@/heroicons/HeroiconCheck.vue";
-import HeroiconQrCode from "@/heroicons/HeroiconQrCode.vue";
+import Heroicon from "./Heroicon.vue";
 
 const emit = defineEmits<{
   (e: "decoded", value: string): void
@@ -92,7 +90,8 @@ const startScanner = async (): Promise<void> => {
     selectedCameraId.value,
     config,
     (decodedText: string) => {
-      emit("decoded", decodedText)
+      const parts = decodedText.split('/');
+      emit("decoded", parts[parts.length - 1] || '')
     },
     () => {}
   )
@@ -195,12 +194,12 @@ function toggleShowInput() {
         🔦
       </button>
 
-      <button type="button" @click="toggleShowInput()"><HeroiconPencil></HeroiconPencil></button>
+      <button type="button" @click="toggleShowInput()"><Heroicon icon="pencil" /></button>
       <span v-if="showInput">
         <form @submit.prevent="emitInputCode()">
           <input type="text" v-model.trim="currentCode" />
-          <button type="button" @click="() => currentCode = uuidv4()" ><HeroiconQrCode/></button>
-          <button type="submit" :disabled="!currentCode"><HeroiconCheck/></button>
+          <button type="button" @click="() => currentCode = uuidv4()" ><Heroicon icon="qr-code"/></button>
+          <button type="submit" :disabled="!currentCode"><Heroicon icon="check"/></button>
         </form>
       </span>
 

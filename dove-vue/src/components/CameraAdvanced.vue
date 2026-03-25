@@ -17,14 +17,14 @@
     </div>
 
     <div class="controls">
-      <button @click="takePhoto"><HeroiconCamera/></button>
-      <button @click="donePictures"><HeroiconCheck/></button>
+      <button @click="takePhoto"><Heroicon icon="camera"/></button>
+      <button @click="donePictures"><Heroicon icon="check"/></button>
     </div>
 
     <div class="gallery">
       <div v-for="(photo,index) in photos" :key="index" class="thumb">
         <img :src="photo" />
-        <button class="delete" @click="removePhoto(index)"><HeroiconTrash/></button>
+        <button class="delete" @click="removePhoto(index)"><Heroicon icon="trash"/></button>
       </div>
     </div>
 
@@ -32,10 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import HeroiconCamera from '@/heroicons/HeroiconCamera.vue';
-import HeroiconCheck from '@/heroicons/HeroiconCheck.vue';
-import HeroiconTrash from '@/heroicons/HeroiconTrash.vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import Heroicon from './Heroicon.vue';
 
 const emit = defineEmits<{
   (e: "done", value: string[]): void

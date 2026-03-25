@@ -3,9 +3,16 @@ import { computed, ref, watch } from 'vue';
 import {v4 as uuidv4} from 'uuid';
 import QrcodeVue from 'qrcode.vue'
 import { makeIdenticon } from '@/services/dicebear-identicon';
+import { useBackendConfig } from '@/stores/backend-config';
 
 const rows = ref(2);
 const columns = ref(2);
+const pages = ref(1);
+const prefix = ref( '' + useBackendConfig().url );
+
+function prefixCode(uuid: string): string {
+  return `${prefix.value}/qr/${uuidv4()}`;
+}
 
 interface Trbl {
   top: number;
@@ -18,7 +25,7 @@ const padding = ref<Trbl>({top: 5, right:5, bottom: 5, left:5});
 const gapRows = ref(5);
 const gapColumns = ref(5);
 
-const codes = ref<string[][]>([[uuidv4(), uuidv4()],[uuidv4(), uuidv4()]])
+const codes = ref<string[][][]>([[[uuidv4(), uuidv4()],[uuidv4(), uuidv4()]]])
 
 function codeWidth(): number {
   const available = (210 - padding.value.left - padding.value.right);
@@ -37,11 +44,13 @@ function codeSize(): number {
 }
 
 function newRow() {
-  const row: string[] = [];
-  for (let index = 0; index < columns.value; index++) {
-    row.push(uuidv4());
+  for (let pidx = 0; pidx < pages.value; pidx++) {
+    const row: string[] = [];
+    for (let index = 0; index < columns.value; index++) {
+      row.push(uuidv4());
+    }
+    codes.value[pidx]?.push(row);
   }
-  codes.value.push(row);
 }
 
 function addRows(count: number) {
@@ -51,21 +60,49 @@ function addRows(count: number) {
 }
 
 function delRows(count: number) {
-  codes.value.splice(codes.value.length - count, count);
+  for (let pidx = 0; pidx < pages.value; pidx++) {
+    codes.value[pidx]?.splice(codes.value[pidx]?.length || 0 - count, count);
+  }
 }
 
 function addColumns(count: number) {
-  codes.value.forEach(row => {
-    for (let index = 0; index < count; index++) {
-      row.push(uuidv4());
-    }
-  });
+  for (let pidx = 0; pidx < pages.value; pidx++) {
+    codes.value[pidx]?.forEach(row => {
+      for (let index = 0; index < count; index++) {
+        row.push(uuidv4());
+      }
+    });
+  }
 }
 
 function delColumns(count: number) {
-  codes.value.forEach(row => {
-    row.splice(row.length - count, count);
-  });
+  for (let pidx = 0; pidx < pages.value; pidx++) {
+    codes.value[pidx]?.forEach(row => {
+      row.splice(row.length - count, count);
+    });
+  }
+}
+
+function addPage() {
+  const page:string[][] = [];
+  for (let pidx = 0; pidx < rows.value; pidx++) {
+    const row:string[] = [];
+    for (let cidx = 0; cidx < columns.value; cidx++) {
+      row.push(uuidv4());
+    }
+    page.push(row);
+  }
+  codes.value.push(page);
+}
+
+function addPages(count: number) {
+  for (let pidx = 0; pidx < count; pidx++) {
+    addPage();
+  }
+}
+
+function delPages(count: number) {
+  codes.value.splice(codes.value.length - count, count);
 }
 
 watch(() => rows.value, (n,o) => {
@@ -84,7 +121,13 @@ watch(() => columns.value, (n,o) => {
   }
 });
 
-const flatCodes = computed(() => codes.value.flat());
+watch(() => pages.value, (n,o) => {
+  if (n > o) {
+    addPages(n-o);
+  } else {
+    delPages(o-n);
+  }
+});
 
 function textrows(uuid: string): string[] {
   const parts = uuid.split("-");
@@ -104,6 +147,14 @@ function printCodes() {
   <div>
     <div class="controls noprint">
       <div>
+        <span>Prefisso</span>
+        <input type="text" v-model="prefix"/>
+      </div>
+      <div>
+        <span>Pagine</span>
+        <button @click="pages--">-</button>
+        <input class="trbl" type="number" v-model="pages" size="2"/>
+        <button @click="pages++">+</button>
         <span>Righe</span>
         <button @click="rows--">-</button>
         <input class="trbl" type="number" v-model="rows" size="2"/>
@@ -160,13 +211,13 @@ function printCodes() {
       </div>
     </div>
     <div class="printfullpage">
-      <svg viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet" class="fullpage">
+      <svg v-for="page in codes" viewBox="0 0 210 297" preserveAspectRatio="xMidYMid meet" class="fullpage">
         <rect x="0" y="0" width="210" height="297" fill="orange" class="noprint"></rect>
         <rect x="0" y="0" width="210" :height="padding.top || 0" fill="brown" class="noprint"></rect>
         <rect :y="297 - padding.bottom || 0" x="0" width="210" :height="padding.bottom || 0" fill="brown" class="noprint"></rect>
         <rect x="0" y="0" :width="padding.left || 0" height="297" fill="brown" class="noprint"></rect>
         <rect y="0" :x="210 - padding.right || 0" :width="padding.right || 0" height="297" fill="brown" class="noprint"></rect>
-        <g v-for="(row, ridx) in codes">
+        <g v-for="(row, ridx) in page">
           <g v-for="(code, cidx) in row">
             <rect fill="yellow" class="noprint"
               v-bind="{
@@ -188,7 +239,7 @@ function printCodes() {
                 <rect x="0" y="0" width="100" height="100" fill="white"></rect>
                 <!-- QR -->
                 <foreignObject x="0" y="0" width="48" height="48">
-                  <qrcode-vue :value="code" :render-as="'svg'" :size="48" />
+                  <qrcode-vue :value="prefixCode(code)" :render-as="'svg'" :size="48" />
                 </foreignObject>
                 <foreignObject x="52" y="0" width="48" height="48" v-html="makeIdenticon(code)" />
                 <!-- Testo -->

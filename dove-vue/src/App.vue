@@ -1,15 +1,21 @@
 <script setup lang="ts">
+import Heroicon from './components/Heroicon.vue';
 import LoginForm from './components/LoginForm.vue';
+import QrLauncher from './components/QrLauncher.vue';
 import { useLoggedUser } from './stores/logged-user';
+import { useRouter } from 'vue-router'
+
 const loggedUser = useLoggedUser();
+const router = useRouter();
 
 </script>
 
 <template>
   <div v-if="loggedUser.user.username">
     <div class="header">
-      <RouterLink :to="`/browse`">Archivio</RouterLink>
-      <RouterLink :to="`/print`">Stampa</RouterLink>
+      <RouterLink :to="`/browse`"><button><Heroicon icon="archive-box" /></button></RouterLink>
+      <RouterLink :to="`/print`"><button><Heroicon icon="printer" /></button></RouterLink>
+      <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)"></QrLauncher>
       {{ loggedUser.user.username }}
     </div>
     <main>

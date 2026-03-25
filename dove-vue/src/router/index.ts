@@ -4,7 +4,9 @@ import CameraSquare from '@/components/CameraSquare.vue'
 import OggettoDetails from '@/components/OggettoDetails.vue'
 import PostoDetails from '@/components/PostoDetails.vue'
 import PrintTemplate from '@/components/PrintTemplate.vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import QrRedirect from '@/components/QrRedirect.vue'
+import { useBrowseData } from '@/stores/browse-data'
+import { createRouter, createWebHistory, useRoute, type RouteLocationRaw } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +18,7 @@ const router = createRouter({
     { path: '/advanced', component: CameraAdvanced },
     { path: '/oggetto/:uuid', component: OggettoDetails, props: true },
     { path: '/posto/:uuid', component: PostoDetails, props: true },
+    { path: '/qr/:uuid', component: QrRedirect, props: true},
     { path: '/print', component: PrintTemplate },
   ],
 })

@@ -1,11 +1,12 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { PostoBrowseDto, PostoObj, OggettoObj, OggettoBrowseDto, SchedaOggetto } from '@/models/browse-item'
+import type { PostoBrowseDto, PostoObj, OggettoObj, OggettoBrowseDto, SchedaOggetto, AnyBrowseDto, AnyObj } from '@/models/browse-item'
 import axios from 'axios';
 import { useBackendConfig } from './backend-config';
 
 export const useBrowseData = defineStore('browseData', () => {
   const current = ref<PostoBrowseDto>();
+  const cacheAnyBrowse: {[uuid:string]: AnyBrowseDto} = {};
 
   function goToRoot(): void {
     console.log("Fetch root");
@@ -49,6 +50,16 @@ export const useBrowseData = defineStore('browseData', () => {
     const config = useBackendConfig();
     const response = await axios.get<OggettoBrowseDto>(`${config.url}/browse/oggetto/${uuid}`, config.bearer());
     return response.data;
+  }
+
+  async function getAnyObj(uuid: string): Promise<AnyObj> {
+    const config = useBackendConfig();
+    const response = await axios.get<AnyObj>(`${config.url}/any/${uuid}`, config.bearer());
+    return response.data;
+  }
+
+  function storeInCache(dto: AnyBrowseDto) {
+    cacheAnyBrowse[dto.oggetto? dto.oggetto.id : dto.posto.id] = dto;
   }
 
   async function addPosto(main: string, branch: string): Promise<PostoObj> {
@@ -112,6 +123,7 @@ export const useBrowseData = defineStore('browseData', () => {
     addOggetto, updateOggetto,
     uploadGallery, fetchOggettoDetails,
     browseOggettoDetails, browsePostoDetails, browseRootDetails,
+    getAnyObj,
     deletePicture
   }
 })

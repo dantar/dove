@@ -8,12 +8,7 @@ import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
 import ItemsGallery from './ItemsGallery.vue';
 import ImageThumb from './ImageThumb.vue';
-import HeroiconTrash from '@/heroicons/HeroiconTrash.vue';
-import HeroiconPencil from '@/heroicons/HeroiconPencil.vue';
-import HeroiconCircle from '@/heroicons/HeroiconCircle.vue';
-import HeroiconCheckCircle from '@/heroicons/HeroiconCheckCircle.vue';
-import HeroiconPhoto from '@/heroicons/HeroiconPhoto.vue';
-import HeroiconCheck from '@/heroicons/HeroiconCheck.vue';
+import Heroicon from './Heroicon.vue';
 
 interface Props {
   uuid: string,
@@ -107,8 +102,8 @@ function deleteThumbnail(image:string) {
             </div>
             <div class="overbuttons overbuttons--up">
                 <span>
-                    <button v-if="editable" type="submit" :disabled="freeze"><HeroiconCheck/></button>
-                    <button @click="editable = !editable" type="button" :disabled="freeze"><HeroiconPencil></HeroiconPencil></button>
+                    <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/></button>
+                    <button @click="editable = !editable" type="button" :disabled="freeze"><Heroicon icon="pencil"/></button>
                 </span>
             </div>
             </form>
@@ -120,14 +115,14 @@ function deleteThumbnail(image:string) {
                         <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
                         <span class="overbuttons overbuttons--up">
                             <button v-if="editable" @click="deleteThumbnail(item)">
-                                <HeroiconTrash></HeroiconTrash>
-                                <HeroiconCheckCircle v-if="trash.includes(item)"></HeroiconCheckCircle>
-                                <HeroiconCircle v-else></HeroiconCircle>
+                                <Heroicon icon="trash" />
+                                <Heroicon icon="checked" v-if="trash.includes(item)" />
+                                <Heroicon icon="unchecked" v-else></Heroicon>
                             </button>
                             <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">
-                                <HeroiconPhoto></HeroiconPhoto>
-                                <HeroiconCheckCircle v-if="form?.thumbnail == item"></HeroiconCheckCircle>
-                                <HeroiconCircle v-else></HeroiconCircle>
+                                <Heroicon icon="photo" />
+                                <Heroicon icon="checked" v-if="form?.thumbnail == item" />
+                                <Heroicon icon="unchecked" v-else></Heroicon>
                             </button>
                         </span>
                     </div>

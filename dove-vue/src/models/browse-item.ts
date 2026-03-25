@@ -1,3 +1,11 @@
+export interface AnyBrowseDto {
+    breadcrumbs: PostoObj[];
+    posto: PostoObj;
+    oggetto: OggettoObj;
+    oggetti: OggettoObj[];
+    posti: PostoObj[];
+}
+
 export interface PostoObj {
     id: string;
     nome: string;
@@ -14,19 +22,12 @@ export interface OggettoObj {
     immagini: string[];
 }
 
-export interface PostoBrowseDto {
-    breadcrumbs: PostoObj[];
-    posto: PostoObj;
-    oggetti: OggettoObj[];
-    posti: PostoObj[];
-}
-
-export interface OggettoBrowseDto {
-    breadcrumbs: PostoObj[];
+export interface AnyObj {
+    id: string;
+    tipo: string;
     posto: PostoObj;
     oggetto: OggettoObj;
 }
-
 
 export class SchedaOggetto {
     tipo: string;
@@ -79,3 +80,18 @@ export class SchedaVestiti extends SchedaOggetto {
     static isThis = SchedaOggetto.makeIsThis('vestiti');
 }
 SchedaOggetto.protos['vestiti'] = (s?:SchedaOggetto) => SchedaVestiti.init(s ? s as SchedaVestiti : new SchedaVestiti());
+
+// Browse
+
+export interface PostoBrowseDto {
+    breadcrumbs: PostoObj[];
+    posto: PostoObj;
+    oggetti: OggettoObj[];
+    posti: PostoObj[];
+}
+
+export interface OggettoBrowseDto {
+    breadcrumbs: PostoObj[];
+    posto: PostoObj;
+    oggetto: OggettoObj;
+}
