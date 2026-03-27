@@ -52,7 +52,7 @@ function minionSpeaks(minion: MinionItem) {
 <template>
   <h1>You did it!</h1>
 
-  <div>{{ backend.url }}</div>
+  <div>{{ backend.backend }}</div>
   <div v-if="loggedUser.user.username">
     {{ loggedUser.user.username }}
   </div>

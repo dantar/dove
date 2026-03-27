@@ -1,17 +1,18 @@
 import AboutView from '@/components/AboutView.vue'
 import CameraAdvanced from '@/components/CameraAdvanced.vue'
 import CameraSquare from '@/components/CameraSquare.vue'
+import LoggedUser from '@/components/LoggedUser.vue'
 import OggettoDetails from '@/components/OggettoDetails.vue'
 import PostoDetails from '@/components/PostoDetails.vue'
 import PrintTemplate from '@/components/PrintTemplate.vue'
 import QrRedirect from '@/components/QrRedirect.vue'
-import { useBrowseData } from '@/stores/browse-data'
-import { createRouter, createWebHistory, useRoute, type RouteLocationRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '', component: PostoDetails, props: true },
+    { path: '/user', component: LoggedUser, props: true },
     { path: '/browse', component: PostoDetails, props: true },
     { path: '/about', component: AboutView },
     { path: '/camera', component: CameraSquare },

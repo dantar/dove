@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import {v4 as uuidv4} from 'uuid';
 import QrcodeVue from 'qrcode.vue'
 import { makeIdenticon } from '@/services/dicebear-identicon';
@@ -8,7 +8,7 @@ import { useBackendConfig } from '@/stores/backend-config';
 const rows = ref(2);
 const columns = ref(2);
 const pages = ref(1);
-const prefix = ref( '' + useBackendConfig().url );
+const prefix = ref( '' + useBackendConfig().backend );
 
 function prefixCode(uuid: string): string {
   return `${prefix.value}/qr/${uuidv4()}`;

@@ -1,12 +1,11 @@
 package it.dantar.cav.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,23 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.dantar.cav.security.jwt.JwtTokenService;
 import it.dantar.cav.security.jwt.JwtUser;
-import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @CrossOrigin
 @Slf4j
+@RequiredArgsConstructor
 public class AuthenticationController {
 	
-	@Autowired
-	private AuthenticationManager authenticationManager;
-	@Autowired
-	private JwtTokenService jwtTokenUtil;
-	@Autowired
-	private AppUserDetailsService userDetailsService;
-	@Autowired
-	private PasswordEncoder encoder;
+	private final AuthenticationManager authenticationManager;
+	private final JwtTokenService jwtTokenUtil;
+	private final AppUserDetailsService userDetailsService;
+	private final PasswordEncoder encoder;
+
+	@Value("${app.url}")
+	private String appUrl;
 
 	@Data
 	public static class LoginDataForm {
@@ -42,29 +43,35 @@ public class AuthenticationController {
 		String password;
 	}
 	
-	@PostConstruct
-	private void postConstruct() {
-		AppUserDetails admin = this.userDetailsService.loadUserByUsername("admin");
-		log.info("Utente {} esiste", admin.getUsername());
-	}
-	
 	@PostMapping(value = "/authenticate")
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginDataForm form) throws Exception {
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginDataForm form, HttpServletResponse response) throws Exception {
+		log.debug("Authenticating {}", form);
 		AppUserDetails user = userDetailsService.loadUserByUsername(form.getUsername());
 		if (user != null) {
 			String salt = user.getUtente().getSalt();
 			authenticate(form.getUsername(), salt != null ? form.getPassword() + salt: form.getPassword());
 			AppUserDetails details = user;
+			String token = jwtTokenUtil.generateAuthenticationTokenForUser(details);
+		    response.addCookie(newCookie(token, 24 * 60 * 60));
 			return ResponseEntity
 					.ok(new JwtUser<UserDetails>()
 							.setDetails(details)
-							.setToken(jwtTokenUtil.generateAuthenticationTokenForUser(details))
+							.setToken(token)
 							);
 		} else {
 			return  ResponseEntity
 	                .status(HttpStatus.UNAUTHORIZED)
 	                .body("Utente o password errati");
 		}
+	}
+
+	private Cookie newCookie(String token, int age) {
+		Cookie cookie = new Cookie("auth_token", token);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(appUrl.startsWith("https"));
+		cookie.setPath("/");
+		cookie.setMaxAge(age);
+		return cookie;
 	}
 
 	@GetMapping(value = "/hash")

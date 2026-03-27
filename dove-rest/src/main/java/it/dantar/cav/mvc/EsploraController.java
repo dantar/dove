@@ -12,7 +12,6 @@ import it.dantar.cav.entities.Oggetto;
 import it.dantar.cav.entities.OggettoDao;
 import it.dantar.cav.entities.Posto;
 import it.dantar.cav.entities.PostoDao;
-import jakarta.persistence.Access;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -139,7 +138,8 @@ public class EsploraController {
 					.setPosto(posto.get())
 					;
 		}
-		throw new RuntimeException();
+		return new AnyDto()
+				.setId(uuid);
 	}
 
 }

@@ -28,6 +28,7 @@ import it.dantar.cav.entities.TokenBlacklistDao;
 import it.dantar.cav.security.AppUserDetails;
 import it.dantar.cav.security.authentication.mfa.InitMfaFlowToken;
 import it.dantar.cav.security.authentication.mfa.InitMfaFlowTokenManager;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -131,12 +132,21 @@ public class JwtTokenService implements Serializable {
 	}
 	
 	public String getJwtToken(HttpServletRequest request) {
+		// search cookies
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("auth_token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+		// search authorizazion bearer header
 		final String requestTokenHeader = request.getHeader("Authorization");
-		String jwtToken = null;
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-			jwtToken = requestTokenHeader.substring(7);
+			return requestTokenHeader.substring("Bearer ".length());
 		}
-		return jwtToken;
+		log.debug("JWT Token not found");
+		return null;
 	}
 
 	public void addToBlacklist(String t) {

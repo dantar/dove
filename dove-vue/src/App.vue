@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import Heroicon from './components/Heroicon.vue';
 import LoginForm from './components/LoginForm.vue';
+import PopupDialog from './components/PopupDialog.vue';
 import QrLauncher from './components/QrLauncher.vue';
 import { useLoggedUser } from './stores/logged-user';
 import { useRouter } from 'vue-router'
+import LoggedUser from './components/LoggedUser.vue';
 
 const loggedUser = useLoggedUser();
 const router = useRouter();
+
+const popupUser = ref(false);
 
 </script>
 
@@ -16,10 +21,13 @@ const router = useRouter();
       <RouterLink :to="`/browse`"><button><Heroicon icon="archive-box" /></button></RouterLink>
       <RouterLink :to="`/print`"><button><Heroicon icon="printer" /></button></RouterLink>
       <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)"></QrLauncher>
-      {{ loggedUser.user.username }}
+      <button @click="popupUser = true"><Heroicon icon="user" /></button>
     </div>
     <main>
       <RouterView />
+      <PopupDialog v-if="popupUser" @close="popupUser = false">
+        <LoggedUser></LoggedUser>
+      </PopupDialog>
     </main>
   </div>
   <div v-else="">

@@ -1,5 +1,0 @@
-<h1>Scannerizza il codice qr</h1>
-<div *ngIf="!qrcode" app-qr-code-popup (qrcode)="qrcodeRead($event)" (cancel)="qrcodeCancel()"></div>
-<div *ngIf="qrcode" (click)="qrcode = null">
-    {{qrcode}}
-</div>

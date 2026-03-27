@@ -8,7 +8,7 @@ export function loginUser(form: LoginFormDto) {
     const config = useBackendConfig();
     const user = useLoggedUser();
     axios
-    .post(`${config.url}/authenticate`, form)
+    .post(`${config.backend}/authenticate`, form)
     .then((response) => {
         console.log(response);
         console.log(response.data);

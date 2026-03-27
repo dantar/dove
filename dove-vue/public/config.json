@@ -1,4 +1,5 @@
   {
+    "APP_URL": "http://localhost:5173",
     "IMAGES_URL": "http://localhost:80/dove/images",
     "BACKEND_URL": "http://localhost:9080"
   }
