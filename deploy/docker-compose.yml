@@ -9,6 +9,7 @@ services:
     ports:
       - 8180:80
     environment:
+      - APP_URL=https://dove.dantar.it
       - BACKEND_URL=/backend
       - IMAGES_URL=/images
     volumes:
@@ -22,6 +23,7 @@ services:
     ports:
       - 8181:8080
     environment:
+      APP_URL: https://dove.dantar.it
       DEPS_DB_URL: database:5432
       DEPS_DB_DBNAME: dove
       DEPS_DB_PASSWORD: dove
