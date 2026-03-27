@@ -30,7 +30,7 @@ rsync \
     --filter='P flyway/sql' \
     ${APPDIR}/docker/
 
-REMOTE=ssh dantar
+REMOTE="ssh dantar"
 $REMOTE docker compose -f apps/dove/docker/docker-compose.yml down
 $REMOTE docker compose -f apps/dove/docker/docker-compose.yml build
 $REMOTE docker compose -f apps/dove/docker/docker-compose.yml up -d
