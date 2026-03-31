@@ -11,7 +11,7 @@ const pages = ref(1);
 const prefix = ref( '' + useBackendConfig().backend );
 
 function prefixCode(uuid: string): string {
-  return `${prefix.value}/qr/${uuidv4()}`;
+  return `${prefix.value}/qr/${uuid}`;
 }
 
 interface Trbl {
@@ -27,20 +27,42 @@ const gapColumns = ref(5);
 
 const codes = ref<string[][][]>([[[uuidv4(), uuidv4()],[uuidv4(), uuidv4()]]])
 
-function codeWidth(): number {
+const qrFormat = ref('landscape');
+const qrBaseWidth = ref(100);
+const qrBaseHeight = ref(60);
+
+function toggleFormat() {
+  if (qrFormat.value == 'landscape') {
+    qrFormat.value = 'square';
+    qrBaseHeight.value = 100;
+    qrBaseWidth.value = 100;
+  } else {
+    qrFormat.value = 'landscape';
+    qrBaseHeight.value = 60;
+    qrBaseWidth.value = 100;
+  } 
+}
+
+function cellWidth(): number {
   const available = (210 - padding.value.left - padding.value.right);
   return ((available + gapColumns.value) / columns.value) - gapColumns.value;
 }
 
-function codeHeight(): number {
+function cellHeight(): number {
   const available = (297 - padding.value.top - padding.value.bottom);
   return ((available + gapRows.value) / rows.value) - gapRows.value;
 }
 
-function codeSize(): number {
-  const w = codeWidth();
-  const h = codeHeight();
-  return w < h? w : h;
+function codeWidth(): number {
+  const w = cellWidth();
+  const h = cellHeight();
+  return (w * qrBaseHeight.value > h * qrBaseWidth.value) ? qrBaseWidth.value * h / qrBaseHeight.value: w;
+}
+
+function codeHeight(): number {
+  const w = cellWidth();
+  const h = cellHeight();
+  return (w * qrBaseHeight.value > h * qrBaseWidth.value) ? h : qrBaseHeight.value * w / qrBaseWidth.value;
 }
 
 function newRow() {
@@ -149,6 +171,8 @@ function printCodes() {
       <div>
         <span>Prefisso</span>
         <input type="text" v-model="prefix"/>
+        <span>Formato</span>
+        <button @click="toggleFormat()">{{ qrFormat }}</button>
       </div>
       <div>
         <span>Pagine</span>
@@ -221,21 +245,21 @@ function printCodes() {
           <g v-for="(code, cidx) in row">
             <rect fill="yellow" class="noprint"
               v-bind="{
-                x: (padding.left + cidx * (codeWidth() + gapColumns)), 
-                y: (padding.top + ridx * (codeHeight() + gapRows)),
-                width: codeWidth(),
-                height: codeHeight(),
+                x: (padding.left + cidx * (cellWidth() + gapColumns)), 
+                y: (padding.top + ridx * (cellHeight() + gapRows)),
+                width: cellWidth(),
+                height: cellHeight(),
                 }"
             ></rect>
             <foreignObject
               v-bind="{
-                x: (padding.left + cidx * (codeWidth() + gapColumns)) + (codeWidth() - codeSize()) / 2, 
-                y: (padding.top + ridx * (codeHeight() + gapRows)) + (codeHeight() - codeSize()) / 2,
-                width: codeSize(),
-                height: codeSize(),
+                x: (padding.left + cidx * (cellWidth() + gapColumns)) + (cellWidth() - codeWidth()) / 2, 
+                y: (padding.top + ridx * (cellHeight() + gapRows)) + (cellHeight() - codeHeight()) / 2,
+                width: codeWidth(),
+                height: codeHeight(),
                 }"
             >
-              <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+              <svg v-if="qrFormat == 'square'" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
                 <rect x="0" y="0" width="100" height="100" fill="white"></rect>
                 <!-- QR -->
                 <foreignObject x="0" y="0" width="48" height="48">
@@ -248,6 +272,21 @@ function printCodes() {
                   v-bind:y="70 + index*14" 
                   text-anchor="middle" 
                   v-bind:font-size="13 + (index > 0? 0: 10)"
+                >{{ part }}</text>
+              </svg>
+              <svg v-if="qrFormat == 'landscape'" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet">
+                <rect x="0" y="0" width="100" height="60" fill="white"></rect>
+                <!-- QR -->
+                <foreignObject x="0" y="0" width="60" height="60">
+                  <qrcode-vue :value="prefixCode(code)" :render-as="'svg'" :size="60" />
+                </foreignObject>
+                <foreignObject x="62" y="0" width="38" height="38" v-html="makeIdenticon(code)" />
+                <!-- Testo -->
+                <text v-for="(part, index) in textrows(code)"
+                  x="81" 
+                  v-bind:y="46 + index*6" 
+                  text-anchor="middle" 
+                  v-bind:font-size="5 + (index > 0? 0: 3)"
                 >{{ part }}</text>
               </svg>
             </foreignObject>
