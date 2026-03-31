@@ -2,32 +2,26 @@ package it.dantar.cav.security.jwt;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import it.dantar.cav.entities.TokenBlacklist;
 import it.dantar.cav.entities.TokenBlacklistDao;
 import it.dantar.cav.security.AppUserDetails;
-import it.dantar.cav.security.authentication.mfa.InitMfaFlowToken;
-import it.dantar.cav.security.authentication.mfa.InitMfaFlowTokenManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -46,44 +40,13 @@ public class JwtTokenService implements Serializable {
 
 	private static final String JWT_MFA_INIT_FLOW_TOKEN_TYPE = "temporary_MFA_init_flow_token";
 
-	private static final String JWT_TOKEN_TYPE = "stimare_type";
+	private static final String JWT_TOKEN_TYPE = "dantar_type";
 
 	@Value("${jwt.secret}")
 	private String secret;
 
 	@Value("${jwt.token.validity}")
 	private long jwtTokenValidity;
-
-	public String getUsernameFromToken(String token) {
-		return getClaimFromToken(token, Claims::getSubject);
-	}
-
-	public Date getExpirationDateFromToken(String token) {
-		return getClaimFromToken(token, Claims::getExpiration);
-	}
-
-	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-		final Claims claims = getAllClaimsFromToken(token);
-		return claimsResolver.apply(claims);
-	}
-
-	private Claims getAllClaimsFromToken(String token) {
-		return Jwts
-				.parserBuilder()
-			    .setSigningKey(getSigningKey())
-			    .build()
-			    .parseClaimsJws(token)
-			    .getBody();
-	}
-
-	private Boolean isTokenExpired(String token) {
-		Optional<TokenBlacklist> blacklist = tokenBlacklistDao.findById(token);
-		if (blacklist.isPresent()) {
-			return true;
-		}
-		final Date expiration = getExpirationDateFromToken(token);
-		return expiration.before(new Date());
-	}
 
 	public String generateAuthenticationTokenForUser(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
@@ -107,28 +70,27 @@ public class JwtTokenService implements Serializable {
 				.setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1000)).signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
 	}
 
-	public Boolean validateToken(String token, UserDetails userDetails) {
-		final String username = getUsernameFromToken(token);
-		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-	}
-
-	public boolean isInitMfaFlowToken(String token) {
-		String tokenType = (String) Jwts
-				.parserBuilder()
-			    .setSigningKey(getSigningKey())
-			    .build()
-			    .parseClaimsJws(token)
-			    .getHeader()
-			    .get(JWT_TOKEN_TYPE);
-		return JWT_MFA_INIT_FLOW_TOKEN.equals(getClaimFromToken(token, Claims::getSubject)) && JWT_MFA_INIT_FLOW_TOKEN_TYPE.equals(tokenType);
-	}
-
-	public Authentication getInitMfaFlowToken(String jwtToken) {
-		String secretKey = (String) getClaimFromToken(jwtToken, claim -> claim.get("secret"));
-		String username = (String) getClaimFromToken(jwtToken, claim -> claim.get("username"));
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null);
-		return new InitMfaFlowToken(authenticationToken, secretKey,
-				Arrays.asList(new SimpleGrantedAuthority(InitMfaFlowTokenManager.JWT_MFA_INIT_FLOW_TOKEN_AUTHORITY)));
+	public Optional<Claims> parseJwtToken(String token) {
+		if (tokenBlacklistDao.findById(token).isPresent()) {
+			log.warn("JWT is blacklisted");
+			return Optional.empty();
+		}
+		try {
+			Optional<Claims> claims = Optional.of(Jwts
+					.parserBuilder()
+					.setSigningKey(getSigningKey())
+					.build()
+					.parseClaimsJws(token))
+					.map(Jwt::getBody);
+			if (claims.isPresent() && claims.get().getExpiration().before(new Date())) {
+				log.warn("JWT is expired");
+				return Optional.empty();
+			}
+			return claims;
+		} catch (Exception e) {
+			log.warn("JWT is invalid", e);
+			return Optional.empty();
+		}
 	}
 	
 	public String getJwtToken(HttpServletRequest request) {
@@ -150,6 +112,8 @@ public class JwtTokenService implements Serializable {
 	}
 
 	public void addToBlacklist(String t) {
+		// this should be called on logout
+		// so that user cannot be authenticated after having been logged out
 		Optional<TokenBlacklist> f = tokenBlacklistDao.findById(t);
 		log.info(String.format("Log out token %s", t));
 		if (!f.isPresent()) {			

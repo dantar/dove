@@ -40,6 +40,23 @@ export class SchedaOggetto {
     }
 }
 
+export class SchedaBySchema extends SchedaOggetto {
+    static KEY: string = 'by-schema';
+    schema: string = '';
+    values: Object = {};
+    constructor() {
+        super(SchedaBySchema.KEY);
+    }
+    static init = (s: SchedaBySchema): SchedaBySchema => {
+        s.tipo = SchedaBySchema.KEY;
+        s.schema = '';
+        s.values = {};
+        return s;
+    }
+    static isThis = SchedaBySchema.makeIsThis(SchedaBySchema.KEY);
+}
+SchedaOggetto.protos[SchedaBySchema.KEY] = (s?:SchedaOggetto) => SchedaBySchema.init(s ? s as SchedaBySchema : new SchedaBySchema());
+
 export class SchedaAccessorio extends SchedaOggetto {
     condizioni: number = 3;
     descrizione: string = '';
