@@ -11,20 +11,18 @@ interface Props {
 const props = defineProps<Props>();
 
 function toggleOption(option: string) {
-    if (data.value.includes(option)) {
-        data.value.splice(data.value.indexOf(option), 1);
+    if (props.form.includes(option)) {
+        props.form.splice(props.form.indexOf(option), 1);
     } else {
-        data.value.push(option);
+        props.form.push(option);
     }
 }
-
-const data = ref(props.form);
 
 </script>
 <template>
     <span v-if="editable" class="arrayitems">
         <span v-for="option in options" 
-            :class="`data-chip-item chip-active-${data.includes(option)} chip-disabled-${saving}`"
+            :class="`data-chip-item chip-active-${form.includes(option)} chip-disabled-${saving}`"
             @click="toggleOption(option)"> {{ option }} </span>
     </span>
     <span v-else class="arrayitems">

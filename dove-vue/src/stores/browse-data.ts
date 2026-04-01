@@ -8,6 +8,9 @@ export const useBrowseData = defineStore('browseData', () => {
   const current = ref<PostoBrowseDto>();
   const cacheAnyBrowse: {[uuid:string]: AnyBrowseDto} = {};
 
+  const visiblePosti = ref(false);
+  const visibleOggetti = ref(false);
+
   function goToRoot(): void {
     console.log("Fetch root");
     const config = useBackendConfig();
@@ -31,6 +34,12 @@ export const useBrowseData = defineStore('browseData', () => {
   async function fetchOggettoDetails(uuid: string): Promise<OggettoObj> {
     const config = useBackendConfig();
     const response = await axios.get<OggettoObj>(`${config.backend}/oggetto/${uuid}`, config.bearer());
+    return response.data;
+  }
+
+  async function fetchPostoDetails(uuid: string): Promise<PostoObj> {
+    const config = useBackendConfig();
+    const response = await axios.get<PostoObj>(`${config.backend}/posto/${uuid}`, config.bearer());
     return response.data;
   }
 
@@ -121,9 +130,9 @@ export const useBrowseData = defineStore('browseData', () => {
   return { current, goToRoot, goToPosto, 
     addRoot, addPosto, updatePosto, 
     addOggetto, updateOggetto,
-    uploadGallery, fetchOggettoDetails,
+    uploadGallery, fetchOggettoDetails, fetchPostoDetails,
     browseOggettoDetails, browsePostoDetails, browseRootDetails,
-    getAnyObj,
-    deletePicture
+    getAnyObj, deletePicture,
+    visibleOggetti, visiblePosti
   }
 })

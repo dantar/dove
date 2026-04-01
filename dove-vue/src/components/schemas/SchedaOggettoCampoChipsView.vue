@@ -2,6 +2,7 @@
 import type { SchedaBySchema } from '@/models/browse-item';
 import { useTipiSchedeOggetto, type SchedaOggettoCampo, type SchedaOggettoCampoChips, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
 import { ref } from 'vue';
+import DataChips from '../forms/DataChips.vue';
 
 interface Props {
   scheda: SchedaBySchema,
@@ -19,7 +20,9 @@ async function init() {
 }
 
 function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoChips ): string[] {
-    return (data.values as any)[campo.id] as string[];
+    const value = (data.values as any)[campo.id] as string[] || [];
+    (data.values as any)[campo.id] = value;
+    return value;
 }
 
 init();
@@ -27,7 +30,6 @@ init();
 </script>
 <template>
   <div class="data-panel">
-    <span class="data-panel-header">Età</span>
     <DataChips
       :editable="editable"
       :saving="saving"

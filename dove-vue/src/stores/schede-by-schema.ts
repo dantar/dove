@@ -61,11 +61,22 @@ export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
         {id: 'note', nome: 'Note', tipo: 'text', span: 0},
     ]}
   );
+
+  //     sesso: ('unisex'|'maschio'|'femmina') [] = [];
+  //  stagione: ('estate'|'inverno') [] = [];
+  //  eta: ('0'|'3m'|'6m'|'9m'|'12m'|'18m'|'3a'|'4a'|'5a'|'6a+') [] = [];
+
   tipi.value.push(
     { id: 'vestiti', nome:'Vestiti', campi: [
-        {id: 'eta', nome: 'Età', tipo: 'chips', span: 0, opzioni: []},
-        {id: 'sesso', nome: 'Sesso', tipo: 'chips', span: 0, opzioni: []},
-        {id: 'stagione', nome: 'Stagione', tipo: 'chips', span: 0, opzioni: []},
+        {id: 'eta', nome: 'Età', tipo: 'chips', span: 0, opzioni: [
+            '0', '3m', '6m', '9m', '12m', '18m', '3a', '4a', '5a', '6a+'
+        ]},
+        {id: 'sesso', nome: 'Sesso', tipo: 'chips', span: 0, opzioni: [
+            'unisex', 'maschio', 'femmina'
+        ]},
+        {id: 'stagione', nome: 'Stagione', tipo: 'chips', span: 0, opzioni: [
+            'estate', 'inverno'
+        ]},
     ]}
   );
   async function findSchema(id: string): Promise<TipoSchedaOggetto> {

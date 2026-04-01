@@ -20,7 +20,9 @@ const popupUser = ref(false);
     <div class="header">
       <RouterLink :to="`/browse`"><button><Heroicon icon="archive-box" /></button></RouterLink>
       <RouterLink :to="`/print`"><button><Heroicon icon="printer" /></button></RouterLink>
-      <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)"></QrLauncher>
+      <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)">
+        <Heroicon icon="qr-code-search"></Heroicon>
+      </QrLauncher>
       <button @click="popupUser = true"><Heroicon icon="user" /></button>
     </div>
     <main>

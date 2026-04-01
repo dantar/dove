@@ -32,8 +32,6 @@ init();
         <SchedaOggettoCampoChipsView 
             :scheda="scheda" :editable="editable" :saving="saving" :form="form" :campo="SchedaOggettoCampoChipsHandler.digest(campo)"
             v-if="SchedaOggettoCampoChipsHandler.owns(campo)">CHIPS</SchedaOggettoCampoChipsView>
-        <span v-if="editable">Versione editabile del campo {{ campo.id }} di tipo {{ campo.tipo }}</span>
-        <span v-else>versione non editabile del campo</span>
     </div>
     <div v-else>Schema {{ scheda.schema }} loading...</div>
 </template>

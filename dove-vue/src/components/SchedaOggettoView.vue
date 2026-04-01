@@ -54,13 +54,8 @@ const schede = useTipiSchedeOggetto();
   <div v-else>
       <span>Nessuna scheda presente. </span>
   </div>
-  <div v-if="editable || !(scheda && scheda.tipo)" class="arrayitems">
-    <button type="button" @click="impostaTipo('accessorio')" :disabled="saving">
-      <span class="button entity entity--accessorio">Accessorio</span>
-    </button>
-    <button type="button" @click="impostaTipo('vestiti')" :disabled="saving">
-      <span class="button entity entity--vestiti">Vestiti</span>
-    </button>
+  <div v-if="editable" class="arrayitems">
+    <span>Cambia tipo scheda</span>
     <button v-for="schema in schede.tipi" type="button" @click="impostaSchema(schema.id)" :disabled="saving">
       <span class="button entity entity--by-schema">{{ schema.nome }}</span>
     </button>

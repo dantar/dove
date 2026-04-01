@@ -9,6 +9,7 @@ import SchedaOggettoView from './SchedaOggettoView.vue';
 import ItemsGallery from './ItemsGallery.vue';
 import ImageThumb from './ImageThumb.vue';
 import Heroicon from './Heroicon.vue';
+import QrLauncher from './QrLauncher.vue';
 
 interface Props {
   uuid: string,
@@ -34,8 +35,7 @@ loadOggetto(props.uuid)
 watch(() => props.uuid, loadOggetto);
 
 function setOggetto(o: OggettoObj) {
-    form.value = {...o};
-    (form.value as OggettoObj).scheda = {...o.scheda};
+    form.value = JSON.parse(JSON.stringify(o));
     trash.value = [];
 }
 
@@ -77,12 +77,29 @@ function deleteThumbnail(image:string) {
     }
 }
 
+async function spostaOggettoIn(code: string) {
+    freeze.value = true;
+    const destination = await browse.getAnyObj(code);
+    if (destination.posto && !destination.oggetto) {
+        const o = (form.value as OggettoObj);
+        o.idPosto = destination.id;
+        await saveData();
+    } else {
+        freeze.value = false;
+    }
+}
+
 </script>
 
 <template>
     <div v-if="browsed">
-        <div class="pagesection">
+        <div class="pagesection pagesection-with-buttons">
             <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
+            <div class="overbuttons overbuttons--up" v-if="editable">
+                <span>
+                    <QrLauncher @decoded="(code) => spostaOggettoIn(code)"></QrLauncher>
+                </span>
+            </div>
         </div>
         <div class="pagesection pagesection-with-buttons">
             <form @submit.prevent="saveData()">

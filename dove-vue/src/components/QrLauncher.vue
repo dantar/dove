@@ -33,7 +33,7 @@ const handleQr = (value: string) => {
 </script>
 <template>
   <button class="btn" type="button" @click="launchScanner">
-    <Heroicon icon="qr-code"></Heroicon>
+    <slot name="default"><Heroicon icon="qr-code"></Heroicon></slot>
   </button>
   <QrScanner v-if="visible"
     ref="scanner"

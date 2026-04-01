@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useBrowseData } from '@/stores/browse-data';
-import PostoShort from './PostoShort.vue';
 import QrLauncher from './QrLauncher.vue';
 import { ref, watch } from 'vue';
 import OggettoHeader from './OggettoHeader.vue';
@@ -9,6 +8,7 @@ import type { PostoBrowseDto } from '@/models/browse-item';
 import ItemsGallery from './ItemsGallery.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
 import PostoHeader from './PostoHeader.vue';
+import Heroicon from './Heroicon.vue';
 
 interface Props {
   uuid?: string,
@@ -58,22 +58,28 @@ const addingOggetto = ref(false);
   <div v-if="browsed">
     <div v-if="browsed.breadcrumbs" class="pagesection">
       <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
+      <PostoHeader v-if="browsed.posto" :posto="browsed.posto"></PostoHeader>
     </div>
-    <div class="pagesection" v-if="browsed.posto">
-      <PostoHeader :posto="browsed.posto"></PostoHeader>
+    <div>
+      <button @click="browse.visiblePosti = !browse.visiblePosti" v-if="browsed.posti">Posti: {{ browsed.posti.length }}</button>
+      <button @click="browse.visibleOggetti = !browse.visibleOggetti" v-if="browsed.oggetti">Oggetti: {{ browsed.oggetti.length }}</button>
     </div>
-    <div class="pagesection pagesection-with-buttons">
-      <div v-if="browsed.posti && browsed.posti.length > 0" class="arrayitems">
-        <span v-for="posto in browsed.posti" class="moreposto"><PostoShort :posto="posto"></PostoShort></span>
-      </div>
-      <div v-else class="notimportant">Nessun altro posto dove andare</div>
+    <div class="pagesection pagesection-with-buttons" v-if="browse.visiblePosti && browsed.posti">
+      <ItemsGallery :items="browsed.posti">
+        <template #item="{ item }">
+          <PostoHeader :posto="item"></PostoHeader>
+        </template>
+        <template #empty><span class="notimportant">Nessun posto qui.</span></template>
+      </ItemsGallery>
       <div class="overbuttons overbuttons--up">
         <span>
-          <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)"></QrLauncher>
+          <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)">
+            <Heroicon icon="qr-code-add"></Heroicon>
+          </QrLauncher>
         </span>
       </div>
     </div>
-    <div v-if="browsed.posto" class="pagesection">
+    <div v-if="browse.visibleOggetti && browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
           <RouterLink :to="`/oggetto/${item.id}`">
@@ -86,11 +92,21 @@ const addingOggetto = ref(false);
               :saving="false"
               ></SchedaOggettoView>
         </template>
-        <template #empty><span class="notimportant">Nessun oggetto in questo posto</span></template>
+        <template #empty>
+          <div class="notimportant">Nessun oggetto in questo posto</div>
+          <div>
+            <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)">
+              <Heroicon icon="qr-code-add"></Heroicon>
+              Aggiungi un oggetto!
+            </QrLauncher>
+          </div>
+        </template>
       </ItemsGallery>
       <div class="overbuttons overbuttons--up">
         <span>
-          <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)"></QrLauncher>
+          <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)">
+            <Heroicon icon="qr-code-add"></Heroicon>
+          </QrLauncher>
         </span>
       </div>
     </div>
