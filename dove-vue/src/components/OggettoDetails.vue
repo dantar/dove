@@ -144,6 +144,7 @@ async function spostaOggettoIn(code: string) {
                         </span>
                     </div>
                 </template>
+                <template #empty>Questo oggetto non ha foto.</template>
             </ItemsGallery>
             <div class="overbuttons overbuttons--up">
                 <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>

@@ -62,10 +62,6 @@ export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
     ]}
   );
 
-  //     sesso: ('unisex'|'maschio'|'femmina') [] = [];
-  //  stagione: ('estate'|'inverno') [] = [];
-  //  eta: ('0'|'3m'|'6m'|'9m'|'12m'|'18m'|'3a'|'4a'|'5a'|'6a+') [] = [];
-
   tipi.value.push(
     { id: 'vestiti', nome:'Vestiti', campi: [
         {id: 'eta', nome: 'Età', tipo: 'chips', span: 0, opzioni: [
@@ -84,7 +80,6 @@ export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
     if (a) {
         for (let index = 0; index < a.length; index++) {
             if (a[index]?.id == id) {
-                console.log('trovato!', a[index]);
                 return a[index] as TipoSchedaOggetto
             }
         }

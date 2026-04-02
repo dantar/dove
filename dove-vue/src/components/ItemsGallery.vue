@@ -21,7 +21,7 @@ const mode = ref('double');
       <span v-for="item in items"><slot name="item" :item="item"></slot></span>
     </div>
   </div>
-  <span v-else><slot name="empty">Niente da vedere, qui...</slot></span>
+  <span v-else><slot name="empty">Nessun contenuto.</slot></span>
 </template>
 <style scoped>
 
