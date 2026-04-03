@@ -1,3 +1,5 @@
+import type { SchedaOggettoCampoHandler, TipoSchedaOggetto } from "@/stores/schede-by-schema";
+
 export interface AnyBrowseDto {
     breadcrumbs: PostoObj[];
     posto: PostoObj;
@@ -42,8 +44,13 @@ export class SchedaOggetto {
 
 export class SchedaBySchema extends SchedaOggetto {
     static KEY: string = 'by-schema';
+    static handler: {[id:string]: SchedaOggettoCampoHandler} = {};
+    static addHandler(h: SchedaOggettoCampoHandler): boolean {
+        this.handler[h.KEY] = h;
+        return true;
+    }
     schema: string = '';
-    values: Object = {};
+    values: {[id:string]: any} = {};
     constructor() {
         super(SchedaBySchema.KEY);
     }
@@ -54,6 +61,12 @@ export class SchedaBySchema extends SchedaOggetto {
         return s;
     }
     static isThis = SchedaBySchema.makeIsThis(SchedaBySchema.KEY);
+    static initWithSchema(schema: TipoSchedaOggetto, data: SchedaBySchema) {
+      data.schema = schema.id;
+      schema.campi.forEach(campo => {
+        this.handler[campo.tipo]?.initScheda(data, campo);
+      })
+    }
 }
 SchedaOggetto.protos[SchedaBySchema.KEY] = (s?:SchedaOggetto) => SchedaBySchema.init(s ? s as SchedaBySchema : new SchedaBySchema());
 

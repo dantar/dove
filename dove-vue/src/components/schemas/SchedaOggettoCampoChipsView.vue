@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { SchedaBySchema } from '@/models/browse-item';
-import { useTipiSchedeOggetto, type SchedaOggettoCampo, type SchedaOggettoCampoChips, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
-import { ref } from 'vue';
+import { type SchedaOggettoCampoChips } from '@/stores/schede-by-schema';
 import DataChips from '../forms/DataChips.vue';
 
 interface Props {
@@ -12,29 +11,19 @@ interface Props {
   campo: SchedaOggettoCampoChips,
 }
 const props = defineProps<Props>()
-const schemas = useTipiSchedeOggetto();
-const schema = ref<TipoSchedaOggetto>();
-
-async function init() {
-    schema.value = await schemas.findSchema(props.scheda.schema);
-}
 
 function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoChips ): string[] {
-    const value = (data.values as any)[campo.id] as string[] || [];
-    (data.values as any)[campo.id] = value;
-    return value;
+    return data.values[campo.id] as string[];
 }
-
-init();
 
 </script>
 <template>
-  <div class="data-panel">
+  <div class="data-panel" v-if="campo.tipo == 'chips'">
     <DataChips
       :editable="editable"
       :saving="saving"
-      :chips="getValue(scheda, campo)"
-      :form="getValue(form, campo)"
+      :chips="getValue(scheda, campo) || []"
+      :form="getValue(form, campo) || []"
       :options="(campo.opzioni)"
     ></DataChips>
   </div>

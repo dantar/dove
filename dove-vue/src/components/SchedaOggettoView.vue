@@ -3,7 +3,7 @@ import { SchedaAccessorio, SchedaBySchema, SchedaOggetto, SchedaVestiti } from '
 import SchedaAccessorioView from './SchedaAccessorioView.vue';
 import SchedaVestitiView from './SchedaVestitiView.vue';
 import SchedaBySchemaView from './SchedaBySchemaView.vue';
-import { useTipiSchedeOggetto } from '@/stores/schede-by-schema';
+import { useTipiSchedeOggetto, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
 interface Props {
   scheda: SchedaOggetto,
   editable: boolean,
@@ -18,13 +18,12 @@ function impostaTipo(tipo: string) {
     proto(props.scheda);
     proto(props.form);
   }
-  console.log("props", props.scheda, props.form)
 }
 
-function impostaSchema(id: string) {
+function impostaSchema(schema: TipoSchedaOggetto) {
   impostaTipo(SchedaBySchema.KEY);
-  (props.scheda as SchedaBySchema).schema = id;
-  (props.form as SchedaBySchema).schema = id;
+  SchedaBySchema.initWithSchema(schema, props.scheda as SchedaBySchema);
+  SchedaBySchema.initWithSchema(schema, props.form as SchedaBySchema);
 }
 
 const schede = useTipiSchedeOggetto();
@@ -56,7 +55,7 @@ const schede = useTipiSchedeOggetto();
   </div>
   <div v-if="editable" class="arrayitems">
     <span>Cambia tipo scheda</span>
-    <button v-for="schema in schede.tipi" type="button" @click="impostaSchema(schema.id)" :disabled="saving">
+    <button v-for="schema in schede.tipi" type="button" @click="impostaSchema(schema)" :disabled="saving">
       <span class="button entity entity--by-schema">{{ schema.nome }}</span>
     </button>
 
