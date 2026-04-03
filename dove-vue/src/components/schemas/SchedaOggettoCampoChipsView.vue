@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import type { SchedaBySchema } from '@/models/browse-item';
-import { type SchedaOggettoCampoChips } from '@/stores/schede-by-schema';
+import { type SchedaOggettoCampoChips, type SchedaOggettoCampoViewProps } from '@/stores/schede-by-schema';
 import DataChips from '../forms/DataChips.vue';
 
-interface Props {
-  scheda: SchedaBySchema,
-  editable: boolean,
-  saving: boolean,
-  form: SchedaBySchema,
-  campo: SchedaOggettoCampoChips,
-}
-const props = defineProps<Props>()
+const props = defineProps<SchedaOggettoCampoViewProps>()
 
 function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoChips ): string[] {
     return data.values[campo.id] as string[];

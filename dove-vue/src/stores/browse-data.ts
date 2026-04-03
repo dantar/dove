@@ -90,7 +90,7 @@ export const useBrowseData = defineStore('browseData', () => {
     const oggetto = <OggettoObj>{
       id: id,
       idPosto: main,
-      nome: "Nuovo oggetto",
+      nome: "",
       scheda: {},
     };
     const o = await axios

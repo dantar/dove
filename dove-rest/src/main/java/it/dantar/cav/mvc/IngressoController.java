@@ -67,7 +67,7 @@ public class IngressoController {
 	private Posto createPosto(String uuid) {
 		Posto posto = new Posto();
 		posto.setId(uuid);
-		posto.setNome("Nuovo posto");
+		posto.setNome("");
 		posto.setThumbnail("");
 		return posto;
 	}

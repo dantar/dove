@@ -10,7 +10,7 @@ const props = defineProps<Props>()
     <RouterLink :to="`/oggetto/${oggetto.id}`">
         <span :class="`title-short entity entity--${oggetto.scheda.tipo}`">
             <ImageThumb :uuid="oggetto.id" :image="''"></ImageThumb>
-            {{ oggetto.nome || oggetto.id }}
+            {{ oggetto.nome || `Oggetto ${oggetto.id.split('-')[0]}` }}
         </span>
     </RouterLink>
 </template>

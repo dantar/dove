@@ -1,15 +1,8 @@
 <script setup lang="ts">
 import type { SchedaBySchema } from '@/models/browse-item';
-import { type SchedaOggettoCampoText } from '@/stores/schede-by-schema';
+import { type SchedaOggettoCampoViewProps, type SchedaOggettoCampoText } from '@/stores/schede-by-schema';
 
-interface Props {
-  scheda: SchedaBySchema,
-  editable: boolean,
-  saving: boolean,
-  form: SchedaBySchema,
-  campo: SchedaOggettoCampoText,
-}
-const props = defineProps<Props>()
+const props = defineProps<SchedaOggettoCampoViewProps>()
 
 function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoText ): string {
     return data.values[campo.id] as string;
@@ -19,7 +12,7 @@ function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoText ): string
 <template>
     <div class="data-panel">
         <textarea v-if="editable" :disabled="saving" v-model.trim="form.values[campo.id]"></textarea>
-        <div v-else>{{ getValue(scheda, campo) || '' }}</div>
+        <div v-else>{{ getValue(scheda, campo as SchedaOggettoCampoText) || '' }}</div>
     </div>
 </template>
 <style lang="css" scoped></style>

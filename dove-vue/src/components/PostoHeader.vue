@@ -40,6 +40,7 @@ const form = ref({...props.posto});
       </RouterLink>
       <span v-if="editable">
         <input 
+          :placeholder="`Posto ${posto.id.split('-')[0]}`"
           :disabled="saving"
           type="text" 
           v-model="form.nome" />

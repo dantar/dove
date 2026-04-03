@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import type { SchedaBySchema } from '@/models/browse-item';
-import { useTipiSchedeOggetto, type TipoSchedaOggetto, SchedaOggettoCampoTextHandler, SchedaOggettoCampoChipsHandler, SchedaOggettoCampoStarsHandler} from '@/stores/schede-by-schema';
-import { ref, watch } from 'vue';
-import SchedaOggettoCampoTextView from './schemas/SchedaOggettoCampoTextView.vue';
-import SchedaOggettoCampoChipsView from './schemas/SchedaOggettoCampoChipsView.vue';
-import SchedaOggettoCampoStarsView from './schemas/SchedaOggettoCampoStarsView.vue';
+import { SchedaBySchema } from '@/models/browse-item';
+import { useTipiSchedeOggetto, type TipoSchedaOggetto, SchedaOggettoCampoTextHandler, SchedaOggettoCampoChipsHandler, SchedaOggettoCampoStarsHandler, type SchedaOggettoCampoViewProps, type SchedaOggettoCampo} from '@/stores/schede-by-schema';
+import { type Component, ref, watch } from 'vue';
 interface Props {
   scheda: SchedaBySchema,
   editable: boolean,
@@ -17,6 +14,7 @@ const schemas = useTipiSchedeOggetto();
 
 const schema = ref<TipoSchedaOggetto>();
 
+
 async function init(idSchema: string) {
     schema.value = await schemas.findSchema(idSchema);
 }
@@ -25,20 +23,21 @@ watch(() => props.scheda.schema, async (n, o) => {
 });
 init(props.scheda.schema);
 
+function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
+    return {
+        scheda: props.scheda,
+        editable: props.editable,
+        saving: props.saving,
+        form: props.form,
+        campo: campo,
+    }
+}
+
 </script>
 <template>
     <div v-if="schema" class="data-panel" v-for="campo in schema.campi">
         <span class="data-panel-header">{{ campo.nome }} tipo {{ campo.id }}</span> 
-        <SchedaOggettoCampoTextView 
-            :scheda="scheda" :editable="editable" :saving="saving" :form="form" :campo="SchedaOggettoCampoTextHandler.digest(campo)"
-            v-if="SchedaOggettoCampoTextHandler.owns(campo)">TEXT</SchedaOggettoCampoTextView>
-        <SchedaOggettoCampoChipsView 
-            :scheda="scheda" :editable="editable" :saving="saving" :form="form" :campo="SchedaOggettoCampoChipsHandler.digest(campo)"
-            v-else-if="SchedaOggettoCampoChipsHandler.owns(campo)">CHIPS</SchedaOggettoCampoChipsView>
-        <SchedaOggettoCampoStarsView
-            :scheda="scheda" :editable="editable" :saving="saving" :form="form" :campo="SchedaOggettoCampoStarsHandler.digest(campo)"
-            v-else-if="SchedaOggettoCampoStarsHandler.owns(campo)">STARS</SchedaOggettoCampoStarsView>
-        <div v-else>Campo {{ campo.id }} ha tipo {{ campo.tipo }} che non è implementato</div>
+        <component :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
     </div>
     <div v-else>Schema {{ scheda.schema }} loading...</div>
 </template>

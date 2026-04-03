@@ -19,7 +19,7 @@ const props = defineProps<Props>();
     <ImageThumb :uuid="oggetto.id" :image="oggetto.thumbnail"></ImageThumb>
   </div>
   <div class="card-title">
-    <span v-if="editable"><input type="text" v-model="form.nome" :disabled="saving"/></span>
+    <span v-if="editable"><input type="text" :placeholder="`Oggetto ${oggetto.id.split('-')[0]}`" v-model="form.nome" :disabled="saving"/></span>
     <OggettoShort v-else :oggetto="oggetto"></OggettoShort>
   </div>
   <div class="notimportant">ID: {{ oggetto.id }}</div>

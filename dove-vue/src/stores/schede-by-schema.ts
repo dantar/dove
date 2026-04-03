@@ -1,6 +1,9 @@
-import { ref } from 'vue'
+import { ref, type Component } from 'vue'
 import { defineStore } from 'pinia'
-import { SchedaBySchema, SchedaOggetto } from '@/models/browse-item';
+import { SchedaBySchema } from '@/models/browse-item';
+import SchedaOggettoCampoChipsView from '@/components/schemas/SchedaOggettoCampoChipsView.vue';
+import SchedaOggettoCampoStarsView from '@/components/schemas/SchedaOggettoCampoStarsView.vue';
+import SchedaOggettoCampoTextView from '@/components/schemas/SchedaOggettoCampoTextView.vue';
 
 export interface TipoSchedaOggetto {
 
@@ -27,6 +30,7 @@ export interface SchedaOggettoCampoHandler {
     owns(campo: SchedaOggettoCampo): boolean;
     digest(campo: SchedaOggettoCampo): SchedaOggettoCampo;
     initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampo): void;
+    component(): Component;
     registration: boolean;
 }
 export class SchedaOggettoCampoStarsHandler {
@@ -40,6 +44,9 @@ export class SchedaOggettoCampoStarsHandler {
     }
     static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoStars): void {
         scheda.values[campo.id] = 3;
+    }
+    static component(): Component {
+        return SchedaOggettoCampoStarsView;
     }
 }
 
@@ -60,6 +67,18 @@ export class SchedaOggettoCampoChipsHandler {
     static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoChips): void {
         scheda.values[campo.id] = [];
     }
+    static component(): Component {
+        return SchedaOggettoCampoChipsView;
+    }
+}
+
+export interface SchedaOggettoCampoViewProps {
+    // queste sono le prop richieste da ogni Componente di view
+  scheda: SchedaBySchema,
+  editable: boolean,
+  saving: boolean,
+  form: SchedaBySchema,
+  campo: SchedaOggettoCampo, // da specializzare in ogni classe
 }
 
 export interface SchedaOggettoCampoText extends SchedaOggettoCampoBase {
@@ -77,6 +96,9 @@ export class SchedaOggettoCampoTextHandler {
     }
     static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoText): void {
         scheda.values[campo.id] = '';
+    }
+    static component(): Component {
+        return SchedaOggettoCampoTextView;
     }
 }
 
