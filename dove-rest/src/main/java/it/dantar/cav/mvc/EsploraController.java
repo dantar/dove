@@ -29,6 +29,7 @@ public class EsploraController {
 	public PostoBrowseDto browseRoot() {
 		return new PostoBrowseDto(
 				null,
+				null,
 				null, 
 				null,
 				postoDao.findRoot()
@@ -47,6 +48,7 @@ public class EsploraController {
 
 	private PostoBrowseDto browsePosto(Posto posto) {
 		return new PostoBrowseDto(
+				posto.getRepo(),
 				postoDao.findPostoBreadcrumbs(posto.getId()),
 				posto, 
 				oggettoDao.findByIdPosto(posto.getId()),
@@ -81,9 +83,11 @@ public class EsploraController {
 
 	private OggettoBrowseDto browseOggetto(Oggetto oggetto) {
 		this.picturesService.caricaImmagini(oggetto);
+		Optional<Posto> postoOpt = postoDao.findById(oggetto.getIdPosto());
 		return new OggettoBrowseDto(
+				postoOpt.map(posto -> posto.getRepo()).orElse(null),
 				postoDao.findPostoBreadcrumbs(oggetto.getIdPosto()),
-				postoDao.findById(oggetto.getIdPosto()).get(), 
+				postoOpt.orElse(null), 
 				oggetto);
 	}
 	

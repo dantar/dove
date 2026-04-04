@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { SchedaAccessorio, SchedaBySchema, SchedaOggetto, SchedaVestiti } from '@/models/browse-item';
-import SchedaAccessorioView from './SchedaAccessorioView.vue';
-import SchedaVestitiView from './SchedaVestitiView.vue';
+import { SchedaBySchema, SchedaOggetto } from '@/models/browse-item';
 import SchedaBySchemaView from './SchedaBySchemaView.vue';
 import { useTipiSchedeOggetto, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
+import { ref, watch } from 'vue';
 interface Props {
   scheda: SchedaOggetto,
   editable: boolean,
   saving: boolean,
   form: SchedaOggetto,
+  repo: string,
 }
 const props = defineProps<Props>();
 
@@ -28,6 +28,16 @@ function impostaSchema(schema: TipoSchedaOggetto) {
 
 const schede = useTipiSchedeOggetto();
 
+async function init(repo: string): Promise<void> {
+  console.log(schede.schemiByRepo);
+  schemi.value = await schede.schemiByRepo(repo);
+}
+const schemi = ref<TipoSchedaOggetto[]>([]);
+watch(() => props.repo, (n,o) => init(n));
+
+init(props.repo)
+.then(() => {});
+
 </script>
 <template>
   <div v-if="scheda && scheda.tipo">
@@ -37,25 +47,13 @@ const schede = useTipiSchedeOggetto();
         :editable="props.editable"
         :saving="props.saving"
         ></SchedaBySchemaView>
-      <SchedaAccessorioView v-if="SchedaAccessorio.isThis(scheda)" 
-        :scheda="(scheda as SchedaAccessorio)"
-        :form="(form as SchedaAccessorio)"
-        :editable="props.editable"
-        :saving="props.saving"
-        ></SchedaAccessorioView>
-      <SchedaVestitiView v-if="SchedaVestiti.isThis(scheda)" 
-        :scheda="(scheda as SchedaVestiti)"
-        :form="(form as SchedaVestiti)"
-        :editable="props.editable"
-        :saving="props.saving"
-        ></SchedaVestitiView>
   </div>
   <div v-else>
       <span>Nessuna scheda presente. </span>
   </div>
   <div v-if="editable" class="arrayitems">
     <span>Cambia tipo scheda</span>
-    <button v-for="schema in schede.tipi" type="button" @click="impostaSchema(schema)" :disabled="saving">
+    <button v-if="schemi" v-for="schema in schemi" type="button" @click="impostaSchema(schema)" :disabled="saving">
       <span class="button entity entity--by-schema">{{ schema.nome }}</span>
     </button>
 

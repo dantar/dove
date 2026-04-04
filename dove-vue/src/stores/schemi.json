@@ -1,15 +1,4 @@
-insert into utente (id, username, password, hash, abilitato, account_valido, account_attivo, credenziali_valide)
-values (gen_random_uuid(), 'admin', 'daniele', 'plain', true, true, true, true)
-on conflict do nothing 
-;
-
-insert into posto (id, nome)
-values (gen_random_uuid(), 'Magazzino')
-on conflict do nothing 
-;
-
-insert into repo_schemi (id, schemi) 
-select p.id, '[
+[
     { "id": "accessorio", "nome": "Accessorio", "campi": [
         {"id": "stato", "nome": "Stato", "tipo": "stars", "span": 3, "max": 5},
         {"id": "descrizione", "nome": "Descrizione", "tipo": "text", "span": 0},
@@ -26,8 +15,4 @@ select p.id, '[
             "estate", "inverno"
         ]}
     ]}
-]'
-from posto p 
-where p.nome = 'Magazzino'
-on conflict do nothing 
-;
+]

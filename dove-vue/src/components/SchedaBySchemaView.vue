@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SchedaBySchema } from '@/models/browse-item';
-import { useTipiSchedeOggetto, type TipoSchedaOggetto, SchedaOggettoCampoTextHandler, SchedaOggettoCampoChipsHandler, SchedaOggettoCampoStarsHandler, type SchedaOggettoCampoViewProps, type SchedaOggettoCampo} from '@/stores/schede-by-schema';
-import { type Component, ref, watch } from 'vue';
+import { useTipiSchedeOggetto, type TipoSchedaOggetto, type SchedaOggettoCampoViewProps, type SchedaOggettoCampo} from '@/stores/schede-by-schema';
+import { ref, watch } from 'vue';
 interface Props {
   scheda: SchedaBySchema,
   editable: boolean,

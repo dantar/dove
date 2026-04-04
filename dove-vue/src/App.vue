@@ -7,17 +7,21 @@ import QrLauncher from './components/QrLauncher.vue';
 import { useLoggedUser } from './stores/logged-user';
 import { useRouter } from 'vue-router'
 import LoggedUser from './components/LoggedUser.vue';
+import { useTipiSchedeOggetto } from './stores/schede-by-schema';
 
 const loggedUser = useLoggedUser();
 const router = useRouter();
+const repo = useTipiSchedeOggetto();
 
 const popupUser = ref(false);
+const popupCart = ref(false);
 
 </script>
 
 <template>
   <div v-if="loggedUser.user.username">
     <div class="header">
+      <button @click="popupCart = true"><Heroicon icon="cart" /></button>
       <RouterLink :to="`/browse`"><button><Heroicon icon="archive-box" /></button></RouterLink>
       <RouterLink :to="`/print`"><button><Heroicon icon="printer" /></button></RouterLink>
       <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)">
@@ -29,6 +33,9 @@ const popupUser = ref(false);
       <RouterView />
       <PopupDialog v-if="popupUser" @close="popupUser = false">
         <LoggedUser></LoggedUser>
+      </PopupDialog>
+      <PopupDialog v-if="popupCart" @close="popupCart = false">
+        Per adesso non hai carrelli. Clicca per aggiungere un carrello.
       </PopupDialog>
     </main>
   </div>

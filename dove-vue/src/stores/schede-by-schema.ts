@@ -4,6 +4,13 @@ import { SchedaBySchema } from '@/models/browse-item';
 import SchedaOggettoCampoChipsView from '@/components/schemas/SchedaOggettoCampoChipsView.vue';
 import SchedaOggettoCampoStarsView from '@/components/schemas/SchedaOggettoCampoStarsView.vue';
 import SchedaOggettoCampoTextView from '@/components/schemas/SchedaOggettoCampoTextView.vue';
+import { useBackendConfig } from './backend-config';
+import axios from 'axios';
+
+export interface RepoSchemiJson {
+    id: string;
+    schemi: TipoSchedaOggetto[];
+}
 
 export interface TipoSchedaOggetto {
 
@@ -74,11 +81,11 @@ export class SchedaOggettoCampoChipsHandler {
 
 export interface SchedaOggettoCampoViewProps {
     // queste sono le prop richieste da ogni Componente di view
-  scheda: SchedaBySchema,
-  editable: boolean,
-  saving: boolean,
-  form: SchedaBySchema,
-  campo: SchedaOggettoCampo, // da specializzare in ogni classe
+    scheda: SchedaBySchema,
+    editable: boolean,
+    saving: boolean,
+    form: SchedaBySchema,
+    campo: SchedaOggettoCampo, // da specializzare in ogni classe
 }
 
 export interface SchedaOggettoCampoText extends SchedaOggettoCampoBase {
@@ -103,43 +110,43 @@ export class SchedaOggettoCampoTextHandler {
 }
 
 export type SchedaOggettoCampo =
-  | SchedaOggettoCampoStars
-  | SchedaOggettoCampoChips
-  | SchedaOggettoCampoText;
-  
-export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
-  const tipi = ref<TipoSchedaOggetto[]>([]);
-  tipi.value.push(
-    { id: 'accessorio', nome: 'Accessorio', campi: [
-        {id: 'stato', nome: 'Stato', tipo: 'stars', span: 3, max: 5},
-        {id: 'descrizione', nome: 'Descrizione', tipo: 'text', span: 0},
-        {id: 'note', nome: 'Note', tipo: 'text', span: 0},
-    ]}
-  );
+    | SchedaOggettoCampoStars
+    | SchedaOggettoCampoChips
+    | SchedaOggettoCampoText;
 
-  tipi.value.push(
-    { id: 'vestiti', nome:'Vestiti', campi: [
-        {id: 'eta', nome: 'Età', tipo: 'chips', span: 0, opzioni: [
-            '0', '3m', '6m', '9m', '12m', '18m', '3a', '4a', '5a', '6a+'
-        ]},
-        {id: 'sesso', nome: 'Sesso', tipo: 'chips', span: 0, opzioni: [
-            'unisex', 'maschio', 'femmina'
-        ]},
-        {id: 'stagione', nome: 'Stagione', tipo: 'chips', span: 0, opzioni: [
-            'estate', 'inverno'
-        ]},
-    ]}
-  );
-  async function findSchema(id: string): Promise<TipoSchedaOggetto> {
-    const a = tipi.value;
-    if (a) {
-        for (let index = 0; index < a.length; index++) {
-            if (a[index]?.id == id) {
-                return a[index] as TipoSchedaOggetto
+export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
+
+    const tipiByRepo = ref<RepoSchemiJson[]>([]);
+    const loaded = ref(false);
+
+    async function init() {
+        const config = useBackendConfig();
+        const response = await axios
+            .get<RepoSchemiJson[]>(`${config.backend}/schema/list`);
+        tipiByRepo.value = response.data;
+    }
+
+    async function findSchema(id: string): Promise<TipoSchedaOggetto> {
+        for (let repo of tipiByRepo.value) {
+            console.log('repo', repo);
+            for (let schema of repo.schemi) {
+                if (schema.id == id) return schema;
             }
         }
+        throw new Error(`Schema ${id} non trovato`);
     }
-    throw new Error(`Schema ${id} non trovato`);
-  }
-  return { tipi, findSchema }
+
+    async function schemiByRepo(id: string): Promise<TipoSchedaOggetto[]> {
+        for (let repo of tipiByRepo.value) {
+            if (repo.id == id) return repo.schemi;
+        }
+        throw new Error(`Repo ${id} non trovato in`);
+    }
+
+    init()
+    .then(() => {
+        loaded.value = true;
+    })
+
+    return { tipiByRepo, findSchema, schemiByRepo }
 })

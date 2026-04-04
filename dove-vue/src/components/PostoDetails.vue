@@ -90,6 +90,7 @@ const addingOggetto = ref(false);
               :form="item.scheda"
               :editable="false"
               :saving="false"
+              :repo="browsed.repo"
               ></SchedaOggettoView>
         </template>
         <template #empty>

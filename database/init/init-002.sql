@@ -91,3 +91,10 @@ CREATE TABLE public.oggetto_ordine (
 	CONSTRAINT oggetto_ordine_fk_oggetto FOREIGN KEY (id_oggetto) REFERENCES public.oggetto(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT oggetto_ordine_fk_ordine FOREIGN KEY (id_ordine) REFERENCES public.ordine(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE public.repo_schemi (
+	id varchar NOT NULL,
+	schemi jsonb NOT NULL,
+	CONSTRAINT repo_schemi_pk PRIMARY KEY (id),
+	CONSTRAINT repo_schemi_fk FOREIGN KEY (id) REFERENCES public.posto(id) ON DELETE CASCADE ON UPDATE CASCADE
+);

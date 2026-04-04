@@ -115,6 +115,7 @@ async function spostaOggettoIn(code: string) {
                     :form="form?.scheda"
                     :editable="editable"
                     :saving="freeze"
+                    :repo="browsed.repo"
                     ></SchedaOggettoView>
             </div>
             <div class="overbuttons overbuttons--up">
