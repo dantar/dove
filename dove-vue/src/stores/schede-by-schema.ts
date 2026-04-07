@@ -143,10 +143,5 @@ export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
         throw new Error(`Repo ${id} non trovato in`);
     }
 
-    init()
-    .then(() => {
-        loaded.value = true;
-    })
-
-    return { tipiByRepo, findSchema, schemiByRepo }
+    return { init, tipiByRepo, findSchema, schemiByRepo }
 })
