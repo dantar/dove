@@ -2,7 +2,6 @@
 import { useBrowseData } from '@/stores/browse-data';
 import QrLauncher from './QrLauncher.vue';
 import { ref, watch } from 'vue';
-import OggettoHeader from './OggettoHeader.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import type { PostoBrowseDto } from '@/models/browse-item';
 import ItemsGallery from './ItemsGallery.vue';
@@ -54,21 +53,7 @@ const addingOggetto = ref(false);
 </script>
 <template>
   <div v-if="browsed">
-    <div v-if="browsed.breadcrumbs" class="pagesection">
-      <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
-      <PostoHeader v-if="browsed.posto" :posto="browsed.posto"></PostoHeader>
-    </div>
-    <div>
-      <button @click="browse.visiblePosti = !browse.visiblePosti" v-if="browsed.posti">Posti: {{ browsed.posti.length }}</button>
-      <button @click="browse.visibleOggetti = !browse.visibleOggetti" v-if="browsed.oggetti">Oggetti: {{ browsed.oggetti.length }}</button>
-    </div>
-    <div class="pagesection pagesection-with-buttons" v-if="browse.visiblePosti && browsed.posti">
-      <ItemsGallery :items="browsed.posti">
-        <template #item="{ item }">
-          <PostoHeader :posto="item"></PostoHeader>
-        </template>
-        <template #empty><span class="notimportant">Nessun posto qui.</span></template>
-      </ItemsGallery>
+    <div class="pagesection pagesection-with-buttons">
       <div class="overbuttons overbuttons--up">
         <span>
           <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)">
@@ -76,8 +61,15 @@ const addingOggetto = ref(false);
           </QrLauncher>
         </span>
       </div>
+      <PostoBreadcrumbs v-if="browsed.breadcrumbs && browsed.breadcrumbs.length > 0" :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
+      <div class="page-header">
+        <PostoHeader v-if="browsed.posto" :posto="browsed.posto"></PostoHeader>
+      </div>
+      <div v-if="browsed.posti" class="more-posti">
+        <PostoBreadcrumbs :posti="browsed.posti">&nbsp;</PostoBreadcrumbs>
+      </div>
     </div>
-    <div v-if="browse.visibleOggetti && browsed.posto" class="pagesection">
+    <div v-if="browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
           <CardFormat>
@@ -133,5 +125,13 @@ const addingOggetto = ref(false);
 }
 .card-image .identicon {
   padding: 15%;
+}
+.page-header {
+  padding-left: 10px;
+  font-size: 1.2em;
+  background-color: #ddd;
+}
+.more-posti {
+  padding-left: 20px;
 }
 </style>

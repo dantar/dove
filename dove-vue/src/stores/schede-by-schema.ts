@@ -128,7 +128,6 @@ export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
 
     async function findSchema(id: string): Promise<TipoSchedaOggetto> {
         for (let repo of tipiByRepo.value) {
-            console.log('repo', repo);
             for (let schema of repo.schemi) {
                 if (schema.id == id) return schema;
             }

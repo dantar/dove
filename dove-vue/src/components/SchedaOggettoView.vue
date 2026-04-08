@@ -29,7 +29,6 @@ function impostaSchema(schema: TipoSchedaOggetto) {
 const schede = useTipiSchedeOggetto();
 
 async function init(repo: string): Promise<void> {
-  console.log(schede.schemiByRepo);
   schemi.value = await schede.schemiByRepo(repo);
 }
 const schemi = ref<TipoSchedaOggetto[]>([]);
