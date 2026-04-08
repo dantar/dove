@@ -9,24 +9,22 @@ import ItemsGallery from './ItemsGallery.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
 import PostoHeader from './PostoHeader.vue';
 import Heroicon from './Heroicon.vue';
+import CardFormat from './CardFormat.vue';
+import ImageThumb from './ImageThumb.vue';
+import OggettoShort from './OggettoShort.vue';
 
 interface Props {
-  uuid?: string,
+  uuid: string,
 }
 const props = defineProps<Props>();
 
 const browse = useBrowseData();
 
 const browsed = ref<PostoBrowseDto>();
-async function loadPosto(uuid?: string) {
-  if (uuid) {
-    browsed.value = await browse.browsePostoDetails(uuid);
-  } else {
-    browsed.value = await browse.browseRootDetails();
-  }
+async function loadPosto(uuid: string) {
+  browsed.value = await browse.browsePostoDetails(uuid);
 }
 loadPosto(props.uuid)
-
 watch(() => props.uuid, loadPosto);
 
 async function addPosto(text: string) {
@@ -82,16 +80,27 @@ const addingOggetto = ref(false);
     <div v-if="browse.visibleOggetti && browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
-          <RouterLink :to="`/oggetto/${item.id}`">
-            <OggettoHeader :form="item" :editable="false" :saving="false" :oggetto="item"></OggettoHeader>
-          </RouterLink>
-          <SchedaOggettoView v-if="item.scheda"
-              :scheda="item.scheda"
-              :form="item.scheda"
-              :editable="false"
-              :saving="false"
-              :repo="browsed.repo"
-              ></SchedaOggettoView>
+          <CardFormat>
+            <template #header>
+              <div class="oggetto-header">
+                <OggettoShort :oggetto="item"></OggettoShort>
+              </div>
+            </template>
+            <template #default>
+              <RouterLink :to="`/oggetto/${item.id}`">
+                <div class="card-image">
+                  <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+                </div>
+                <SchedaOggettoView v-if="item.scheda"
+                    :scheda="item.scheda"
+                    :form="item.scheda"
+                    :editable="false"
+                    :saving="false"
+                    :repo="browsed.repo"
+                    ></SchedaOggettoView>
+              </RouterLink>
+            </template>
+          </CardFormat>
         </template>
         <template #empty>
           <div class="notimportant">Nessun oggetto in questo posto</div>
@@ -117,5 +126,12 @@ const addingOggetto = ref(false);
 <style scoped>
 .moreposto {
   font-size: 0.9rem;
+}
+.oggetto-header {
+  text-align: center;
+  font-size: 1.1em;
+}
+.card-image .identicon {
+  padding: 15%;
 }
 </style>

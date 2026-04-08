@@ -27,6 +27,7 @@ function toggleOption(option: string) {
     </span>
     <span v-else class="arrayitems">
         <span v-for="option in options.filter(o => chips.includes(o))" class="chip-active-true"> {{ option }} </span>
+        <span v-if="chips.length == 0">&nbsp;</span>
     </span>
 </template>
 
@@ -40,6 +41,6 @@ function toggleOption(option: string) {
 }
 .chip-active-true {
     padding: 0px 2px;
-    border: 1px solid black;
+    background-color: #dfd;
 }
 </style>

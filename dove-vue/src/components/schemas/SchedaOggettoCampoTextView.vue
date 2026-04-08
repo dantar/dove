@@ -10,7 +10,7 @@ function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoText ): string
 
 </script>
 <template>
-    <div class="data-panel">
+    <div>
         <textarea v-if="editable" :disabled="saving" v-model.trim="form.values[campo.id]"></textarea>
         <div v-else>{{ getValue(scheda, campo as SchedaOggettoCampoText) || '' }}</div>
     </div>

@@ -36,7 +36,11 @@ function toggleFormat() {
     qrFormat.value = 'square';
     qrBaseHeight.value = 100;
     qrBaseWidth.value = 100;
-  } else {
+  } else if (qrFormat.value == 'square') {
+    qrFormat.value = 'portrait';
+    qrBaseHeight.value = 80;
+    qrBaseWidth.value = 60;
+  } else if (qrFormat.value == 'portrait') {
     qrFormat.value = 'landscape';
     qrBaseHeight.value = 60;
     qrBaseWidth.value = 100;
@@ -285,6 +289,21 @@ function printCodes() {
                 <text v-for="(part, index) in textrows(code)"
                   x="81" 
                   v-bind:y="46 + index*6" 
+                  text-anchor="middle" 
+                  v-bind:font-size="5 + (index > 0? 0: 3)"
+                >{{ part }}</text>
+              </svg>
+              <svg v-if="qrFormat == 'portrait'" viewBox="0 0 60 80" preserveAspectRatio="xMidYMid meet">
+                <rect x="0" y="0" width="60" height="80" fill="white"></rect>
+                <!-- QR -->
+                <foreignObject x="0" y="0" width="60" height="60">
+                  <qrcode-vue :value="prefixCode(code)" :render-as="'svg'" :size="60" />
+                </foreignObject>
+                <foreignObject x="0" y="62" width="18" height="18" v-html="makeIdenticon(code)" />
+                <!-- Testo -->
+                <text v-for="(part, index) in textrows(code)"
+                  x="40" 
+                  v-bind:y="68 + index*6" 
                   text-anchor="middle" 
                   v-bind:font-size="5 + (index > 0? 0: 3)"
                 >{{ part }}</text>

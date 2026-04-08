@@ -10,9 +10,8 @@ const props = defineProps<Props>()
 </script>
 <template>
   <div class="breadcrumbs">
-    <span><RouterLink to="/browse"><span class="entity entity--home"></span></RouterLink></span>
     <span v-for="(posto, index) in props.posti">
-      <span class="separator">/</span>
+      <span v-if="index > 0" class="separator">/</span>
       <PostoShort :posto="posto"></PostoShort>
     </span>
   </div>

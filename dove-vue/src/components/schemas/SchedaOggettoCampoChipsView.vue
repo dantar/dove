@@ -11,7 +11,7 @@ function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoChips ): strin
 
 </script>
 <template>
-  <div class="data-panel" v-if="campo.tipo == 'chips'">
+  <div v-if="campo.tipo == 'chips'">
     <DataChips
       :editable="editable"
       :saving="saving"

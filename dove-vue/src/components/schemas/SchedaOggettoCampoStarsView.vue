@@ -18,7 +18,7 @@ function c(campo: SchedaOggettoCampo): SchedaOggettoCampoStars {
 
 </script>
 <template>
-  <div class="data-panel">
+  <div>
     <button type="button" v-if="editable" v-for="star in Array.from(Array(c(campo).max).keys())" @click="form.values[campo.id] = star +1">{{ starShape(getValue(form, c(campo)), star +1) }}</button>
     <span v-else v-for="star in Array.from(Array(c(campo).max).keys())">{{ starShape(getValue(scheda, c(campo)), star +1) }}</span>
   </div>

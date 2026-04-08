@@ -48,8 +48,8 @@ init(props.repo)
         :saving="props.saving"
         ></SchedaBySchemaView>
   </div>
-  <div v-else>
-      <span>Nessuna scheda presente. </span>
+  <div v-else class="empty">
+      <span class="notimportant">Nessuna scheda presente. </span>
   </div>
   <div v-if="editable" class="arrayitems">
     <span>Cambia tipo scheda</span>
@@ -60,4 +60,9 @@ init(props.repo)
   </div>
 
 </template>
-<style scoped></style>
+<style scoped>
+.empty {
+  padding: 2px;
+  text-align: center;
+}
+</style>

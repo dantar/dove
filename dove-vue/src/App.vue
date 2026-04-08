@@ -8,6 +8,8 @@ import { useLoggedUser } from './stores/logged-user';
 import { useRouter } from 'vue-router'
 import LoggedUser from './components/LoggedUser.vue';
 import { useTipiSchedeOggetto } from './stores/schede-by-schema';
+import { useBrowseData } from './stores/browse-data';
+import type { PostoBrowseDto } from './models/browse-item';
 
 const loggedUser = useLoggedUser();
 const router = useRouter();
@@ -16,13 +18,22 @@ const repo = useTipiSchedeOggetto();
 const popupUser = ref(false);
 const popupCart = ref(false);
 
+const browse = useBrowseData();
+
+const browsed = ref<PostoBrowseDto>();
+browse
+.browseRootDetails()
+.then((data) => {
+  browsed.value = data;
+});
+
 </script>
 
 <template>
   <div v-if="loggedUser.user.username">
     <div class="header">
       <button @click="popupCart = true"><Heroicon icon="cart" /></button>
-      <RouterLink :to="`/browse`"><button><Heroicon icon="archive-box" /></button></RouterLink>
+      <RouterLink v-if="browsed" v-for="repo in browsed.posti" :to="`/posto/${repo.id}`"><button><Heroicon icon="archive-box" /></button></RouterLink>
       <RouterLink :to="`/print`"><button><Heroicon icon="printer" /></button></RouterLink>
       <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)">
         <Heroicon icon="qr-code-search"></Heroicon>

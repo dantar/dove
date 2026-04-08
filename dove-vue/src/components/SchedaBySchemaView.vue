@@ -2,6 +2,7 @@
 import { SchedaBySchema } from '@/models/browse-item';
 import { useTipiSchedeOggetto, type TipoSchedaOggetto, type SchedaOggettoCampoViewProps, type SchedaOggettoCampo} from '@/stores/schede-by-schema';
 import { ref, watch } from 'vue';
+import SlotGrid from './SlotGrid.vue';
 interface Props {
   scheda: SchedaBySchema,
   editable: boolean,
@@ -35,10 +36,14 @@ function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
 
 </script>
 <template>
-    <div v-if="schema" class="data-panel" v-for="campo in schema.campi">
-        <span class="data-panel-header">{{ campo.nome }} tipo {{ campo.id }}</span> 
-        <component :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
-    </div>
-    <div v-else>Schema {{ scheda.schema }} loading...</div>
+    <SlotGrid>
+        <div v-if="schema" class="data-panel" v-for="campo in schema.campi">
+            <span class="data-panel-header">{{ campo.nome }}</span> 
+            <span class="data-panel-content">
+                <component :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
+            </span>
+        </div>
+        <div v-else>Schema {{ scheda.schema }} loading...</div>
+    </SlotGrid>
 </template>
 <style scoped></style>

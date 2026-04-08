@@ -44,13 +44,20 @@ textarea {
 .data-panel {
 
     display: flex;
-    column-gap: $spacing-md;
+    flex-direction: column;
+    column-gap: 0;
     row-gap: 0;
     flex-wrap: wrap;
+    margin: 2px;
 
     &-header {
         color: $color-secondary;
-        max-width: 30%;
+        font-size: 0.8em;
+    }
+
+    &-content {
+        border: 1px solid $color-secondary;
+        padding: 2px;
     }
 
     &-line {
