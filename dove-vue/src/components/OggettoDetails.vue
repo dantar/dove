@@ -10,6 +10,7 @@ import ItemsGallery from './ItemsGallery.vue';
 import ImageThumb from './ImageThumb.vue';
 import Heroicon from './Heroicon.vue';
 import QrLauncher from './QrLauncher.vue';
+import CardFormat from './CardFormat.vue';
 
 interface Props {
   uuid: string,
@@ -103,7 +104,7 @@ async function spostaOggettoIn(code: string) {
         </div>
         <div class="pagesection pagesection-with-buttons">
             <form @submit.prevent="saveData()">
-            <div>
+            <CardFormat class="oggetto-details">
                 <OggettoHeader 
                     :oggetto="editable ? form || browsed.oggetto : browsed.oggetto"
                     :form="(form as OggettoObj)"
@@ -117,7 +118,7 @@ async function spostaOggettoIn(code: string) {
                     :saving="freeze"
                     :repo="browsed.repo"
                     ></SchedaOggettoView>
-            </div>
+            </CardFormat>
             <div class="overbuttons overbuttons--up">
                 <span>
                     <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/></button>
@@ -159,4 +160,12 @@ async function spostaOggettoIn(code: string) {
 .card-title {
     font-size: 1.4rem;
 }
+.oggetto-details {
+    padding: 5px;
+    margin: 5px;
+}
+.imagethumb {
+    max-width:100px;
+}
+
 </style>

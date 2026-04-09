@@ -32,8 +32,9 @@ browse
 <template>
   <div v-if="loggedUser.user.username">
     <div class="header">
-      <button @click="popupCart = true"><Heroicon icon="cart" /></button>
+      <RouterLink to="/"><button><Heroicon icon="home" /></button></RouterLink>
       <RouterLink v-if="browsed" v-for="repo in browsed.posti" :to="`/posto/${repo.id}`"><button><Heroicon icon="archive-box" /></button></RouterLink>
+      <button @click="popupCart = true"><Heroicon icon="cart" /></button>
       <RouterLink :to="`/print`"><button><Heroicon icon="printer" /></button></RouterLink>
       <QrLauncher @decoded="(uuid) => router.replace(`/qr/${uuid}`)">
         <Heroicon icon="qr-code-search"></Heroicon>

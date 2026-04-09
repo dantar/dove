@@ -10,11 +10,14 @@ const props = defineProps<Props>()
 </script>
 <template>
   <div class="breadcrumbs">
-    <span v-for="(posto, index) in props.posti">
+    <span v-for="(posto, index) in props.posti" class="postoshort">
       <span v-if="index > 0" class="separator"><slot>/</slot></span>
       <PostoShort :posto="posto"></PostoShort>
     </span>
   </div>
 </template>
 <style scoped>
+.postoshort {
+  padding: 2px;
+}
 </style>

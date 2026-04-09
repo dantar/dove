@@ -7,19 +7,11 @@
   }
 
   &--posto::before {
-    content: "📦";
+    content: "";
   }
 
   &--home::before {
-    content: "🏠";
-  }
-
-  &--accessorio::before {
-    content: "🔨";
-  }
-
-  &--vestiti::before {
-    content: "👕";
+    content: "";
   }
 
 }
