@@ -1,0 +1,30 @@
+info:
+  name: Oggetto search
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:9080/search/oggetto
+  body:
+    type: json
+    data: |-
+      {
+        "repo": "2e903a00-dd58-47b6-8370-bfa28df1409a",
+        "query": [
+          {
+            "schema": "accessorio",
+            "campo": "descrizione",
+            "criteria": {"text": "dd", "operator": "contains"}
+          }
+        ]
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

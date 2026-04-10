@@ -3,10 +3,11 @@ package it.dantar.cav.entities;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface OggettoDao extends JpaRepository<Oggetto, String> {
+public interface OggettoDao extends JpaRepository<Oggetto, String>, JpaSpecificationExecutor<Oggetto> {
 
 	List<Oggetto> findByIdPosto(String idPosto);
 

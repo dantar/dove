@@ -1,0 +1,25 @@
+info:
+  name: Authenticate
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:9080/authenticate
+  body:
+    type: json
+    data: '{"username": "admin", "password": "daniele"}'
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        let data = res.body;
+        bru.setEnvVar("token", data.token);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

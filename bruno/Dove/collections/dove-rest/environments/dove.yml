@@ -1,0 +1,4 @@
+name: dove
+variables:
+  - name: token
+    value: eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoidGVzdCJ9XSwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NzU4NDA5NzQsImV4cCI6MTc3NTg2OTc3NH0.n6MefV0f9avNISd3E2IRBGaYdCozwEgwBHRAQ7vHmAAsrwEFqgcNEFE2Y1tuYW9Yt1zQ91B-PYe-P3TGQAkmQg
