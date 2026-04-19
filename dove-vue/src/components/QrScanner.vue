@@ -82,8 +82,8 @@ const startScanner = async (): Promise<void> => {
 
   const config:Html5QrcodeCameraScanConfig = {
     fps: 4,
-    //qrbox: { width: 250, height: 250 },
-    //aspectRatio: 1.0
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0
   }
 
   await html5QrCode.start(
@@ -91,7 +91,8 @@ const startScanner = async (): Promise<void> => {
     config,
     (decodedText: string) => {
       const parts = decodedText.split('/');
-      emit("decoded", parts[parts.length - 1] || '')
+      const code = parts[parts.length - 1] || '';
+      emit("decoded", code);
     },
     () => {}
   )
@@ -215,14 +216,28 @@ function toggleShowInput() {
 .qr-overlay {
   position: fixed;
   inset: 0;
-  background: black;
+  background: #000000aa;
   z-index: 9999;
   display: flex;
   flex-direction: column;
 }
 
+.qr-overlay-new {
+  position: fixed;
+  /* inset: 0; */
+  top: 0;
+  left: 0;
+  background: #000000aa;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+}
+
 .qr-region {
-  flex: 1;
+  /* flex: 1; */
 }
 
 .top-bar,
@@ -244,6 +259,7 @@ function toggleShowInput() {
   bottom: 0;
   justify-content: center;
   gap: 1rem;
+  flex: 1;
 }
 
 .camera-select {
