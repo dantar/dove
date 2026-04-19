@@ -23,6 +23,7 @@ const mode = ref('double');
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  justify-content: center;
 }
 
 .gallery-item {

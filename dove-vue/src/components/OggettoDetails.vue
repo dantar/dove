@@ -165,7 +165,7 @@ async function spostaOggettoIn(code: string) {
     margin: 5px;
 }
 .imagethumb {
-    max-width:100px;
+    /* max-width:100px; */
 }
 
 </style>

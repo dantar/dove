@@ -1,39 +1,8 @@
-<template>
-  <div class="camera">
-
-    <div
-      class="preview"
-      ref="preview"
-      @pointerdown="onPointerDown"
-      @pointermove="onPointerMove"
-      @pointerup="onPointerUp"
-      @pointercancel="onPointerUp"
-    >
-      <video ref="video" autoplay playsinline></video>
-
-      <div class="flash" v-if="flash"></div>
-
-      <canvas ref="canvas" class="hidden"></canvas>
-    </div>
-
-    <div class="controls">
-      <button @click="takePhoto"><Heroicon icon="camera"/></button>
-      <button @click="donePictures"><Heroicon icon="check"/></button>
-    </div>
-
-    <div class="gallery">
-      <div v-for="(photo,index) in photos" :key="index" class="thumb">
-        <img :src="photo" />
-        <button class="delete" @click="removePhoto(index)"><Heroicon icon="trash"/></button>
-      </div>
-    </div>
-
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Heroicon from './Heroicon.vue';
+import ItemsGallery from './ItemsGallery.vue';
+import CardFormat from './CardFormat.vue';
 
 const emit = defineEmits<{
   (e: "done", value: string[]): void
@@ -191,29 +160,104 @@ function onPointerUp(e: PointerEvent) {
 
 /* ------------------- GALLERY ------------------- */
 
-function removePhoto(i:number) {
-  photos.value.splice(i,1)
+function removePhoto(photo: string) {
+  photos.value.splice(photos.value.indexOf(photo),1);
 }
 
 onMounted(startCamera)
 onBeforeUnmount(stopCamera)
 
 </script>
+<template>
+
+<div class="fullpage">
+  <div class="container">
+    
+    <!-- Preview fissa -->
+    <div
+      class="preview"
+      ref="preview"
+      @pointerdown="onPointerDown"
+      @pointermove="onPointerMove"
+      @pointerup="onPointerUp"
+      @pointercancel="onPointerUp"
+      @click="takePhoto"
+    >
+      <div class="controls">
+        <button @click.stop="takePhoto"><Heroicon icon="camera"/></button>
+        <button @click.stop="donePictures"><Heroicon icon="check"/></button>
+      </div>
+      <video ref="video" autoplay playsinline></video>
+      <div class="flash" v-if="flash"></div>
+      <canvas ref="canvas" class="hidden"></canvas>
+    </div>
+
+    <!-- Gallery scrollabile -->
+    <div class="gallery">
+      <ItemsGallery :items="photos">
+        <template #item="{item}">
+          <CardFormat>
+            <img :src="item" />
+            <button class="top-right-button" @click="removePhoto(item)"><Heroicon icon="trash"/></button>
+          </CardFormat>
+        </template>
+      </ItemsGallery>
+    </div>
+
+  </div>
+</div>
+</template>
 
 <style scoped>
 
-.camera {
-  display:flex;
-  flex-direction:column;
-  gap:15px;
+.fullpage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #15151584;
 }
 
+/* contenitore verticale */
+.container {
+  display: flex;
+  flex-direction: column;
+
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  max-width: 600px; /* opzionale */
+}
+
+/* preview in alto */
 .preview {
-  position:relative;
-  max-width:420px;
-  aspect-ratio:1;
-  overflow:hidden;
-  touch-action:none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  aspect-ratio: 1 / 1; /* quadrato */
+  width: 100%;
+  padding: 10px;
+}
+
+/* video che riempie */
+.preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* gallery scrollabile */
+.gallery {
+  flex: 1;
+  overflow: auto;
+  gap: 8px;
+  padding: 8px;
 }
 
 video {
@@ -241,27 +285,15 @@ video {
 }
 
 .controls{
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
   display:flex;
+  justify-content: center;
   gap:10px;
 }
 
-.gallery{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,100px);
-  gap:10px;
-}
-
-.thumb{
-  position:relative;
-}
-
-.thumb img{
-  width:100px;
-  height:100px;
-  object-fit:cover;
-}
-
-.delete{
+.top-right-button{
   position:absolute;
   top:0;
   right:0;
