@@ -1,0 +1,32 @@
+info:
+  name: Ricerca chips
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:9080/search/oggetto
+  body:
+    type: json
+    data: |-
+      {
+        "repo": "2e903a00-dd58-47b6-8370-bfa28df1409a",
+        "query": [
+          {
+            "tipo": "schema",
+            "schema": "vestiti",
+            "campo": "eta",
+            "criteria": {"options": ["3a", "9m"], "operator": "any"}
+          }
+        ],
+        "pageIndex": 0
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

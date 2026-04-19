@@ -20,6 +20,7 @@ export interface OggettoObj {
     idPosto: string;
     nome: string;
     thumbnail: string;
+    repo: string;
     scheda: SchedaOggetto;
     immagini: string[];
 }

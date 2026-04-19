@@ -7,6 +7,7 @@ import OggettoDetails from '@/components/OggettoDetails.vue'
 import PostoDetails from '@/components/PostoDetails.vue'
 import PrintTemplate from '@/components/PrintTemplate.vue'
 import QrRedirect from '@/components/QrRedirect.vue'
+import SearchPage from '@/components/SearchPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -14,6 +15,7 @@ const router = createRouter({
   routes: [
     { path: '', component: HomeView, props: true },
     { path: '/user', component: LoggedUser, props: true },
+    { path: '/search', component: SearchPage, props: true },
     { path: '/browse', component: PostoDetails, props: true },
     { path: '/about', component: AboutView },
     { path: '/camera', component: CameraSquare },

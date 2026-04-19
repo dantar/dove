@@ -1,5 +1,5 @@
 info:
-  name: Oggetto search
+  name: Ricerca testo
   type: http
   seq: 3
 
@@ -13,11 +13,13 @@ http:
         "repo": "2e903a00-dd58-47b6-8370-bfa28df1409a",
         "query": [
           {
+            "tipo": "schema",
             "schema": "accessorio",
             "campo": "descrizione",
-            "criteria": {"text": "dd", "operator": "contains"}
+            "criteria": {"text": "dd", "operator": "equals", "case": true}
           }
-        ]
+        ],
+        "pageIndex": 0
       }
   auth:
     type: bearer

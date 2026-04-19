@@ -6,6 +6,9 @@ import SchedaOggettoCampoStarsView from '@/components/schemas/SchedaOggettoCampo
 import SchedaOggettoCampoTextView from '@/components/schemas/SchedaOggettoCampoTextView.vue';
 import { useBackendConfig } from './backend-config';
 import axios from 'axios';
+import SchedaOggettoCampoTextSearch from '@/components/schemas/SchedaOggettoCampoTextSearch.vue';
+import SchedaOggettoCampoChipsSearch from '@/components/schemas/SchedaOggettoCampoChipsSearch.vue';
+import SchedaOggettoCampoStarsSearch from '@/components/schemas/SchedaOggettoCampoStarsSearch.vue';
 
 export interface RepoSchemiJson {
     id: string;
@@ -20,6 +23,26 @@ export interface TipoSchedaOggetto {
 
 }
 
+// component props
+
+export interface SchedaOggettoCampoViewProps {
+    // queste sono le prop richieste da ogni Componente di view
+    scheda: SchedaBySchema,
+    editable: boolean,
+    saving: boolean,
+    form: SchedaBySchema,
+    campo: SchedaOggettoCampo, // da specializzare in ogni classe
+}
+
+export interface SchedaOggettoCampoSearchProps {
+    // queste sono le prop richieste da ogni Componente di search
+    repo: RepoSchemiJson,
+    schema: TipoSchedaOggetto,
+    campo: SchedaOggettoCampo, // da specializzare in ogni classe
+}
+
+// generale
+
 export interface SchedaOggettoCampoBase {
     tipo: string;
     id: string;
@@ -27,18 +50,46 @@ export interface SchedaOggettoCampoBase {
     span: number;
 }
 
-export interface SchedaOggettoCampoStars extends SchedaOggettoCampoBase {
-    tipo: 'stars';
-    span: 3;
-    max: number;
+export interface SearchOggettoForm {
+    repo: string;
+    pageIndex: number;
+    pageSize: number;
+    query: (SearchOggettoBySchemaCampo)[];
 }
+
+export interface SearchOggettoBySchemaCampo {
+    tipo: 'schema';
+    schema: string;
+    campo: string;
+    criteria: SearchOggettoBySchemaCampoCriteria;
+}
+export interface SearchOggettoBySchemaCampoCriteria {
+}
+
 export interface SchedaOggettoCampoHandler {
     KEY: string;
     owns(campo: SchedaOggettoCampo): boolean;
     digest(campo: SchedaOggettoCampo): SchedaOggettoCampo;
     initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampo): void;
+    initSearch(campo: SchedaOggettoCampo): SearchOggettoBySchemaCampoCriteria;
     component(): Component;
+    searchComponent(): Component;
     registration: boolean;
+}
+
+// stars
+
+export interface SchedaOggettoCampoStars extends SchedaOggettoCampoBase {
+    tipo: 'stars';
+    span: 3;
+    max: number;
+}
+export interface SearchOggettoBySchemaCampoCriteriaStars extends SearchOggettoBySchemaCampoCriteria {
+    minValue: number;
+    maxValue: number;
+}
+export interface SearchOggettoBySchemaCampoStars extends SearchOggettoBySchemaCampo {
+    criteria: SearchOggettoBySchemaCampoCriteriaStars;
 }
 export class SchedaOggettoCampoStarsHandler {
     static KEY = 'stars';
@@ -52,15 +103,30 @@ export class SchedaOggettoCampoStarsHandler {
     static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoStars): void {
         scheda.values[campo.id] = 3;
     }
+    static initSearch(campo: SchedaOggettoCampoStars): SearchOggettoBySchemaCampoCriteriaStars {
+        return {minValue: 0, maxValue: campo.max};
+    }
     static component(): Component {
         return SchedaOggettoCampoStarsView;
     }
+    static searchComponent(): Component {
+        return SchedaOggettoCampoStarsSearch;
+    }
 }
+
+// chips
 
 export interface SchedaOggettoCampoChips extends SchedaOggettoCampoBase {
     tipo: 'chips';
     span: 0;
     opzioni: string[];
+}
+export interface SearchOggettoBySchemaCampoCriteriaChips extends SearchOggettoBySchemaCampoCriteria {
+    options: string[];
+    operator: 'any';
+}
+export interface SearchOggettoBySchemaCampoChips extends SearchOggettoBySchemaCampo {
+    criteria: SearchOggettoBySchemaCampoCriteriaChips;
 }
 export class SchedaOggettoCampoChipsHandler {
     static KEY = 'chips';
@@ -74,23 +140,33 @@ export class SchedaOggettoCampoChipsHandler {
     static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoChips): void {
         scheda.values[campo.id] = [];
     }
+    static initSearch(campo: SchedaOggettoCampoChips): SearchOggettoBySchemaCampoCriteriaChips {
+        return {
+            options: [],
+            operator: 'any',
+        };
+    }
     static component(): Component {
         return SchedaOggettoCampoChipsView;
     }
+    static searchComponent(): Component {
+        return SchedaOggettoCampoChipsSearch;
+    }
 }
 
-export interface SchedaOggettoCampoViewProps {
-    // queste sono le prop richieste da ogni Componente di view
-    scheda: SchedaBySchema,
-    editable: boolean,
-    saving: boolean,
-    form: SchedaBySchema,
-    campo: SchedaOggettoCampo, // da specializzare in ogni classe
-}
+// text
 
 export interface SchedaOggettoCampoText extends SchedaOggettoCampoBase {
     tipo: 'text';
     span: 0;
+}
+export interface SearchOggettoBySchemaCampoCriteriaText extends SearchOggettoBySchemaCampoCriteria {
+    text: string;
+    operator: 'equals' | 'contains';
+    case: boolean;
+}
+export interface SearchOggettoBySchemaCampoText extends SearchOggettoBySchemaCampo {
+    criteria: SearchOggettoBySchemaCampoCriteriaText;
 }
 export class SchedaOggettoCampoTextHandler {
     static KEY = 'text';
@@ -104,10 +180,22 @@ export class SchedaOggettoCampoTextHandler {
     static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoText): void {
         scheda.values[campo.id] = '';
     }
+    static initSearch(campo: SchedaOggettoCampoText): SearchOggettoBySchemaCampoCriteriaText {
+        return {
+            text: '',
+            case: false,
+            operator: 'contains',
+        };
+    }
     static component(): Component {
         return SchedaOggettoCampoTextView;
     }
+    static searchComponent(): Component {
+        return SchedaOggettoCampoTextSearch;
+    }
 }
+
+// generals
 
 export type SchedaOggettoCampo =
     | SchedaOggettoCampoStars
