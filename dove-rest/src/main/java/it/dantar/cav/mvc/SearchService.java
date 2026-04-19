@@ -1,9 +1,12 @@
 package it.dantar.cav.mvc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +14,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,13 +25,17 @@ import it.dantar.cav.entities.RepoSchemi;
 import it.dantar.cav.entities.RepoSchemiDao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SearchService {
 
 	public static final String VALUES = "values";
@@ -51,12 +60,86 @@ public class SearchService {
 		}
 	}
 	
+	static Expression<String> jsonbExtractPathText(CriteriaBuilder cb, Expression<Object> json, String... path) {
+		List<Expression> ll = new ArrayList();
+		ll.add(json);
+		ll.addAll(Arrays.asList(path).stream().map(s -> cb.literal(s)).toList());
+		Expression[] literals = ll.toArray(new Expression[0]);
+		return cb.function("jsonb_extract_path_text", String.class, literals);
+	}
+	
+	static Expression<Object> jsonbExtractPath(CriteriaBuilder cb, Expression<Object> json, String... path) {
+		List<Expression> ll = new ArrayList();
+		ll.add(json);
+		ll.addAll(Arrays.asList(path).stream().map(s -> cb.literal(s)).toList());
+		Expression[] literals = ll.toArray(new Expression[0]);
+		return cb.function("jsonb_extract_path", Object.class, literals);
+	}
+	
+	static Expression<Boolean> jsonbPathMatch(CriteriaBuilder cb, Expression<Object> json, String jsonpath) {
+		return cb.function("jsonb_path_match", Boolean.class, json, cb.literal(jsonpath)) ;
+	}
+	
 	protected static final SpecificationBuilderRegistry<Oggetto> SPECBUILDER = new SpecificationBuilderRegistry<Oggetto>()
-			.registerSpecificationBuilder("text", (worker, campo, criteria) -> (oggetto, query, cb) ->
-			cb.like(
-					cb.function("jsonb_extract_path_text", String.class, oggetto.get(SCHEDA), cb.literal(VALUES), cb.literal(campo.getId())),
-					"%" + criteria.getCriteria().path("text").asText() + "%"
-					))
+			.registerSpecificationBuilder("text", new SpecificationBuilder<Oggetto>() {
+				@Data
+				static class SearchRequestFormCriteriaText {
+					static final String CONTAINS = "contains";
+					static final String EQUALS = "equals";
+					String text;
+					String operator;
+					@JsonProperty("case")
+					boolean matchCase;
+				}
+				@Override
+				@SneakyThrows({JsonProcessingException.class, IllegalArgumentException.class})
+				public Specification<Oggetto> toSpecification(SchemaWorker worker, SchemaCampoReader campo, SearchRequestFormCriteria criteria) {
+					log.info("Search by TEXT {}", criteria);
+					ObjectMapper mapper = new ObjectMapper();
+					SearchRequestFormCriteriaText c = mapper.treeToValue(criteria.getCriteria(), SearchRequestFormCriteriaText.class);
+					return (oggetto, query, cb) -> {
+						Expression<String> dbValue = jsonbExtractPathText(cb, oggetto.get(SCHEDA), VALUES, campo.getId());
+						String searchedText = criteria.getCriteria().path("text").asText();
+						if (!c.isMatchCase()) {
+							dbValue = cb.lower(dbValue);
+							searchedText = searchedText.toLowerCase();
+						}
+						switch (c.getOperator()) {
+						case SearchRequestFormCriteriaText.CONTAINS: {
+							return cb.like(dbValue, "%" + searchedText + "%");
+						}
+						case SearchRequestFormCriteriaText.EQUALS: {
+							return cb.equal(dbValue, searchedText);
+						}
+						default:
+							throw new IllegalArgumentException("Unexpected value: " + c.getOperator());
+						}
+					};
+				}
+			})
+			.registerSpecificationBuilder("chips", new SpecificationBuilder<Oggetto>() {
+				@Data
+				static class SearchRequestFormCriteriaChips {
+					List<String> options;
+					String operator;
+				}
+				@Override
+				@SneakyThrows({JsonProcessingException.class, IllegalArgumentException.class})
+				public Specification<Oggetto> toSpecification(SchemaWorker worker, SchemaCampoReader campo, SearchRequestFormCriteria criteria) {
+					log.info("Search by CHIPS {}", criteria);
+					ObjectMapper mapper = new ObjectMapper();
+					SearchRequestFormCriteriaChips c = mapper.treeToValue(criteria.getCriteria(), SearchRequestFormCriteriaChips.class);
+					String a = String.join(" || ", 
+							c.getOptions()
+							.stream()
+							.map(token -> String.format("@ == \"%s\"", token))
+							.toList()
+							);
+					return (oggetto, query, cb) -> cb.isTrue(
+							jsonbPathMatch(cb, oggetto.get(SCHEDA), String.format("exists($.values.%s[*] ? (%s))", criteria.getCampo(), a))
+							);
+					}
+			})
 			;
 	
 	private static interface SpecificationBuilder<T> {
@@ -74,15 +157,20 @@ public class SearchService {
 	public static class SearchRequestForm {
 		String repo;
 		List<SearchRequestFormCriteria> query;
+		Integer pageIndex = 0;
+		Integer pageSize = 10;
+		public PageRequest getPageRequest() {
+			return PageRequest.of(pageIndex, pageSize);
+		}
 	}
 
-	public Page<Oggetto> search(SearchRequestForm search) {
+	public Page<Oggetto> search(SearchRequestForm search) {		
 		RepoWorker worker = repoSchemiDao
 				.findById(search.getRepo())
 				.map(repo -> RepoWorker.wrap(repo))
 				.orElseThrow(IllegalArgumentException::new);
 		List<Specification<Oggetto>> specifications = search.query.stream().map(criteria -> worker.toSpecification(criteria)).toList();
-		return oggettoDao.findAll(andAllCriteria(specifications), PageRequest.of(0, 10));
+		return oggettoDao.findAll(andAllCriteria(specifications), search.getPageRequest());
 	}
 
 	private Specification<Oggetto> andAllCriteria(List<Specification<Oggetto>> criteria) {
@@ -137,9 +225,10 @@ public class SearchService {
 			;
 		}
 		private Specification<Oggetto> toSpecification(SchemaCampoReader campo, SearchRequestFormCriteria criteria) {
-			return SPECBUILDER
-					.getSpecificationBuilder(campo.getTipo())
-					.toSpecification(this, campo, criteria);
+			return Optional
+					.ofNullable(SPECBUILDER.getSpecificationBuilder(campo.getTipo()))
+					.map(sb -> sb.toSpecification(this, campo, criteria))
+					.orElseThrow(() -> new IllegalArgumentException(String.format("Tipo campo %s has no Specification Builder", campo.getTipo())));
 		}
 	}
 	

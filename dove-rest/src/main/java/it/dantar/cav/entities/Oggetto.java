@@ -35,6 +35,7 @@ public class Oggetto {
 	String idPosto;
 	String nome;
 	String thumbnail;
+	String repo;
 	@Type(JsonBinaryType.class)
 	JsonNode scheda;
 	@Transient
