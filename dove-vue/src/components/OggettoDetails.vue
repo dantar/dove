@@ -98,7 +98,7 @@ async function spostaOggettoIn(code: string) {
             <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
             <div class="overbuttons overbuttons--up" v-if="editable">
                 <span>
-                    <QrLauncher @decoded="(code) => spostaOggettoIn(code)"></QrLauncher>
+                    <QrLauncher @decoded-one="(code) => spostaOggettoIn(code)"></QrLauncher>
                 </span>
             </div>
         </div>

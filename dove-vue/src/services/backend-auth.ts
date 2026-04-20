@@ -12,8 +12,6 @@ export function loginUser(form: LoginFormDto) {
     axios
     .post(`${config.backend}/authenticate`, form)
     .then((response) => {
-        console.log(response);
-        console.log(response.data);
         schede.init()
         .then(() => {});
         user.user = response.data.details as AppUserDto;

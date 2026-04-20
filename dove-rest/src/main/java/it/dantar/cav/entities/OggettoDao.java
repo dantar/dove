@@ -15,4 +15,7 @@ public interface OggettoDao extends JpaRepository<Oggetto, String>, JpaSpecifica
 	@Query("update Oggetto o set o.id = :prefix || ':' || o.id where o.id = :idOggetto")
 	void dropOggetto(String idOggetto, String prefix);
 
+	@Query("select o from Oggetto o where o.idPosto != :idPosto and o.repo = :repo and o.id in :codes")
+	List<Oggetto> findAllByRepoNotInPosto(String idPosto, String repo, List<String> codes);
+
 }

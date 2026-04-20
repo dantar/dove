@@ -1,6 +1,7 @@
 package it.dantar.cav.mvc;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.dantar.cav.entities.Oggetto;
 import it.dantar.cav.entities.OggettoDao;
@@ -56,7 +59,40 @@ public class IngressoController {
 		postoDao.save(posto);
 		return posto;
 	}
-	
+
+	@PostMapping("/posto/{main}/codes")
+	public List<Oggetto> addCodes(@PathVariable String main, @RequestBody List<String> codes) {
+		ObjectMapper mapper = new ObjectMapper();
+		Posto posto = postoDao.findById(main).orElseThrow(IllegalArgumentException::new);
+		List<String> idEsistenti = new ArrayList<>();
+		postoDao.findAllById(codes).forEach(p -> idEsistenti.add(p.getId()));
+		List<Oggetto> oggettiEsistenti = oggettoDao
+				.findAllByRepoNotInPosto(main, posto.getRepo(), codes)
+				.stream()
+				.map(oggetto -> oggetto.setIdPosto(main))
+				.peek(oggetto -> idEsistenti.add(oggetto.getId()))
+				.toList()
+				;
+		oggettoDao.saveAll(oggettiEsistenti);
+		List<Oggetto> oggettiNuovi = codes
+				.stream()
+				.filter(code -> !idEsistenti.contains(code))
+				.map(uuid -> new Oggetto()
+						.setId(uuid)
+						.setIdPosto(posto.getId())
+						.setRepo(posto.getRepo())
+						.setThumbnail("")
+						.setScheda(mapper.createObjectNode())
+						.setNome("")
+						)
+				.toList();
+		oggettoDao.saveAll(oggettiNuovi);
+		List<Oggetto> result = new ArrayList<>();
+		result.addAll(oggettiEsistenti);
+		result.addAll(oggettiNuovi);
+		return result;
+	}
+
 	@PostMapping("/posto/{branch}")
 	public Posto nuovoRoot(@PathVariable String branch) {
 		Posto posto = createPosto(branch);

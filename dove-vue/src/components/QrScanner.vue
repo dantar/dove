@@ -7,11 +7,20 @@ import {
 } from "html5-qrcode"
 import {v4 as uuidv4} from 'uuid';
 import Heroicon from "./Heroicon.vue";
+import ItemsGallery from "./ItemsGallery.vue";
+import CardFormat from "./CardFormat.vue";
+import DicebearIdenticon from "./DicebearIdenticon.vue";
 
 const emit = defineEmits<{
-  (e: "decoded", value: string): void
-  (e: "closed"): void
+  (e: "decoded", values: string[]): void
 }>()
+
+interface Props {
+  sendAt: number;
+}
+const props = defineProps<Props>();
+
+const codes = ref<string[]>([]);
 
 const visible = ref<boolean>(false)
 const qrRegion = ref<HTMLElement | null>(null)
@@ -30,9 +39,9 @@ const openScanner = async (): Promise<void> => {
 }
 
 const closeScanner = async (): Promise<void> => {
-  await stopScanner()
-  visible.value = false
-  emit("closed")
+  await stopScanner();
+  visible.value = false;
+  emit("decoded", []);
 }
 
 /* ---------------------------
@@ -77,6 +86,13 @@ const initScanner = async (): Promise<void> => {
   }
 }
 
+function addCode(code: string) {
+  codes.value.push(code);
+  if (props.sendAt > 0 && codes.value.length >= props.sendAt) {
+    emitAllCodes();
+  }
+}
+
 const startScanner = async (): Promise<void> => {
   if (!html5QrCode || !selectedCameraId.value) return
 
@@ -92,7 +108,7 @@ const startScanner = async (): Promise<void> => {
     (decodedText: string) => {
       const parts = decodedText.split('/');
       const code = parts[parts.length - 1] || '';
-      emit("decoded", code);
+      addCode(code);
     },
     () => {}
   )
@@ -150,21 +166,43 @@ onMounted(() => {
 const showInput = ref<boolean>(false);
 const currentCode = ref<string>('');
 const emitInputCode = () => {
-  emit("decoded", currentCode.value);
+  addCode(currentCode.value);
   currentCode.value = '';
   showInput.value = false;
 }
 
-function toggleShowInput() {
-  showInput.value = !showInput.value;
+function emitAllCodes() {
+  emit("decoded", codes.value);
+}
+
+function removeCode(code: string) {
+  codes.value.splice(codes.value.indexOf(code), 1);
 }
 
 </script>
 
 <template>
-  <div v-if="visible" class="qr-overlay">
-    <!-- Top bar -->
-    <div class="top-bar">
+
+<div class="fullpage">
+  <div class="container">
+    
+    <!-- Preview fissa -->
+    <div class="preview">
+      <div ref="qrRegion"></div>
+      <div class="qr-controls">
+        <div>
+          <input type="text" v-model.trim="currentCode" />
+        </div>
+        <div>
+          <form @submit.prevent="emitInputCode()">
+            <button type="button" @click="() => currentCode = uuidv4()" ><Heroicon icon="qr-code"/></button>
+            <button type="submit" :disabled="!currentCode"><Heroicon icon="check"/></button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="top-left">
       <select
         v-model="selectedCameraId"
         class="camera-select"
@@ -178,112 +216,167 @@ function toggleShowInput() {
           {{ camera.label || "Camera" }}
         </option>
       </select>
-
-      <button class="btn" @click="closeScanner">✕</button>
     </div>
 
-    <!-- Scanner -->
-    <div ref="qrRegion" class="qr-region"></div>
-
-    <!-- Bottom bar -->
-    <div class="bottom-bar">
-      <button
-        v-if="torchSupported"
-        class="control-btn"
-        @click="toggleTorch"
-      >
-        🔦
-      </button>
-
-      <button type="button" @click="toggleShowInput()"><Heroicon icon="pencil" /></button>
-      <span v-if="showInput">
-        <form @submit.prevent="emitInputCode()">
-          <input type="text" v-model.trim="currentCode" />
-          <button type="button" @click="() => currentCode = uuidv4()" ><Heroicon icon="qr-code"/></button>
-          <button type="submit" :disabled="!currentCode"><Heroicon icon="check"/></button>
-        </form>
-      </span>
-
+    <div class="top-right">
+      <button type="button" @click="closeScanner"><Heroicon icon="cancel" /></button>
     </div>
 
-    <div v-if="error" class="error">
-      {{ error }}
+    <!-- Gallery scrollabile -->
+    <div class="gallery" v-if="sendAt != 1">
+      <div>
+        <button
+          v-if="torchSupported"
+          class="control-btn"
+          @click="toggleTorch"
+        >🔦</button>
+        <button v-if="codes.length > 0" type="button" @click="emitAllCodes"><Heroicon icon="check" /></button>
+      </div>
+      <ItemsGallery :items="codes">
+        <template #item="{item}">
+          <CardFormat>
+            <div class="qrcode">
+              <DicebearIdenticon :uuid="item"></DicebearIdenticon>
+              <span>{{ item }}</span>
+            </div>
+            <button class="top-right-button" @click="removeCode(item)"><Heroicon icon="trash"/></button>
+          </CardFormat>
+        </template>
+      </ItemsGallery>
     </div>
+
   </div>
+</div>
+<div v-if="error" class="error">
+  {{ error }}
+</div>
+
 </template>
 
 <style scoped>
-.qr-overlay {
-  position: fixed;
-  inset: 0;
-  background: #000000aa;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-}
 
-.qr-overlay-new {
-  position: fixed;
-  /* inset: 0; */
-  top: 0;
-  left: 0;
-  background: #000000aa;
-  z-index: 9999;
+.qr-controls {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  width: 100vw;
   justify-content: center;
   align-items: center;
-}
-
-.qr-region {
-  /* flex: 1; */
-}
-
-.top-bar,
-.bottom-bar {
   position: absolute;
-  left: 0;
-  right: 0;
+  z-index: 100;
+  bottom: 10px;
+}
+
+.top-left {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+}
+
+.top-right {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+}
+
+.qrcode {
   display: flex;
-  padding: 1rem;
-  z-index: 10;
+  flex-direction: row;
+  gap: 5px;
+  padding: 5px;
 }
 
-.top-bar {
+.identicon {
+  width: 50px;
+}
+
+.fullpage {
+  position: fixed;
   top: 0;
-  justify-content: space-between;
-}
-
-.bottom-bar {
-  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
   justify-content: center;
-  gap: 1rem;
-  flex: 1;
+  align-items: center;
+  background-color: #15151584;
+  z-index: 100;
 }
 
-.camera-select {
-  padding: 0.5rem;
-  font-size: 1rem;
-}
+/* contenitore verticale */
+.container {
+  display: flex;
+  flex-direction: column;
 
-.control-btn {
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: none;
-}
-
-.stop {
-  background: red;
-  color: white;
-}
-
-.error {
-  position: absolute;
-  bottom: 80px;
+  background-color: white;
   width: 100%;
-  text-align: center;
-  color: red;
+  height: 100%;
+  max-width: 600px; /* opzionale */
 }
+
+/* preview in alto */
+.preview {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  aspect-ratio: 1 / 1; /* quadrato */
+  width: 100%;
+}
+
+/* video che riempie */
+.preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* gallery scrollabile */
+.gallery {
+  flex: 1;
+  overflow: auto;
+  gap: 8px;
+  padding: 8px;
+}
+
+video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .1s;
+}
+
+.flash{
+  position:absolute;
+  inset:0;
+  background:white;
+  opacity:.8;
+  animation:flash .15s ease-out;
+}
+
+@keyframes flash{
+  from{opacity:.9}
+  to{opacity:0}
+}
+
+.hidden{
+  display:none;
+}
+
+.controls{
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display:flex;
+  justify-content: center;
+  gap:10px;
+}
+
+.top-right-button{
+  position:absolute;
+  top: 2;
+  right:0;
+}
+
+
 </style>

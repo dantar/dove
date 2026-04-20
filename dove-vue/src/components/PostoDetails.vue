@@ -27,7 +27,6 @@ loadPosto(props.uuid)
 watch(() => props.uuid, loadPosto);
 
 async function addPosto(text: string) {
-  console.log("addPosto", text);
   addingPosto.value = true;
   const b = browsed.value as PostoBrowseDto;
   if (b.posto) {
@@ -36,14 +35,13 @@ async function addPosto(text: string) {
     b.posti.push(await browse.addRoot(text));
   }
   addingPosto.value = false;
-  console.log("done addPosto");
 }
 
-async function addOggetto(text: string) {
+async function addOggetto(codes: string[]) {
   addingOggetto.value = true;
   const b = browsed.value as PostoBrowseDto;
-  const o = await browse.addOggetto(b.posto.id, text);
-  b.oggetti.push(o);
+  const os = await browse.addCodes(b.posto.id, codes);
+  b.oggetti.push(...os);
   addingOggetto.value = false;
 }
 
@@ -56,7 +54,7 @@ const addingOggetto = ref(false);
     <div class="pagesection pagesection-with-buttons">
       <div class="overbuttons overbuttons--up">
         <span>
-          <QrLauncher :disabled="addingPosto" @decoded="text => addPosto(text)">
+          <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
             <Heroicon icon="qr-code-add"></Heroicon>
           </QrLauncher>
         </span>
@@ -97,7 +95,7 @@ const addingOggetto = ref(false);
         <template #empty>
           <div class="notimportant">Nessun oggetto in questo posto</div>
           <div>
-            <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)">
+            <QrLauncher mode="many" :disabled="addingOggetto" @decoded-many="codes => addOggetto(codes)">
               <Heroicon icon="qr-code-add"></Heroicon>
               Aggiungi un oggetto!
             </QrLauncher>
@@ -106,7 +104,7 @@ const addingOggetto = ref(false);
       </ItemsGallery>
       <div class="overbuttons overbuttons--up">
         <span>
-          <QrLauncher :disabled="addingOggetto" @decoded="text => addOggetto(text)">
+          <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
             <Heroicon icon="qr-code-add"></Heroicon>
           </QrLauncher>
         </span>

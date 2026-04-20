@@ -61,13 +61,17 @@ public class EsploraController {
 
 	@PostMapping("/browse/posto/{uuid}/add/{item}")
 	public PostoBrowseDto browsePostoAddItem(@PathVariable("uuid") String uuid, @PathVariable("item") String item) {
+		Posto posto = postoDao.findById(uuid).orElseThrow(IllegalArgumentException::new);
 		Optional<Oggetto> found = oggettoDao.findById(item);
 		Oggetto oggetto = found.orElse(
 				new Oggetto()
 				.setId(item)
 				.setThumbnail("")
 				);
-		oggetto.setIdPosto(uuid);
+		oggetto
+		.setIdPosto(uuid)
+		.setRepo(posto.getRepo())
+		;
 		oggettoDao.save(oggetto);
 		return this.browsePosto(uuid);
 	}
