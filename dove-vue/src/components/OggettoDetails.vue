@@ -56,7 +56,7 @@ const saveData = async () => {
 const form = ref<OggettoObj>();
 
 async function refreshThumbnail() {
-    if (browsed.value && browsed.value.oggetto.immagini) {
+    if (browsed.value && !browsed.value.oggetto.thumbnail && browsed.value.oggetto.immagini) {
         browsed.value.oggetto.thumbnail = browsed.value.oggetto.immagini[0] as string;
     }
 }
@@ -130,7 +130,7 @@ async function spostaOggettoIn(code: string) {
         <div class="pagesection pagesection-with-buttons">
             <ItemsGallery :items="browsed.oggetto.immagini">
                 <template #item="{ item }">
-                    <div style="position: relative;">
+                    <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
                         <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
                         <span class="overbuttons overbuttons--up">
                             <button v-if="editable" @click="deleteThumbnail(item)">

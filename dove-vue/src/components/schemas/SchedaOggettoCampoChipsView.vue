@@ -11,7 +11,7 @@ function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoChips ): strin
 
 </script>
 <template>
-  <div v-if="campo.tipo == 'chips'">
+  <div v-if="campo.tipo == 'chips'" :class="{'empty': !editable && getValue(scheda, campo).length == 0}">
     <DataChips
       :editable="editable"
       :saving="saving"
