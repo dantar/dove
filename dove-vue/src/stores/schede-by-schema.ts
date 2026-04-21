@@ -9,6 +9,8 @@ import axios from 'axios';
 import SchedaOggettoCampoTextSearch from '@/components/schemas/SchedaOggettoCampoTextSearch.vue';
 import SchedaOggettoCampoChipsSearch from '@/components/schemas/SchedaOggettoCampoChipsSearch.vue';
 import SchedaOggettoCampoStarsSearch from '@/components/schemas/SchedaOggettoCampoStarsSearch.vue';
+import SchedaOggettoCampoQuantityView from '@/components/schemas/SchedaOggettoCampoQuantityView.vue';
+import SchedaOggettoCampoQuantitySearch from '@/components/schemas/SchedaOggettoCampoQuantitySearch.vue';
 
 export interface RepoSchemiJson {
     id: string;
@@ -154,6 +156,44 @@ export class SchedaOggettoCampoChipsHandler {
     }
 }
 
+// quantity
+
+export interface SchedaOggettoCampoQuantity extends SchedaOggettoCampoBase {
+    tipo: 'quantity';
+    span: 0;
+    unit: string;
+}
+export interface SearchOggettoBySchemaCampoCriteriaQuantity extends SearchOggettoBySchemaCampoCriteria {
+    max: number;
+}
+export interface SearchOggettoBySchemaCampoQuantity extends SearchOggettoBySchemaCampo {
+    criteria: SearchOggettoBySchemaCampoCriteriaQuantity;
+}
+export class SchedaOggettoCampoQuantityHandler {
+    static KEY = 'quantity';
+    static registration = SchedaBySchema.addHandler(this);
+    static owns(campo: SchedaOggettoCampo): boolean {
+        return campo.tipo == SchedaOggettoCampoQuantityHandler.KEY;
+    }
+    static digest(campo: SchedaOggettoCampo): SchedaOggettoCampoQuantity {
+        return campo as SchedaOggettoCampoQuantity;
+    }
+    static initScheda(scheda: SchedaBySchema, campo: SchedaOggettoCampoQuantity): void {
+        scheda.values[campo.id] = 0;
+    }
+    static initSearch(campo: SchedaOggettoCampoQuantity): SearchOggettoBySchemaCampoCriteriaQuantity {
+        return {
+            max: 0,
+        };
+    }
+    static component(): Component {
+        return SchedaOggettoCampoQuantityView;
+    }
+    static searchComponent(): Component {
+        return SchedaOggettoCampoQuantitySearch;
+    }
+}
+
 // text
 
 export interface SchedaOggettoCampoText extends SchedaOggettoCampoBase {
@@ -200,7 +240,9 @@ export class SchedaOggettoCampoTextHandler {
 export type SchedaOggettoCampo =
     | SchedaOggettoCampoStars
     | SchedaOggettoCampoChips
-    | SchedaOggettoCampoText;
+    | SchedaOggettoCampoText
+    | SchedaOggettoCampoQuantity
+    ;
 
 export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
 

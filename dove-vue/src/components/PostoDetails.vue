@@ -70,17 +70,17 @@ const addingOggetto = ref(false);
     <div v-if="browsed.posto" class="pagesection">
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
-          <CardFormat>
-            <template #header>
-              <div class="oggetto-header">
-                <OggettoShort :oggetto="item"></OggettoShort>
-              </div>
-            </template>
-            <template #default>
-              <RouterLink :to="`/oggetto/${item.id}`">
-                <div class="card-image">
-                  <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+          <RouterLink :to="`/oggetto/${item.id}`">
+            <CardFormat>
+              <template #header>
+                <div class="oggetto-header">
+                  <OggettoShort :oggetto="item"></OggettoShort>
                 </div>
+              </template>
+              <template #image>
+                <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+              </template>
+              <template #default>
                 <SchedaOggettoView v-if="item.scheda"
                     :scheda="item.scheda"
                     :form="item.scheda"
@@ -88,9 +88,10 @@ const addingOggetto = ref(false);
                     :saving="false"
                     :repo="browsed.repo"
                     ></SchedaOggettoView>
-              </RouterLink>
-            </template>
-          </CardFormat>
+              </template>
+            </CardFormat>
+          </RouterLink>
+
         </template>
         <template #empty>
           <div class="notimportant">Nessun oggetto in questo posto</div>
@@ -123,6 +124,7 @@ const addingOggetto = ref(false);
 }
 .card-image .identicon {
   padding: 15%;
+  width: 100px;
 }
 .page-header {
   padding-left: 10px;

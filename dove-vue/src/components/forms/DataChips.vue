@@ -39,8 +39,12 @@ function toggleOption(option: string) {
 .chip-disabled-true {
     opacity: 0.5;
 }
-.chip-active-true {
-    padding: 0px 2px;
-    background-color: #dfd;
+.chip-active-false {
+    color: gray;
+    font-size: 0.9rem;
 }
+.data-chip-item.chip-active-true {
+    font-weight: bold;
+}
+
 </style>

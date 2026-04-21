@@ -197,7 +197,7 @@ onBeforeUnmount(stopCamera)
       <ItemsGallery :items="photos">
         <template #item="{item}">
           <CardFormat>
-            <img :src="item" />
+            <img class="new-picture" :src="item" />
             <button class="top-right-button" @click="removePhoto(item)"><Heroicon icon="trash"/></button>
           </CardFormat>
         </template>
@@ -209,6 +209,10 @@ onBeforeUnmount(stopCamera)
 </template>
 
 <style scoped>
+
+.new-picture {
+  max-width: 150px;
+}
 
 .fullpage {
   position: fixed;

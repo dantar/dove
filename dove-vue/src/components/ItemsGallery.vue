@@ -24,10 +24,7 @@ const mode = ref('double');
   flex-wrap: wrap;
   gap: 6px;
   justify-content: center;
-}
-
-.gallery-item {
-  width: 200px;
+  padding-bottom: 80px;
 }
 
 </style>

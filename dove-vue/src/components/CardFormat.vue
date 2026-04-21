@@ -2,12 +2,37 @@
 </script>
 <template>
 <div class="card-box">
-    <slot name="header"></slot>
-    <slot name="default"></slot>
-    <slot name="footer"></slot>
+    <div class="card-layout">
+        <div class="card-image">
+            <slot name="image"></slot>
+        </div>
+        <div class="card-content">
+            <slot name="header"></slot>
+            <slot name="default"></slot>
+            <slot name="footer"></slot>
+        </div>
+    </div>
 </div>
 </template>
 <style scoped>
+
+.card-image {
+    flex: 1;
+    max-width: 100px;
+}
+.card-image:empty {
+    display: none;
+}
+
+.card-layout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.card-content {
+    flex: 3;
+}
 
 .card-box {
     position: relative;
@@ -24,7 +49,7 @@
     flex-direction: column;
     gap: 12px;
     padding: 24px;
-    min-width: 300px;
+    min-width: 200px;
 }
 
 </style>

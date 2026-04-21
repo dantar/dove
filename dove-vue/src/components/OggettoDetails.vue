@@ -131,7 +131,7 @@ async function spostaOggettoIn(code: string) {
             <ItemsGallery :items="browsed.oggetto.immagini">
                 <template #item="{ item }">
                     <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
-                        <ImageThumb :uuid="`${uuid}`" :image="`${item}`"></ImageThumb>
+                        <ImageThumb :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item)}"></ImageThumb>
                         <span class="overbuttons overbuttons--up">
                             <button v-if="editable" @click="deleteThumbnail(item)">
                                 <Heroicon icon="trash" />
@@ -165,7 +165,10 @@ async function spostaOggettoIn(code: string) {
     margin: 5px;
 }
 .imagethumb {
-    /* max-width:100px; */
+    max-width:160px;
+}
+.tobedeleted {
+    opacity: 0.5;
 }
 
 </style>
