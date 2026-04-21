@@ -87,9 +87,11 @@ const initScanner = async (): Promise<void> => {
 }
 
 function addCode(code: string) {
-  codes.value.push(code);
-  if (props.sendAt > 0 && codes.value.length >= props.sendAt) {
-    emitAllCodes();
+  if (! codes.value.includes(code)) {
+    codes.value.push(code);
+    if (props.sendAt > 0 && codes.value.length >= props.sendAt) {
+      emitAllCodes();
+    }
   }
 }
 
