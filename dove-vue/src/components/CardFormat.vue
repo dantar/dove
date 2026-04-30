@@ -19,6 +19,8 @@
 .card-image {
     flex: 1;
     max-width: 100px;
+    background-color: beige;
+    align-content: center;
 }
 .card-image:empty {
     display: none;
@@ -42,6 +44,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 96vw;
 }
 
 .content {
@@ -50,6 +53,22 @@
     gap: 12px;
     padding: 24px;
     min-width: 200px;
+}
+
+@media (min-width: 768px) {
+    .gallery-item .card-box {
+        width: 48vw;
+    }    
+}
+@media (min-width: 1024px) {
+    .gallery-item .card-box {
+        width: 32vw;
+    }    
+}
+@media (min-width: 1280px) {
+    .gallery-item .card-box {
+        width: 24vw;
+    }    
 }
 
 </style>
