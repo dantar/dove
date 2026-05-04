@@ -7,13 +7,12 @@ import QrLauncher from './components/QrLauncher.vue';
 import { useLoggedUser } from './stores/logged-user';
 import { useRouter } from 'vue-router'
 import LoggedUser from './components/LoggedUser.vue';
-import { useTipiSchedeOggetto } from './stores/schede-by-schema';
 import { useBrowseData } from './stores/browse-data';
 import type { PostoBrowseDto } from './models/browse-item';
+import { SchedaOggettoCampoStarsHandler } from './stores/schede-by-schema';
 
 const loggedUser = useLoggedUser();
 const router = useRouter();
-const repo = useTipiSchedeOggetto();
 
 const popupUser = ref(false);
 const popupCart = ref(false);
@@ -26,6 +25,8 @@ browse
 .then((data) => {
   browsed.value = data;
 });
+
+console.log(SchedaOggettoCampoStarsHandler.KEY);
 
 </script>
 

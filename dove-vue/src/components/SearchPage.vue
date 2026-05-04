@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { SchedaBySchema, type OggettoObj } from '@/models/browse-item';
-import { useBackendConfig } from '@/stores/backend-config';
-import { type SchedaOggettoCampo, useTipiSchedeOggetto, type SearchOggettoBySchemaCampo, type SearchOggettoForm, type RepoSchemiJson, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
+import { type SchedaOggettoCampo, type SearchOggettoBySchemaCampo, type SearchOggettoForm, type RepoSchemiJson, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
 import { useSearchData, type SearchPage } from '@/stores/search-data';
-import axios from 'axios';
 import { ref } from 'vue';
 import ItemsGallery from './ItemsGallery.vue';
 import CardFormat from './CardFormat.vue';
@@ -11,12 +9,14 @@ import OggettoShort from './OggettoShort.vue';
 import { RouterLink } from 'vue-router';
 import ImageThumb from './ImageThumb.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
-
-const schemi = useTipiSchedeOggetto();
+import { useLoggedUser } from '@/stores/logged-user';
+import type { RepoAccessObj } from '@/models/app-user';
+import PostoHeader from './PostoHeader.vue';
 
 const found = ref<SearchPage<OggettoObj>>();
 
 const search = useSearchData();
+const user = useLoggedUser();
 
 const form = ref<SearchOggettoForm>({
     repo: '',
@@ -29,17 +29,17 @@ async function doSearch() {
     found.value = await search.doSearch(form.value);
 }
 
-function addCriteria(repo: RepoSchemiJson, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
-    if (form.value.repo != repo.id) {
-        form.value.repo = repo.id;
+function addCriteria(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
+    if (form.value.repo != repo.root.id) {
+        form.value.repo = repo.root.id;
         form.value.query = [];
     }
     form.value.query.push(data);
 }
 
-function addFilter(repo: RepoSchemiJson, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
-    if (form.value.repo != repo.id) {
-        form.value.repo = repo.id;
+function addFilter(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
+    if (form.value.repo != repo.root.id) {
+        form.value.repo = repo.root.id;
         form.value.query = [];
     }
     form.value.query.push({
@@ -77,10 +77,10 @@ function selectRepoSchema(repo: string, schema: string) {
             <button type="button" @click="doSearch" :disabled="form.query.length == 0">cerca</button>
         </div>
     </div>
-    <div v-for="repo in schemi.tipiByRepo">
-        {{ repo.id }}
+    <div v-for="repo in user.user.repos">
+        <PostoHeader :posto="repo.root"></PostoHeader>
         <div>
-          <button v-for="schema in repo.schemi" type="button" @click="selectRepoSchema(repo.id, schema.id);">{{ schema.nome }}</button>
+          <button v-for="schema in repo.schemi" type="button" @click="selectRepoSchema(repo.root.id, schema.id);">{{ schema.nome }}</button>
         </div>
         <div v-for="schema in repo.schemi">
           <div v-if="schema.id == selectedSchema" v-for="campo in schema.campi">
@@ -99,17 +99,17 @@ function selectRepoSchema(repo: string, schema: string) {
       <div>{{ found.totalElements }}</div>
       <ItemsGallery :items="found.content">
         <template #item="{ item }">
-          <CardFormat>
-            <template #header>
-              <div class="oggetto-header">
-                <OggettoShort :oggetto="item"></OggettoShort>
-              </div>
-            </template>
-            <template #default>
-              <RouterLink :to="`/oggetto/${item.id}`">
-                <div class="card-image">
-                  <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+          <RouterLink :to="`/oggetto/${item.id}`">
+            <CardFormat>
+              <template #header>
+                <div class="oggetto-header">
+                  <OggettoShort :oggetto="item"></OggettoShort>
                 </div>
+              </template>
+              <template #image>
+                <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+              </template>
+              <template #default>
                 <SchedaOggettoView v-if="item.scheda"
                     :scheda="item.scheda"
                     :form="item.scheda"
@@ -117,9 +117,9 @@ function selectRepoSchema(repo: string, schema: string) {
                     :saving="false"
                     :repo="item.repo"
                     ></SchedaOggettoView>
-              </RouterLink>
-            </template>
-          </CardFormat>
+              </template>
+            </CardFormat>
+          </RouterLink>
         </template>
         <template #empty>
           <div class="notimportant">Nessun risultato trovato</div>

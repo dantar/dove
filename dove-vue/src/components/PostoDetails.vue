@@ -86,12 +86,11 @@ const addingOggetto = ref(false);
                     :form="item.scheda"
                     :editable="false"
                     :saving="false"
-                    :repo="browsed.repo"
+                    :repo="item.repo"
                     ></SchedaOggettoView>
               </template>
             </CardFormat>
           </RouterLink>
-
         </template>
         <template #empty>
           <div class="notimportant">Nessun oggetto in questo posto</div>

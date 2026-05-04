@@ -3,6 +3,7 @@ import { SchedaBySchema, SchedaOggetto } from '@/models/browse-item';
 import SchedaBySchemaView from './SchedaBySchemaView.vue';
 import { useTipiSchedeOggetto, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
 import { ref, watch } from 'vue';
+import { useLoggedUser } from '@/stores/logged-user';
 interface Props {
   scheda: SchedaOggetto,
   editable: boolean,
@@ -26,10 +27,11 @@ function impostaSchema(schema: TipoSchedaOggetto) {
   SchedaBySchema.initWithSchema(schema, props.form as SchedaBySchema);
 }
 
-const schede = useTipiSchedeOggetto();
-
+const user = useLoggedUser();
 async function init(repo: string): Promise<void> {
-  schemi.value = await schede.schemiByRepo(repo);
+  user.user.repos
+  .filter(r => r.root.id = repo)
+  .forEach(r => schemi.value = r.schemi);
 }
 const schemi = ref<TipoSchedaOggetto[]>([]);
 watch(() => props.repo, (n,o) => init(n));

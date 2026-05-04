@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { SchedaBySchema } from '@/models/browse-item';
-import { useTipiSchedeOggetto, type TipoSchedaOggetto, type SchedaOggettoCampoViewProps, type SchedaOggettoCampo} from '@/stores/schede-by-schema';
+import { type TipoSchedaOggetto, type SchedaOggettoCampoViewProps, type SchedaOggettoCampo} from '@/stores/schede-by-schema';
 import { ref, watch } from 'vue';
 import SlotGrid from './SlotGrid.vue';
-import CardFormat from './CardFormat.vue';
+import { useLoggedUser } from '@/stores/logged-user';
 interface Props {
   scheda: SchedaBySchema,
   editable: boolean,
@@ -11,18 +11,13 @@ interface Props {
   form: SchedaBySchema,
 }
 const props = defineProps<Props>()
-
-const schemas = useTipiSchedeOggetto();
-
+const user = useLoggedUser();
 const schema = ref<TipoSchedaOggetto>();
 
-
 async function init(idSchema: string) {
-    schema.value = await schemas.findSchema(idSchema);
+    user.user.repos.forEach(r => r.schemi.filter(s => s.id == idSchema).forEach(s => schema.value = s));
 }
-watch(() => props.scheda.schema, async (n, o) => {
-    await init(n);
-});
+watch(() => props.scheda.schema, (n, o) => init(n));
 init(props.scheda.schema);
 
 function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
@@ -43,9 +38,10 @@ function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
         </div>
         <SlotGrid>
             <div v-if="schema" class="data-panel" v-for="campo in schema.campi">
-                <span class="data-panel-header">{{ campo.nome }}</span> 
+                <span class="data-panel-header">{{ campo.nome }} ({{ campo.tipo }})</span> 
                 <span class="data-panel-content">
-                    <component :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
+                    <component v-if="SchedaBySchema.handler[campo.tipo]" :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
+                    <span v-else>manca!</span>
                 </span>
             </div>
             <div v-else>Schema {{ scheda.schema }} loading...</div>

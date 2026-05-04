@@ -98,3 +98,12 @@ CREATE TABLE public.repo_schemi (
 	CONSTRAINT repo_schemi_pk PRIMARY KEY (id),
 	CONSTRAINT repo_schemi_fk FOREIGN KEY (id) REFERENCES public.posto(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE public.utente_repo (
+	id varchar NULL GENERATED ALWAYS AS (id_utente || '+' || id_repo) STORED,
+	id_utente varchar NOT NULL,
+	id_repo varchar NOT NULL,
+	CONSTRAINT utente_repo_pk PRIMARY KEY (id),
+	CONSTRAINT utente_repo_fk_repo FOREIGN KEY (id_repo) REFERENCES public.posto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT utente_repo_fk_utente FOREIGN KEY (id_utente) REFERENCES public.utente(id) ON DELETE CASCADE ON UPDATE CASCADE
+);

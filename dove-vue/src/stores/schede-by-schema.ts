@@ -1,11 +1,8 @@
-import { ref, type Component } from 'vue'
-import { defineStore } from 'pinia'
+import { type Component } from 'vue'
 import { SchedaBySchema } from '@/models/browse-item';
 import SchedaOggettoCampoChipsView from '@/components/schemas/SchedaOggettoCampoChipsView.vue';
 import SchedaOggettoCampoStarsView from '@/components/schemas/SchedaOggettoCampoStarsView.vue';
 import SchedaOggettoCampoTextView from '@/components/schemas/SchedaOggettoCampoTextView.vue';
-import { useBackendConfig } from './backend-config';
-import axios from 'axios';
 import SchedaOggettoCampoTextSearch from '@/components/schemas/SchedaOggettoCampoTextSearch.vue';
 import SchedaOggettoCampoChipsSearch from '@/components/schemas/SchedaOggettoCampoChipsSearch.vue';
 import SchedaOggettoCampoStarsSearch from '@/components/schemas/SchedaOggettoCampoStarsSearch.vue';
@@ -243,34 +240,3 @@ export type SchedaOggettoCampo =
     | SchedaOggettoCampoText
     | SchedaOggettoCampoQuantity
     ;
-
-export const useTipiSchedeOggetto = defineStore('tipiSchedeOggetto', () => {
-
-    const tipiByRepo = ref<RepoSchemiJson[]>([]);
-    const loaded = ref(false);
-
-    async function init() {
-        const config = useBackendConfig();
-        const response = await axios
-            .get<RepoSchemiJson[]>(`${config.backend}/schema/list`);
-        tipiByRepo.value = response.data;
-    }
-
-    async function findSchema(id: string): Promise<TipoSchedaOggetto> {
-        for (let repo of tipiByRepo.value) {
-            for (let schema of repo.schemi) {
-                if (schema.id == id) return schema;
-            }
-        }
-        throw new Error(`Schema ${id} non trovato`);
-    }
-
-    async function schemiByRepo(id: string): Promise<TipoSchedaOggetto[]> {
-        for (let repo of tipiByRepo.value) {
-            if (repo.id == id) return repo.schemi;
-        }
-        throw new Error(`Repo ${id} non trovato in`);
-    }
-
-    return { init, tipiByRepo, findSchema, schemiByRepo }
-})
