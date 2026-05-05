@@ -376,8 +376,8 @@ video {
 
 .top-right-button{
   position:absolute;
-  top: 2;
-  right:0;
+  top: 5px;
+  right: 5px;
 }
 
 

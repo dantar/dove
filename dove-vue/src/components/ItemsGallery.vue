@@ -13,6 +13,7 @@ const mode = ref('double');
   <div v-if="items && items.length > 0" >
     <div class="gallery-box" :class="`stacking-${mode}`" >
       <span v-for="item in items" class="gallery-item"><slot name="item" :item="item"></slot></span>
+      <slot name="end"></slot>
     </div>
   </div>
   <span v-else><slot name="empty">Nessun contenuto.</slot></span>

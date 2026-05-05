@@ -2,7 +2,7 @@
 import { SchedaBySchema, type OggettoObj } from '@/models/browse-item';
 import { type SchedaOggettoCampo, type SearchOggettoBySchemaCampo, type SearchOggettoForm, type RepoSchemiJson, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
 import { useSearchData, type SearchPage } from '@/stores/search-data';
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import ItemsGallery from './ItemsGallery.vue';
 import CardFormat from './CardFormat.vue';
 import OggettoShort from './OggettoShort.vue';
@@ -12,37 +12,33 @@ import SchedaOggettoView from './SchedaOggettoView.vue';
 import { useLoggedUser } from '@/stores/logged-user';
 import type { RepoAccessObj } from '@/models/app-user';
 import PostoHeader from './PostoHeader.vue';
+import SearchMore from './SearchMore.vue';
 
-const found = ref<SearchPage<OggettoObj>>();
-
-const search = useSearchData();
 const user = useLoggedUser();
 
-const form = ref<SearchOggettoForm>({
-    repo: '',
-    query: [],
-    pageIndex: 0,
-    pageSize: 10
-});
+const search = useSearchData();
+// const page = ref<SearchPage<OggettoObj>>(search.page);
+// const form = ref(search.current);
+// const found = ref(search.found);
 
 async function doSearch() {
-    found.value = await search.doSearch(form.value);
+    await search.doSearch(search.form);
 }
 
 function addCriteria(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
-    if (form.value.repo != repo.root.id) {
-        form.value.repo = repo.root.id;
-        form.value.query = [];
+    if (search.form.repo != repo.root.id) {
+        search.form.repo = repo.root.id;
+        search.restartForm();
     }
-    form.value.query.push(data);
+    search.form.query.push(data);
 }
 
 function addFilter(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
-    if (form.value.repo != repo.root.id) {
-        form.value.repo = repo.root.id;
-        form.value.query = [];
+    if (search.form.repo != repo.root.id) {
+      search.restartForm();
+      search.form.repo = repo.root.id;
     }
-    form.value.query.push({
+    search.form.query.push({
       campo: campo.id,
       schema: schema.id,
       tipo: 'schema',
@@ -51,7 +47,7 @@ function addFilter(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: Scheda
 }
 
 function removeCriteria(data: SearchOggettoBySchemaCampo) {
-    form.value.query.splice(form.value.query.indexOf(data), 1);
+    search.form.query.splice(search.form.query.indexOf(data), 1);
 }
 
 const selectedRepo = ref('');
@@ -66,7 +62,7 @@ function selectRepoSchema(repo: string, schema: string) {
 <template>
     <div>
         <div>
-          <CardFormat v-for="queryitem in form.query">
+          <CardFormat v-for="queryitem in search.form.query">
             <template #header>
               <span>{{ queryitem.campo }} <button type="button" @click="removeCriteria(queryitem)">X</button></span>
             </template>
@@ -74,7 +70,7 @@ function selectRepoSchema(repo: string, schema: string) {
           </CardFormat>
         </div>
         <div>
-            <button type="button" @click="doSearch" :disabled="form.query.length == 0">cerca</button>
+            <button type="button" @click="doSearch" :disabled="search.form.query.length == 0">cerca</button>
         </div>
     </div>
     <div v-for="repo in user.user.repos">
@@ -94,10 +90,9 @@ function selectRepoSchema(repo: string, schema: string) {
           </div>
         </div>
     </div>
-    <div v-if="found">
-      <h1>Oggetti trovati: {{ found.totalElements }}</h1>
-      <div>{{ found.totalElements }}</div>
-      <ItemsGallery :items="found.content">
+    <div v-if="search.page">
+      <h1>Oggetti trovati: {{ search.page.totalElements }}</h1>
+      <ItemsGallery v-if="search.found" :items="search.found">
         <template #item="{ item }">
           <RouterLink :to="`/oggetto/${item.id}`">
             <CardFormat>
@@ -120,6 +115,9 @@ function selectRepoSchema(repo: string, schema: string) {
               </template>
             </CardFormat>
           </RouterLink>
+        </template>
+        <template #end>
+          <SearchMore v-if="!search.page.last"></SearchMore>
         </template>
         <template #empty>
           <div class="notimportant">Nessun risultato trovato</div>
