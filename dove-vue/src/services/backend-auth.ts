@@ -1,4 +1,4 @@
-import type { AppUserDto } from "@/models/app-user";
+import { AppUserDto } from "@/models/app-user";
 import type { LoginFormDto } from "@/models/form-data";
 import { useBackendConfig as useBackendConfig } from "@/stores/backend-config";
 import { useLoggedUser } from "@/stores/logged-user";
@@ -10,7 +10,7 @@ export function loginUser(form: LoginFormDto) {
     axios
     .post(`${config.backend}/authenticate`, form)
     .then((response) => {
-        user.user = response.data.details as AppUserDto;
+        user.user = AppUserDto.digestResponseData(response.data.details);
         config.token = response.data.token as string;
     });
 }

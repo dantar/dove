@@ -1,41 +1,28 @@
 <script setup lang="ts">
 import { useLoggedUser } from '../stores/logged-user';
-import { useBackendConfig } from '../stores/backend-config';
-import { useBrowseData } from '@/stores/browse-data';
-import { ref } from 'vue';
-import type { PostoBrowseDto } from '@/models/browse-item';
 import PostoShort from './PostoShort.vue';
 import CardFormat from './CardFormat.vue';
 import ItemsGallery from './ItemsGallery.vue';
 import ImageThumb from './ImageThumb.vue';
 
-const loggedUser = useLoggedUser();
-const backend = useBackendConfig();
-const browse = useBrowseData();
-
-const root = ref<PostoBrowseDto>();
-browse
-.browseRootDetails()
-.then((data) => {
-  root.value = data;
-});
+const user = useLoggedUser();
 
 </script>
 
 <template>
-  <div v-if="root" class="pagesection">
-    <ItemsGallery :items="root.posti">
+  <div class="pagesection">
+    <ItemsGallery :items="user.user.repos">
       <template #item="{ item }">
         <CardFormat>
           <template #header>
             <div class="card-header">
-              <PostoShort :posto="item"></PostoShort>
+              <PostoShort :posto="item.root"></PostoShort>
             </div>
           </template>
           <template #default>
-            <RouterLink :to="`/posto/${item.id}`">
+            <RouterLink :to="`/posto/${item.root.id}`">
               <div class="card-image">
-                <ImageThumb :uuid="item.id" image=""></ImageThumb>
+                <ImageThumb :uuid="item.root.id" image=""></ImageThumb>
               </div>
             </RouterLink>
           </template>
@@ -43,7 +30,6 @@ browse
       </template>
     </ItemsGallery>
   </div>
-  <div v-else="">Loading...</div>
 </template>
 
 <style scoped>

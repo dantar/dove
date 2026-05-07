@@ -35,6 +35,7 @@ services:
         condition: service_healthy
       flyway:
         condition: service_completed_successfully
+    restart: unless-stopped
 
   database:
     build:
@@ -56,6 +57,7 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql
       - ../database/init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
 
   flyway:
     image: flyway/flyway:11
