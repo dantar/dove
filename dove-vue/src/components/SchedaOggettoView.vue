@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SchedaBySchema, SchedaOggetto } from '@/models/browse-item';
 import SchedaBySchemaView from './SchedaBySchemaView.vue';
-import { useTipiSchedeOggetto, type TipoSchedaOggetto } from '@/stores/schede-by-schema';
+import { type TipoSchedaOggetto } from '@/stores/schede-by-schema';
 import { ref, watch } from 'vue';
 import { useLoggedUser } from '@/stores/logged-user';
 interface Props {
