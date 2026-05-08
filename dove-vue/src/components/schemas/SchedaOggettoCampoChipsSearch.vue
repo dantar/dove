@@ -12,15 +12,23 @@ const criteria = ref(
 
 </script>
 <template>
-  <div v-if="campo.tipo == 'chips'">
-    <DataChips
-      :editable="true"
-      :saving="false"
-      :chips="criteria.options"
-      :form="criteria.options"
-      :options="campo.opzioni"
-    ></DataChips>
-    <slot name="default" :data="criteria" :empty="criteria.options.length == 0"></slot>
+  <div v-if="campo.tipo == 'chips'" class="formaline">
+    <div>
+      <DataChips
+        :editable="true"
+        :saving="false"
+        :chips="criteria.options"
+        :form="criteria.options"
+        :options="campo.opzioni"
+      ></DataChips>
+    </div>
+    <slot name="default" :data="criteria" :empty="criteria.options.length == 0">
+    </slot>
   </div>
 </template>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.formaline {
+  display: flex;
+  flex-direction: row;
+}
+</style>

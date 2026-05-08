@@ -10,7 +10,7 @@ export function loginUser(form: LoginFormDto) {
     axios
     .post(`${config.backend}/authenticate`, form)
     .then((response) => {
-        user.user = AppUserDto.digestResponseData(response.data.details);
+        user.digestResponseData(response.data.details);
         config.token = response.data.token as string;
     });
 }

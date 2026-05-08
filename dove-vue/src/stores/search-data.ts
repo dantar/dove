@@ -69,6 +69,7 @@ export const useSearchData = defineStore('searchData', () => {
   const form = ref<SearchOggettoForm>(makeEmptySearchForm());
   const found = ref<OggettoObj[]>([]);
   const page = ref<SearchPage<OggettoObj>>(makeEmptySearchPage());
+
   async function doSearch(f: SearchOggettoForm): Promise<SearchPage<OggettoObj>> {
     form.value = JSON.parse(JSON.stringify(f));
     form.value.pageIndex = 0;
@@ -90,5 +91,10 @@ export const useSearchData = defineStore('searchData', () => {
   function restartForm() {
     form.value = makeEmptySearchForm();
   }
-  return { form, found, page, doSearch, oneMorePage, restartForm }
+  function emptyForm(repo: string): SearchOggettoForm {
+    const f = makeEmptySearchForm();
+    f.repo = repo;
+    return f;
+  }
+  return { form, found, page, doSearch, oneMorePage, restartForm, emptyForm }
 })

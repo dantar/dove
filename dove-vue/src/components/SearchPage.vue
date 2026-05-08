@@ -9,33 +9,36 @@ import OggettoShort from './OggettoShort.vue';
 import { RouterLink } from 'vue-router';
 import ImageThumb from './ImageThumb.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
-import { useLoggedUser } from '@/stores/logged-user';
 import type { RepoAccessObj } from '@/models/app-user';
 import PostoHeader from './PostoHeader.vue';
 import SearchMore from './SearchMore.vue';
+import { useBrowseData } from '@/stores/browse-data';
+import Heroicon from './Heroicon.vue';
 
-const user = useLoggedUser();
-
+const browse = useBrowseData();
 const search = useSearchData();
+const repo = ref(browse.currentRepo());
+
+const form = ref(search.emptyForm(browse.repo));
 
 async function doSearch() {
-    await search.doSearch(search.form);
+    await search.doSearch(JSON.parse(JSON.stringify(form.value)));
 }
 
 function addCriteria(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
-    if (search.form.repo != repo.root.id) {
+    if (form.value.repo != repo.root.id) {
       search.restartForm();
-      search.form.repo = repo.root.id;
+      form.value.repo = repo.root.id;
     }
-    search.form.query.push(data);
+    form.value.query.push(data);
 }
 
 function addFilter(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: SchedaOggettoCampo, data: SearchOggettoBySchemaCampo) {
-    if (search.form.repo != repo.root.id) {
+    if (form.value.repo != repo.root.id) {
       search.restartForm();
-      search.form.repo = repo.root.id;
+      form.value.repo = repo.root.id;
     }
-    search.form.query.push({
+    form.value.query.push({
       campo: campo.id,
       schema: schema.id,
       tipo: 'schema',
@@ -44,7 +47,7 @@ function addFilter(repo: RepoAccessObj, schema: TipoSchedaOggetto, campo: Scheda
 }
 
 function removeCriteria(data: SearchOggettoBySchemaCampo) {
-    search.form.query.splice(search.form.query.indexOf(data), 1);
+    form.value.query.splice(form.value.query.indexOf(data), 1);
 }
 
 const selectedRepo = ref('');
@@ -58,33 +61,41 @@ function selectRepoSchema(repo: string, schema: string) {
 </script>
 <template>
     <div>
-      <div>
-        <CardFormat v-for="queryitem in search.form.query">
+      <CardFormat class="spacedarea">
+        <div class="spacedarea" v-if="!form.query.length">Nessun criterio di ricerca selezionato</div>
+        <CardFormat class="spacedarea" v-for="queryitem in form.query">
           <template #header>
-            <span>{{ queryitem.campo }} <button type="button" @click="removeCriteria(queryitem)">X</button></span>
+            <div>{{ queryitem.campo }} </div>
           </template>
-          {{ queryitem.criteria }}
+          <button class="top-right-button" @click="removeCriteria(queryitem)"><Heroicon icon="trash"/></button>
+          <div class="spacedarea">
+            {{ queryitem.criteria }}
+          </div>
         </CardFormat>
-      </div>
-      <div>
-          <button type="button" @click="doSearch" :disabled="search.form.query.length == 0">cerca</button>
-      </div>
+        <div class="spacedarea">
+            <button type="button" @click="doSearch" :disabled="form.query.length == 0">cerca</button>
+        </div>
+      </CardFormat>
     </div>
-    <div v-for="repo in user.user.repos">
-      <PostoHeader :posto="repo.root"></PostoHeader>
-      <div>
+    <div class="spacedarea">
+      <div class="spacedarea">
+        <PostoHeader :posto="repo.root"></PostoHeader>
+      </div>
+      <div class="spacedarea">
         <button v-for="schema in repo.schemi" type="button" @click="selectRepoSchema(repo.root.id, schema.id);">{{ schema.nome }}</button>
       </div>
-      <div v-for="schema in repo.schemi">
-        <div v-if="schema.id == selectedSchema" v-for="campo in schema.campi">
-          <div>{{ campo.nome }}</div>
-          <component :is="SchedaBySchema.handler[campo.tipo]?.searchComponent()" v-bind="{repo, schema, campo}" 
-            @addCriteria="(c: SearchOggettoBySchemaCampo) => addCriteria(repo, schema, campo, c)">
-            <template #default="{data, empty}">
-              <button type="button" @click="addFilter(repo, schema, campo, data)" :disabled="empty">+</button>
-            </template>
-          </component>
-        </div>
+      <div v-for="schema in repo.schemi" class="spacedarea">
+        <CardFormat class="spacedarea" v-if="schema.id == selectedSchema">
+          <div v-for="campo in schema.campi" class="spacedarea">
+            <div>{{ campo.nome }}</div>
+            <component :is="SchedaBySchema.handler[campo.tipo]?.searchComponent()" v-bind="{repo, schema, campo}" 
+              @addCriteria="(c: SearchOggettoBySchemaCampo) => addCriteria(repo, schema, campo, c)">
+              <template #default="{data, empty}">
+                <button type="button" @click="addFilter(repo, schema, campo, data)" :disabled="empty">+</button>
+              </template>
+            </component>
+          </div>
+        </CardFormat>
       </div>
     </div>
     <div v-if="search.page">
@@ -122,4 +133,16 @@ function selectRepoSchema(repo: string, schema: string) {
       </ItemsGallery>
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+
+.spacedarea {
+  margin: 5px;
+}
+
+.top-right-button {
+  position:absolute;
+  top: 5px;
+  right: 5px;
+}
+
+</style>

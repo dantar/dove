@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { AppUserDto } from '@/models/app-user'
 import { useBackendConfig } from './backend-config'
 import axios from 'axios'
+import { useBrowseData } from './browse-data'
 
 export const useLoggedUser = defineStore('loggedUser', () => {
   const backend = useBackendConfig();
@@ -11,7 +12,7 @@ export const useLoggedUser = defineStore('loggedUser', () => {
   axios
   .get(`${backend.backend}/user`)
   .then(response => {
-    user.value = AppUserDto.digestResponseData(response.data);
+    digestResponseData(response.data);
     loading.value = false;
   })
   .catch(() => loading.value = false)
@@ -28,5 +29,15 @@ export const useLoggedUser = defineStore('loggedUser', () => {
       loading.value = false;
     })
   }
-  return { user, loading, logout }
+  function digestResponseData(data: any) {
+    user.value = AppUserDto.digestResponseData(data);
+    console.log('digestResponseData', user.value);
+    const browse = useBrowseData();
+    const first = user.value.repos[0];
+    if (first) {
+      console.log('switchToRepo', first);
+      browse.switchToRepo(first);
+    }
+  }
+  return { user, loading, logout, digestResponseData }
 })

@@ -3,8 +3,13 @@ import { defineStore } from 'pinia'
 import type { PostoBrowseDto, PostoObj, OggettoObj, OggettoBrowseDto, SchedaOggetto, AnyBrowseDto, AnyObj } from '@/models/browse-item'
 import axios from 'axios';
 import { useBackendConfig } from './backend-config';
+import type { RepoAccessObj } from '@/models/app-user';
+import { useLoggedUser } from './logged-user';
 
 export const useBrowseData = defineStore('browseData', () => {
+
+  const repo = ref<string>('');
+
   const current = ref<PostoBrowseDto>();
   const cacheAnyBrowse: {[uuid:string]: AnyBrowseDto} = {};
 
@@ -38,12 +43,6 @@ export const useBrowseData = defineStore('browseData', () => {
   async function fetchPostoDetails(uuid: string): Promise<PostoObj> {
     const config = useBackendConfig();
     const response = await axios.get<PostoObj>(`${config.backend}/posto/${uuid}`);
-    return response.data;
-  }
-
-  async function browseRootDetails(): Promise<PostoBrowseDto> {
-    const config = useBackendConfig();
-    const response = await axios.get<PostoBrowseDto>(`${config.backend}/browse/root`);
     return response.data;
   }
 
@@ -132,12 +131,26 @@ export const useBrowseData = defineStore('browseData', () => {
 
   }
 
-  return { current, goToRoot, goToPosto, 
+  function switchToRepo(r: RepoAccessObj) {
+    repo.value = r.root.id;
+  }
+
+  function currentRepo(): RepoAccessObj {
+    const user = useLoggedUser();
+    const matching = user.user.repos.filter(r => r.root.id == repo.value);
+    if (matching.length > 0) {
+      return matching[0] as RepoAccessObj;
+    }
+    throw new Error('no matching repo');
+  }
+
+  return { repo, current, goToRoot, goToPosto, 
     addRoot, addPosto, updatePosto, 
     addOggetto, updateOggetto, addCodes,
     uploadGallery, fetchOggettoDetails, fetchPostoDetails,
-    browseOggettoDetails, browsePostoDetails, browseRootDetails,
+    browseOggettoDetails, browsePostoDetails,
     getAnyObj, deletePicture,
-    visibleOggetti, visiblePosti
+    visibleOggetti, visiblePosti,
+    switchToRepo, currentRepo
   }
 })

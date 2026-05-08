@@ -11,24 +11,7 @@ const user = useLoggedUser();
 
 <template>
   <div class="pagesection">
-    <ItemsGallery :items="user.user.repos">
-      <template #item="{ item }">
-        <CardFormat>
-          <template #header>
-            <div class="card-header">
-              <PostoShort :posto="item.root"></PostoShort>
-            </div>
-          </template>
-          <template #default>
-            <RouterLink :to="`/posto/${item.root.id}`">
-              <div class="card-image">
-                <ImageThumb :uuid="item.root.id" image=""></ImageThumb>
-              </div>
-            </RouterLink>
-          </template>
-        </CardFormat>
-      </template>
-    </ItemsGallery>
+    Home
   </div>
 </template>
 

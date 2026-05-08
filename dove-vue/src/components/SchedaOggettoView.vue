@@ -30,7 +30,7 @@ function impostaSchema(schema: TipoSchedaOggetto) {
 const user = useLoggedUser();
 async function init(repo: string): Promise<void> {
   user.user.repos
-  .filter(r => r.root.id = repo)
+  .filter(r => r.root.id == repo)
   .forEach(r => schemi.value = r.schemi);
 }
 const schemi = ref<TipoSchedaOggetto[]>([]);

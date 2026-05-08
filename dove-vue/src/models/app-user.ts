@@ -29,6 +29,7 @@ export class AppUserDto {
             root: r.root,
             schemi: r.schemi.schemi,
         }));
+        console.log('photo', JSON.stringify(result));
         return result;
     }
     
