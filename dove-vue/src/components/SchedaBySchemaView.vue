@@ -38,7 +38,7 @@ function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
         </div>
         <SlotGrid>
             <div v-if="schema" class="data-panel" v-for="campo in schema.campi">
-                <span class="data-panel-header">{{ campo.nome }} ({{ campo.tipo }})</span> 
+                <span class="data-panel-header">{{ campo.nome }}</span> 
                 <span class="data-panel-content">
                     <component v-if="SchedaBySchema.handler[campo.tipo]" :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
                     <span v-else>manca!</span>

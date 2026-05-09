@@ -12,6 +12,7 @@ const mode = ref('double');
 <template>
   <div v-if="items && items.length > 0" >
     <div class="gallery-box" :class="`stacking-${mode}`" >
+      <slot name="default"></slot>
       <span v-for="item in items" class="gallery-item"><slot name="item" :item="item"></slot></span>
       <slot name="end"></slot>
     </div>

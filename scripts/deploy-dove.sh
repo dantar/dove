@@ -20,7 +20,7 @@ rsync -varzh ${DOVEDIR}/dove-rest/target/dove-rest.jar ${APPDIR}/docker/backend
 # database
 rsync -varzh ${DOVEDIR}/database/init/* ${APPDIR}/docker/database/init
 # flyway
-#rsync --delete -varzh ${DOVEDIR}/flyway/sql/* ${APPDIR}/docker/flyway/sql
+rsync --delete -varzh ${DOVEDIR}/flyway/sql/* ${APPDIR}/docker/flyway/sql
 
 rsync \
     -varzh ${DOVEDIR}/deploy/* \

@@ -1,3 +1,17 @@
+-- TRIGGERS AND FUNCTIONS
+
+CREATE OR REPLACE FUNCTION aggiorna_modificato()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- aggiorna SOLO se qualcosa è davvero cambiato
+    IF NEW IS DISTINCT FROM OLD THEN
+        NEW.modificato = CURRENT_TIMESTAMP;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- Drop table
 -- DROP TABLE public.oggetto;
 
@@ -7,8 +21,19 @@ CREATE TABLE public.oggetto (
 	nome varchar NULL,
 	scheda jsonb NULL,
 	thumbnail varchar NULL,
-	CONSTRAINT oggetto_pk PRIMARY KEY (id)
+	repo varchar NOT NULL,
+	registrato timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	modificato timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT oggetto_pk PRIMARY KEY (id),
+	CONSTRAINT fk_oggetto_repo FOREIGN KEY (repo) REFERENCES public.repo_schemi(id)
 );
+
+-- Table Triggers
+
+CREATE TRIGGER trigger_aggiorna_modificato_oggetto
+BEFORE UPDATE ON oggetto
+FOR EACH ROW
+EXECUTE FUNCTION aggiorna_modificato();
 
 -- Drop table
 -- DROP TABLE public.posto;
@@ -107,3 +132,15 @@ CREATE TABLE public.utente_repo (
 	CONSTRAINT utente_repo_fk_repo FOREIGN KEY (id_repo) REFERENCES public.posto(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT utente_repo_fk_utente FOREIGN KEY (id_utente) REFERENCES public.utente(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE public.uscita (
+	id varchar NOT NULL,
+	repo varchar NOT NULL,
+	oggetto jsonb NOT NULL,
+	destinatario jsonb NULL,
+	registrato timestamp NOT NULL DEFAULT now(),
+	CONSTRAINT uscita_pk PRIMARY KEY (id),
+	CONSTRAINT uscita_fk FOREIGN KEY (repo) REFERENCES public.repo_schemi(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+

@@ -1,5 +1,6 @@
 package it.dantar.cav.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedNativeQuery;
@@ -40,5 +42,8 @@ public class Oggetto {
 	JsonNode scheda;
 	@Transient
 	List<String> immagini = new ArrayList<>();
-
+	@Column(name = "registrato", insertable = false, updatable = false)
+	private LocalDateTime registrato;
+	@Column(name = "modificato", insertable = false, updatable = false)
+	private LocalDateTime modificato;	
 }

@@ -15,7 +15,6 @@
 </div>
 </template>
 <style scoped>
-
 .card-image {
     flex: 1;
     max-width: 100px;

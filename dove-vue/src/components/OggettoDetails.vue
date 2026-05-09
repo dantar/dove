@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useBrowseData } from '@/stores/browse-data';
-import OggettoHeader from './OggettoHeader.vue';
 import { ref, watch } from 'vue';
 import type { OggettoBrowseDto, OggettoObj } from '@/models/browse-item';
 import AddPhotosButton from './AddPhotosButton.vue';
@@ -11,6 +10,8 @@ import ImageThumb from './ImageThumb.vue';
 import Heroicon from './Heroicon.vue';
 import QrLauncher from './QrLauncher.vue';
 import CardFormat from './CardFormat.vue';
+import OggettoShort from './OggettoShort.vue';
+import PopupDialog from './PopupDialog.vue';
 
 interface Props {
   uuid: string,
@@ -18,6 +19,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const browse = useBrowseData();
+
+const selectedImage = ref('');
 
 const browsed = ref<OggettoBrowseDto>();
 const editable = ref(false);
@@ -90,6 +93,14 @@ async function spostaOggettoIn(code: string) {
     }
 }
 
+function clickImage(id: string) {
+    console.log(`clickImage ${id} ${selectedImage.value}`);
+    if (selectedImage.value == id) {
+        selectedImage.value = '';
+    } else {
+        selectedImage.value = id;
+    }
+}
 </script>
 
 <template>
@@ -105,18 +116,27 @@ async function spostaOggettoIn(code: string) {
         <div class="pagesection pagesection-with-buttons">
             <form @submit.prevent="saveData()">
             <CardFormat class="oggetto-details">
-                <OggettoHeader 
-                    :oggetto="editable ? form || browsed.oggetto : browsed.oggetto"
-                    :form="(form as OggettoObj)"
-                    :editable="editable"
-                    :saving="freeze"
-                    ></OggettoHeader>
+                <template #header>
+                    <div class="card-header">
+                        <OggettoShort :oggetto="browsed.oggetto"></OggettoShort>
+                        <div class="notimportant">ID: {{ browsed.oggetto.id }}</div>
+                        <span v-if="editable">
+                            <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="(form as OggettoObj).nome" :disabled="freeze"/>
+                        </span>
+                    </div>
+                </template>
+                <template #image>
+                </template>
+                <div class="oggetto-img">
+                    <ImageThumb class="mainthumb" :uuid="browsed.oggetto.id" :image="browsed.oggetto.thumbnail"></ImageThumb>
+                </div>
                 <SchedaOggettoView v-if="form?.scheda"
                     :scheda="browsed.oggetto.scheda"
                     :form="form?.scheda"
                     :editable="editable"
                     :saving="freeze"
                     :repo="browsed.repo"
+                    class="mycustomclass"
                     ></SchedaOggettoView>
             </CardFormat>
             <div class="overbuttons overbuttons--up">
@@ -128,10 +148,10 @@ async function spostaOggettoIn(code: string) {
             </form>
         </div>
         <div class="pagesection pagesection-with-buttons">
-            <ItemsGallery :items="browsed.oggetto.immagini">
+            <ItemsGallery :items="browsed.oggetto.immagini" :class="{expanded: editable}">
                 <template #item="{ item }">
                     <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
-                        <ImageThumb :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item)}"></ImageThumb>
+                        <ImageThumb @click="clickImage(item)" :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item), expanded: selectedImage == item}"></ImageThumb>
                         <span class="overbuttons overbuttons--up">
                             <button v-if="editable" @click="deleteThumbnail(item)">
                                 <Heroicon icon="trash" />
@@ -152,11 +172,32 @@ async function spostaOggettoIn(code: string) {
                 <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
             </div>
         </div>
+        <PopupDialog @click="selectedImage = ''" v-if="selectedImage != ''">
+            <ImageThumb :uuid="`${uuid}`" :image="`${selectedImage}`"" style="width: 100%;"></ImageThumb>
+        </PopupDialog>
     </div>
     <div v-else="">Loading...</div>
 </template>
 
 <style scoped>
+
+.imagefullview {
+    
+}
+
+.oggetto-img {
+    text-align: center;
+}
+.slot-grid {
+    background-color: green;
+}
+.card-header {
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+    
 .card-title {
     font-size: 1.4rem;
 }
@@ -164,8 +205,14 @@ async function spostaOggettoIn(code: string) {
     padding: 5px;
     margin: 5px;
 }
+.expanded .imagethumb {
+    width:200px;
+}
 .imagethumb {
-    max-width:160px;
+    width:100px;
+}
+.mainthumb {
+    width: 320px;
 }
 .tobedeleted {
     opacity: 0.5;
