@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import Heroicon from './Heroicon.vue';
+
     const emit = defineEmits(['close']);
 </script>
 <template>
 <div class="fullpage">
     <div class="dialog">
         <div class="buttons">
-            <slot name="buttons"><button @click="emit('close')">x</button></slot>
+            <slot name="buttons"><button @click="emit('close')"><heroicon icon="cancel"></heroicon></button></slot>
         </div>
         <div class="content">
             <slot></slot>

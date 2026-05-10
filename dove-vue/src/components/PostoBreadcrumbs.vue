@@ -11,12 +11,13 @@ const props = defineProps<Props>()
 </script>
 <template>
   <div class="breadcrumbs">
-    <template v-for="(posto, index) in props.posti" >
+    <template v-if="props.posti.length > 0" v-for="(posto, index) in props.posti" >
       <span v-if="index > 0" class="separator"><slot>/</slot></span>
       <span class="breadcrumb">
         <PostoShort :posto="posto"></PostoShort>
       </span>
     </template>
+    <slot v-else name="empty">Nessun posto</slot>
   </div>
 </template>
 <style scoped>

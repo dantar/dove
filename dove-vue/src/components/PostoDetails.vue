@@ -54,9 +54,7 @@ const addingOggetto = ref(false);
   <div v-if="browsed">
     <SlidingDrawer v-if="browsed.breadcrumbs && browsed.breadcrumbs.length > 0">
       <template #title>Posizione</template>
-      <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
-        <Heroicon icon="qr-code-add"></Heroicon> Nuovo posto
-      </QrLauncher>
+      <template #menu>&nbsp;</template>
       <template #content>
         <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
       </template>
@@ -70,9 +68,11 @@ const addingOggetto = ref(false);
         </div>
       </template>
     </SlidingDrawer>
-    <SlidingDrawer v-if="browsed.posti">
-      <template #title>Posti</template>
-      <template #menu>&nbsp;</template>
+    <SlidingDrawer>
+      <template #title>Posti <template v-if="browsed.posti.length > 0">(x{{ browsed.posti.length }})</template></template>
+      <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
+        <Heroicon icon="qr-code-add"></Heroicon> Nuovo posto
+      </QrLauncher>
       <template #content>
         <div class="more-posti">
           <PostoBreadcrumbs :posti="browsed.posti">&nbsp;</PostoBreadcrumbs>
@@ -80,7 +80,7 @@ const addingOggetto = ref(false);
       </template>
     </SlidingDrawer>
     <SlidingDrawer v-if="browsed.posto">
-      <template #title>Oggetti</template>
+      <template #title>Oggetti <template v-if="browsed.oggetti.length > 0">(x{{ browsed.oggetti.length }})</template></template>
       <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
         <Heroicon icon="qr-code-add"></Heroicon> Nuovi Oggetti
       </QrLauncher>
