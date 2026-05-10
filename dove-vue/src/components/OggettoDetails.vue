@@ -106,15 +106,20 @@ function clickImage(id: string) {
 
 <template>
     <div v-if="browsed">
-        <div class="pagesection pagesection-with-buttons">
+        <SlidingDrawer>
+            <template #title><span>Posizione</span></template>
+            <QrLauncher @decoded-one="(code) => spostaOggettoIn(code)">
+                <Heroicon icon="qr-code"></Heroicon> Sposta
+            </QrLauncher>
+            <button type="button" :disabled="freeze">
+                <Heroicon icon="trash"></Heroicon> Elimina
+            </button>
+        </SlidingDrawer>
+        <div>
             <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
-            <div class="overbuttons overbuttons--up" v-if="editable">
-                <span>
-                    <QrLauncher @decoded-one="(code) => spostaOggettoIn(code)"></QrLauncher>
-                </span>
-            </div>
         </div>
         <SlidingDrawer>
+            <template #title><span>Oggetto</span></template>
             <button @click="editable = !editable" type="button" :disabled="freeze">
                 <Heroicon icon="pencil"/> Modifica
             </button>
@@ -155,6 +160,7 @@ function clickImage(id: string) {
             </form>
         </div>
         <SlidingDrawer>
+            <template #title><span>Galleria</span></template>
             <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
         </SlidingDrawer>
         <div>

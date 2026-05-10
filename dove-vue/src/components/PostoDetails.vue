@@ -11,6 +11,7 @@ import Heroicon from './Heroicon.vue';
 import CardFormat from './CardFormat.vue';
 import ImageThumb from './ImageThumb.vue';
 import OggettoShort from './OggettoShort.vue';
+import SlidingDrawer from './SlidingDrawer.vue';
 
 interface Props {
   uuid: string,
@@ -51,14 +52,13 @@ const addingOggetto = ref(false);
 </script>
 <template>
   <div v-if="browsed">
-    <div class="pagesection pagesection-with-buttons">
-      <div class="overbuttons overbuttons--up">
-        <span>
-          <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
-            <Heroicon icon="qr-code-add"></Heroicon>
-          </QrLauncher>
-        </span>
-      </div>
+    <div>
+      <SlidingDrawer>
+        <template #title><span>Posizione</span></template>
+        <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
+          <Heroicon icon="qr-code-add"></Heroicon> Nuovo posto
+        </QrLauncher>  
+      </SlidingDrawer>
       <PostoBreadcrumbs v-if="browsed.breadcrumbs && browsed.breadcrumbs.length > 0" :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
       <div class="page-header">
         <PostoHeader v-if="browsed.posto" :posto="browsed.posto"></PostoHeader>
@@ -67,7 +67,13 @@ const addingOggetto = ref(false);
         <PostoBreadcrumbs :posti="browsed.posti">&nbsp;</PostoBreadcrumbs>
       </div>
     </div>
-    <div v-if="browsed.posto" class="pagesection">
+    <div v-if="browsed.posto">
+      <SlidingDrawer>
+        <template #title><span>Oggetti</span></template>
+        <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
+          <Heroicon icon="qr-code-add"></Heroicon> Nuovi Oggetti
+        </QrLauncher>
+      </SlidingDrawer>
       <ItemsGallery :items="browsed.oggetti">
         <template #item="{ item }">
           <RouterLink :to="`/oggetto/${item.id}`">
@@ -102,13 +108,6 @@ const addingOggetto = ref(false);
           </div>
         </template>
       </ItemsGallery>
-      <div class="overbuttons overbuttons--up">
-        <span>
-          <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
-            <Heroicon icon="qr-code-add"></Heroicon>
-          </QrLauncher>
-        </span>
-      </div>
     </div>
   </div>
   <div></div>

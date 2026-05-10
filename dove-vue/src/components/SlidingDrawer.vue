@@ -7,6 +7,7 @@ const open = ref(false);
 </script>
 <template>
   <div class="drawer-header">
+    <slot name="title"></slot>
     <button @click="open = !open" type="button" class="menu-button">
       <Heroicon icon="menu"></Heroicon>
     </button>
@@ -63,14 +64,15 @@ const open = ref(false);
   margin-bottom: -0.4rem;
 }
 .drawer-header span {
-    position: relative;
-    top: -0.6rem;
-    background-color: white;
-    font-size: 0.7rem;
-    color: green;
-    border: 1px solid green;
-    padding: 2px;
-    border-radius: 4px;
+  position: absolute;
+  top: -0.5rem;
+  left: 10px;
+  background-color: white;
+  font-size: 0.9rem;
+  color: gray;
+  border: 1px solid gray;
+  padding: 2px;
+  border-radius: 4px;
 }
 
 .drawer-header .menu-button {
