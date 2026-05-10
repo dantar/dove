@@ -52,63 +52,75 @@ const addingOggetto = ref(false);
 </script>
 <template>
   <div v-if="browsed">
-    <div>
-      <SlidingDrawer>
-        <template #title><span>Posizione</span></template>
-        <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
-          <Heroicon icon="qr-code-add"></Heroicon> Nuovo posto
-        </QrLauncher>  
-      </SlidingDrawer>
-      <PostoBreadcrumbs v-if="browsed.breadcrumbs && browsed.breadcrumbs.length > 0" :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
-      <div class="page-header">
-        <PostoHeader v-if="browsed.posto" :posto="browsed.posto"></PostoHeader>
-      </div>
-      <div v-if="browsed.posti" class="more-posti">
-        <PostoBreadcrumbs :posti="browsed.posti">&nbsp;</PostoBreadcrumbs>
-      </div>
-    </div>
-    <div v-if="browsed.posto">
-      <SlidingDrawer>
-        <template #title><span>Oggetti</span></template>
-        <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
-          <Heroicon icon="qr-code-add"></Heroicon> Nuovi Oggetti
-        </QrLauncher>
-      </SlidingDrawer>
-      <ItemsGallery :items="browsed.oggetti">
-        <template #item="{ item }">
-          <RouterLink :to="`/oggetto/${item.id}`">
-            <CardFormat>
-              <template #header>
-                <div class="oggetto-header">
-                  <OggettoShort :oggetto="item"></OggettoShort>
-                </div>
-              </template>
-              <template #image>
-                <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
-              </template>
-              <template #default>
-                <SchedaOggettoView v-if="item.scheda"
-                    :scheda="item.scheda"
-                    :form="item.scheda"
-                    :editable="false"
-                    :saving="false"
-                    :repo="item.repo"
-                    ></SchedaOggettoView>
-              </template>
-            </CardFormat>
-          </RouterLink>
-        </template>
-        <template #empty>
-          <div class="notimportant">Nessun oggetto in questo posto</div>
-          <div>
-            <QrLauncher mode="many" :disabled="addingOggetto" @decoded-many="codes => addOggetto(codes)">
-              <Heroicon icon="qr-code-add"></Heroicon>
-              Aggiungi un oggetto!
-            </QrLauncher>
-          </div>
-        </template>
-      </ItemsGallery>
-    </div>
+    <SlidingDrawer v-if="browsed.breadcrumbs && browsed.breadcrumbs.length > 0">
+      <template #title>Posizione</template>
+      <QrLauncher :disabled="addingPosto" mode="one" @decoded-one="text => addPosto(text)">
+        <Heroicon icon="qr-code-add"></Heroicon> Nuovo posto
+      </QrLauncher>
+      <template #content>
+        <PostoBreadcrumbs :posti="browsed.breadcrumbs"></PostoBreadcrumbs>
+      </template>
+    </SlidingDrawer>
+    <SlidingDrawer v-if="browsed.posto">
+      <template #title>Posto</template>
+      <template #menu>&nbsp;</template>
+      <template #content>
+        <div class="page-header">
+          <PostoHeader :posto="browsed.posto"></PostoHeader>
+        </div>
+      </template>
+    </SlidingDrawer>
+    <SlidingDrawer v-if="browsed.posti">
+      <template #title>Posti</template>
+      <template #menu>&nbsp;</template>
+      <template #content>
+        <div class="more-posti">
+          <PostoBreadcrumbs :posti="browsed.posti">&nbsp;</PostoBreadcrumbs>
+        </div>
+      </template>
+    </SlidingDrawer>
+    <SlidingDrawer v-if="browsed.posto">
+      <template #title>Oggetti</template>
+      <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
+        <Heroicon icon="qr-code-add"></Heroicon> Nuovi Oggetti
+      </QrLauncher>
+      <template #content>
+        <ItemsGallery :items="browsed.oggetti">
+          <template #item="{ item }">
+            <RouterLink :to="`/oggetto/${item.id}`">
+              <CardFormat>
+                <template #header>
+                  <div class="oggetto-header">
+                    <OggettoShort :oggetto="item"></OggettoShort>
+                  </div>
+                </template>
+                <template #image>
+                  <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+                </template>
+                <template #default>
+                  <SchedaOggettoView v-if="item.scheda"
+                      :scheda="item.scheda"
+                      :form="item.scheda"
+                      :editable="false"
+                      :saving="false"
+                      :repo="item.repo"
+                      ></SchedaOggettoView>
+                </template>
+              </CardFormat>
+            </RouterLink>
+          </template>
+          <template #empty>
+            <div class="notimportant">Nessun oggetto in questo posto</div>
+            <div>
+              <QrLauncher mode="many" :disabled="addingOggetto" @decoded-many="codes => addOggetto(codes)">
+                <Heroicon icon="qr-code-add"></Heroicon>
+                Aggiungi un oggetto!
+              </QrLauncher>
+            </div>
+          </template>
+        </ItemsGallery>
+      </template>
+    </SlidingDrawer>
   </div>
   <div></div>
 </template>

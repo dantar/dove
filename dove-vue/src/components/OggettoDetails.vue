@@ -107,84 +107,90 @@ function clickImage(id: string) {
 <template>
     <div v-if="browsed">
         <SlidingDrawer>
-            <template #title><span>Posizione</span></template>
+            <template #title>Posizione</template>
             <QrLauncher @decoded-one="(code) => spostaOggettoIn(code)">
                 <Heroicon icon="qr-code"></Heroicon> Sposta
             </QrLauncher>
             <button type="button" :disabled="freeze">
                 <Heroicon icon="trash"></Heroicon> Elimina
             </button>
+            <template #content>
+                <div>
+                    <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
+                </div>
+            </template>
         </SlidingDrawer>
-        <div>
-            <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
-        </div>
         <SlidingDrawer>
-            <template #title><span>Oggetto</span></template>
+            <template #title>Oggetto</template>
             <button @click="editable = !editable" type="button" :disabled="freeze">
                 <Heroicon icon="pencil"/> Modifica
             </button>
             <button type="button" :disabled="freeze">
                 <Heroicon icon="trash"></Heroicon> Elimina
             </button>
-        </SlidingDrawer>
-        <div>
-            <form @submit.prevent="saveData()">
-            <CardFormat class="oggetto-details">
-                <template #header>
-                    <div class="card-header">
-                        <OggettoShort :oggetto="browsed.oggetto"></OggettoShort>
-                        <div class="notimportant">ID: {{ browsed.oggetto.id }}</div>
-                        <span v-if="editable">
-                            <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="(form as OggettoObj).nome" :disabled="freeze"/>
-                        </span>
-                    </div>
-                </template>
-                <template #image>
-                </template>
-                <div class="oggetto-img">
-                    <ImageThumb class="mainthumb" :uuid="browsed.oggetto.id" :image="browsed.oggetto.thumbnail"></ImageThumb>
-                </div>
-                <SchedaOggettoView v-if="form?.scheda"
-                    :scheda="browsed.oggetto.scheda"
-                    :form="form?.scheda"
-                    :editable="editable"
-                    :saving="freeze"
-                    :repo="browsed.repo"
-                    class="mycustomclass"
-                    ></SchedaOggettoView>
+            <template #content>
                 <div>
-                    <button v-if="editable" @click="editable = false" type="button" :disabled="freeze"><Heroicon icon="cancel"/> </button>
-                    <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
+                    <form @submit.prevent="saveData()">
+                    <CardFormat class="oggetto-details">
+                        <template #header>
+                            <div class="card-header">
+                                <OggettoShort :oggetto="browsed.oggetto"></OggettoShort>
+                                <div class="notimportant">ID: {{ browsed.oggetto.id }}</div>
+                                <span v-if="editable">
+                                    <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="(form as OggettoObj).nome" :disabled="freeze"/>
+                                </span>
+                            </div>
+                        </template>
+                        <template #image>
+                        </template>
+                        <div class="oggetto-img">
+                            <ImageThumb class="mainthumb" :uuid="browsed.oggetto.id" :image="browsed.oggetto.thumbnail"></ImageThumb>
+                        </div>
+                        <SchedaOggettoView v-if="form?.scheda"
+                            :scheda="browsed.oggetto.scheda"
+                            :form="form?.scheda"
+                            :editable="editable"
+                            :saving="freeze"
+                            :repo="browsed.repo"
+                            class="mycustomclass"
+                            ></SchedaOggettoView>
+                        <div>
+                            <button v-if="editable" @click="editable = false" type="button" :disabled="freeze"><Heroicon icon="cancel"/> </button>
+                            <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
+                        </div>
+                    </CardFormat>
+                    </form>
                 </div>
-            </CardFormat>
-            </form>
-        </div>
-        <SlidingDrawer>
-            <template #title><span>Galleria</span></template>
-            <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
+            </template>
         </SlidingDrawer>
-        <div>
-            <ItemsGallery :items="browsed.oggetto.immagini" :class="{expanded: editable}">
-                <template #item="{ item }">
-                    <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
-                        <ImageThumb @click="clickImage(item)" :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item), expanded: selectedImage == item}"></ImageThumb>
-                        <span class="overbuttons overbuttons--up">
-                            <button v-if="editable" @click="deleteThumbnail(item)">
-                                <Heroicon icon="trash" />
-                                <Heroicon icon="checked" v-if="trash.includes(item)" />
-                                <Heroicon icon="unchecked" v-else></Heroicon>
-                            </button>
-                            <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">
-                                <Heroicon icon="photo" />
-                                <Heroicon icon="checked" v-if="form?.thumbnail == item" />
-                                <Heroicon icon="unchecked" v-else></Heroicon>
-                            </button>
-                        </span>
-                    </div>
-                </template>
-                <template #empty>Questo oggetto non ha foto.</template>
-            </ItemsGallery>
-        </div>
+        <SlidingDrawer>
+            <template #title>Galleria</template>
+            <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
+            <template #content>
+                <div>
+                    <ItemsGallery :items="browsed.oggetto.immagini" :class="{expanded: editable}">
+                        <template #item="{ item }">
+                            <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
+                                <ImageThumb @click="clickImage(item)" :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item), expanded: selectedImage == item}"></ImageThumb>
+                                <span class="overbuttons overbuttons--up">
+                                    <button v-if="editable" @click="deleteThumbnail(item)">
+                                        <Heroicon icon="trash" />
+                                        <Heroicon icon="checked" v-if="trash.includes(item)" />
+                                        <Heroicon icon="unchecked" v-else></Heroicon>
+                                    </button>
+                                    <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">
+                                        <Heroicon icon="photo" />
+                                        <Heroicon icon="checked" v-if="form?.thumbnail == item" />
+                                        <Heroicon icon="unchecked" v-else></Heroicon>
+                                    </button>
+                                </span>
+                            </div>
+                        </template>
+                        <template #empty>Questo oggetto non ha foto.</template>
+                    </ItemsGallery>
+                </div>
+            </template>
+        </SlidingDrawer>
         <PopupDialog @click="selectedImage = ''" v-if="selectedImage != ''">
             <ImageThumb :uuid="`${uuid}`" :image="`${selectedImage}`"" style="width: 100%;"></ImageThumb>
         </PopupDialog>

@@ -13,9 +13,14 @@ textarea {
 }
 
 .title-short img {
-    max-height: 1.2rem;
-    position: relative;
-    top: 0.1rem;
+  position: relative;
+  max-height: 1rem;
+  top: 2px;
+  margin-right: 2px;
+}
+
+.title-short span {
+    // padding-left: 1.2rem;
 }
 
 .notimportant {
