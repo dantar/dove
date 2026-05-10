@@ -5,6 +5,44 @@ import Heroicon from './Heroicon.vue';
 const menu = ref(false);
 const content = ref(true);
 
+function beforeEnter(e: Element) {
+  const el = e as HTMLElement;
+  el.style.height = '0'
+  el.style.transform = 'scaleY(0)'
+  el.style.transformOrigin = 'top'
+  el.style.opacity = '0'
+}
+
+function enter(e: Element) {
+  const el = e as HTMLElement;
+  el.style.transition = 'height 0.3s ease, transform 0.3s ease, opacity 0.2s ease'
+
+  // altezza reale
+  const height = el.scrollHeight
+
+  el.style.height = height + 'px'
+  el.style.transform = 'scaleY(1)'
+  el.style.opacity = '1'
+}
+
+function leave(e: Element) {
+  const el = e as HTMLElement;
+  // imposta stato iniziale (aperto)
+  el.style.height = el.scrollHeight + 'px'
+  el.style.transform = 'scaleY(1)'
+  el.style.opacity = '1'
+
+  // forza reflow
+  void el.offsetHeight
+
+  el.style.transition = 'height 0.3s ease, transform 0.3s ease, opacity 0.2s ease'
+
+  // stato finale (chiuso)
+  el.style.height = '0'
+  el.style.transform = 'scaleY(0)'
+  el.style.opacity = '0'
+}
+
 </script>
 <template>
   <div class="drawer-header" :class="{collapsed: !content}">
@@ -26,7 +64,11 @@ const content = ref(true);
      </div>
     </div>
   </transition>
-  <transition name="rollup">
+  <transition
+    @before-enter="beforeEnter"
+    @enter="enter"
+    @leave="leave"
+  >
     <div v-if="content" class="drawer-content">
       <slot name="content"></slot>
     </div>
@@ -34,6 +76,9 @@ const content = ref(true);
 </template>
 <style>
 
+.drawer-content {
+  overflow: hidden;
+}
 .rollup-enter-from,
 .rollup-leave-to {
   opacity: 0;
