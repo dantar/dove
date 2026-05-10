@@ -29,7 +29,7 @@ const uploadPhotos = async (photos: string[]) => {
 
 </script>
 <template>
-  <button type="button" :disabled="freeze" @click="showCamera = ! showCamera"><Heroicon icon="camera"/></button>
+  <button type="button" :disabled="freeze" @click="showCamera = ! showCamera"><Heroicon icon="camera"/> Aggiungi foto</button>
   <CameraAdvanced v-if="showCamera" @done="uploadPhotos"></CameraAdvanced>
 </template>
 

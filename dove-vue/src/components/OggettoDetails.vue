@@ -12,6 +12,7 @@ import QrLauncher from './QrLauncher.vue';
 import CardFormat from './CardFormat.vue';
 import OggettoShort from './OggettoShort.vue';
 import PopupDialog from './PopupDialog.vue';
+import SlidingDrawer from './SlidingDrawer.vue';
 
 interface Props {
   uuid: string,
@@ -113,7 +114,15 @@ function clickImage(id: string) {
                 </span>
             </div>
         </div>
-        <div class="pagesection pagesection-with-buttons">
+        <SlidingDrawer>
+            <button @click="editable = !editable" type="button" :disabled="freeze">
+                <Heroicon icon="pencil"/> Modifica
+            </button>
+            <button type="button" :disabled="freeze">
+                <Heroicon icon="trash"></Heroicon> Elimina
+            </button>
+        </SlidingDrawer>
+        <div>
             <form @submit.prevent="saveData()">
             <CardFormat class="oggetto-details">
                 <template #header>
@@ -138,16 +147,17 @@ function clickImage(id: string) {
                     :repo="browsed.repo"
                     class="mycustomclass"
                     ></SchedaOggettoView>
+                <div>
+                    <button v-if="editable" @click="editable = false" type="button" :disabled="freeze"><Heroicon icon="cancel"/> </button>
+                    <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
+                </div>
             </CardFormat>
-            <div class="overbuttons overbuttons--up">
-                <span>
-                    <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/></button>
-                    <button @click="editable = !editable" type="button" :disabled="freeze"><Heroicon icon="pencil"/></button>
-                </span>
-            </div>
             </form>
         </div>
-        <div class="pagesection pagesection-with-buttons">
+        <SlidingDrawer>
+            <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
+        </SlidingDrawer>
+        <div>
             <ItemsGallery :items="browsed.oggetto.immagini" :class="{expanded: editable}">
                 <template #item="{ item }">
                     <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
@@ -168,9 +178,6 @@ function clickImage(id: string) {
                 </template>
                 <template #empty>Questo oggetto non ha foto.</template>
             </ItemsGallery>
-            <div class="overbuttons overbuttons--up">
-                <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
-            </div>
         </div>
         <PopupDialog @click="selectedImage = ''" v-if="selectedImage != ''">
             <ImageThumb :uuid="`${uuid}`" :image="`${selectedImage}`"" style="width: 100%;"></ImageThumb>
