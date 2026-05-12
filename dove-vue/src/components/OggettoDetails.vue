@@ -13,6 +13,7 @@ import CardFormat from './CardFormat.vue';
 import OggettoShort from './OggettoShort.vue';
 import PopupDialog from './PopupDialog.vue';
 import SlidingDrawer from './SlidingDrawer.vue';
+import { useRouter } from 'vue-router';
 
 interface Props {
   uuid: string,
@@ -20,6 +21,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const browse = useBrowseData();
+const router = useRouter();
 
 const selectedImage = ref('');
 
@@ -101,6 +103,16 @@ function clickImage(id: string) {
         selectedImage.value = id;
     }
 }
+
+async function deleteOggetto() {
+    freeze.value = true;
+    if (browsed.value) {
+        const deleted = await browse.deleteOggetto(browsed.value.oggetto.id);
+        router.replace(`/posto/${browsed.value.posto.id}`);
+    }
+    freeze.value = false;
+}
+
 </script>
 
 <template>
@@ -110,9 +122,6 @@ function clickImage(id: string) {
             <QrLauncher @decoded-one="(code) => spostaOggettoIn(code)">
                 <Heroicon icon="qr-code"></Heroicon> Sposta
             </QrLauncher>
-            <button type="button" :disabled="freeze">
-                <Heroicon icon="trash"></Heroicon> Elimina
-            </button>
             <template #content>
                 <div>
                     <PostoBreadcrumbs :posti="browsed.breadcrumbs.concat(browsed.posto)"></PostoBreadcrumbs>
@@ -124,7 +133,7 @@ function clickImage(id: string) {
             <button @click="editable = !editable" type="button" :disabled="freeze">
                 <Heroicon icon="pencil"/> Modifica
             </button>
-            <button type="button" :disabled="freeze">
+            <button type="button" :disabled="freeze" @click="deleteOggetto()">
                 <Heroicon icon="trash"></Heroicon> Elimina
             </button>
             <template #content>

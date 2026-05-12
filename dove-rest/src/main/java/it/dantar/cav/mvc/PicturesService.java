@@ -58,6 +58,14 @@ public class PicturesService {
 				.map(f -> f.getName())
 				.collect(Collectors.toList());
 	}
+	
+	public boolean deleteAllPicturesAndDir(String uuid) {
+		File objectDir = picturesDirectory(uuid);
+		Arrays.asList(objectDir.listFiles())
+		.stream()
+		.forEach(f -> f.delete());
+		return objectDir.delete();
+	}
 
 	private File picturesDirectory(String uuid) {
 		File objectDir = new File(this.rootDir, uuid);

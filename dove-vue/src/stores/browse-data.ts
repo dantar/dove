@@ -40,6 +40,12 @@ export const useBrowseData = defineStore('browseData', () => {
     return response.data;
   }
 
+  async function deleteOggetto(uuid: string): Promise<Boolean> {
+    const config = useBackendConfig();
+    const response = await axios.delete<Boolean>(`${config.backend}/oggetto/${uuid}`);
+    return response.data;
+  }
+
   async function fetchPostoDetails(uuid: string): Promise<PostoObj> {
     const config = useBackendConfig();
     const response = await axios.get<PostoObj>(`${config.backend}/posto/${uuid}`);
@@ -145,7 +151,7 @@ export const useBrowseData = defineStore('browseData', () => {
   }
 
   return { repo, current, goToRoot, goToPosto, 
-    addRoot, addPosto, updatePosto, 
+    addRoot, addPosto, updatePosto, deleteOggetto, 
     addOggetto, updateOggetto, addCodes,
     uploadGallery, fetchOggettoDetails, fetchPostoDetails,
     browseOggettoDetails, browsePostoDetails,

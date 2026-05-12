@@ -117,6 +117,17 @@ public class IngressoController {
 		return found.get();
 	}
 
+	@DeleteMapping("/oggetto/{uuid}")
+	public boolean deleteOggetto(@PathVariable("uuid") String uuid) {
+		Optional<Oggetto> found = oggettoDao.findById(uuid);
+		if (found.isPresent()) {
+			this.pictureService.deleteAllPicturesAndDir(found.get().getId());
+			oggettoDao.delete(found.get());
+			return true;
+		}
+		return false;
+	}
+
 	@GetMapping("/oggetto")
 	public List<Oggetto> getOggettoAll() {
 		return oggettoDao.findAll();
