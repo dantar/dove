@@ -132,9 +132,12 @@ const addingOggetto = ref(false);
   text-align: center;
   font-size: 1.1em;
 }
+.card-image .identicon,
+.card-image .imagethumb {
+  width: 100px;
+}
 .card-image .identicon {
   padding: 15%;
-  width: 100px;
 }
 .page-header {
   padding-left: 10px;

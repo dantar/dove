@@ -19,6 +19,6 @@ watch(() => props.uuid, (newuuid) => svg.value = makeIdenticon(newuuid).toDataUr
 
 <style scoped>
 .imagethumb {
-    max-width:100%;
+    /* max-width:100%; */
 }
 </style>

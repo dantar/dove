@@ -14,6 +14,7 @@ import PostoHeader from './PostoHeader.vue';
 import SearchMore from './SearchMore.vue';
 import { useBrowseData } from '@/stores/browse-data';
 import Heroicon from './Heroicon.vue';
+import SlidingDrawer from './SlidingDrawer.vue';
 
 const browse = useBrowseData();
 const search = useSearchData();
@@ -60,9 +61,11 @@ function selectRepoSchema(repo: string, schema: string) {
 
 </script>
 <template>
-    <div>
-      <CardFormat class="spacedarea">
-        <div class="spacedarea" v-if="!form.query.length">Nessun criterio di ricerca selezionato</div>
+
+    <SlidingDrawer>
+      <template #title>Nuova ricerca</template>
+      <template #menu>&nbsp;</template>
+      <template #content>
         <CardFormat class="spacedarea" v-for="queryitem in form.query">
           <template #header>
             <div>{{ queryitem.campo }} </div>
@@ -75,8 +78,9 @@ function selectRepoSchema(repo: string, schema: string) {
         <div class="spacedarea">
             <button type="button" @click="doSearch" :disabled="form.query.length == 0">cerca</button>
         </div>
-      </CardFormat>
-    </div>
+      </template>
+    </SlidingDrawer>
+
     <div class="spacedarea">
       <div class="spacedarea">
         <PostoHeader :posto="repo.root"></PostoHeader>
@@ -98,40 +102,51 @@ function selectRepoSchema(repo: string, schema: string) {
         </CardFormat>
       </div>
     </div>
-    <div v-if="search.page">
-      <h1>Oggetti trovati: {{ search.page.totalElements }}</h1>
-      <ItemsGallery v-if="search.found" :items="search.found">
-        <template #item="{ item }">
-          <RouterLink :to="`/oggetto/${item.id}`">
-            <CardFormat>
-              <template #header>
-                <div class="oggetto-header">
-                  <OggettoShort :oggetto="item"></OggettoShort>
-                </div>
-              </template>
-              <template #image>
-                <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
-              </template>
-              <template #default>
-                <SchedaOggettoView v-if="item.scheda"
-                    :scheda="item.scheda"
-                    :form="item.scheda"
-                    :editable="false"
-                    :saving="false"
-                    :repo="item.repo"
-                    ></SchedaOggettoView>
-              </template>
-            </CardFormat>
-          </RouterLink>
-        </template>
-        <template #end>
-          <SearchMore v-if="!search.page.last"></SearchMore>
-        </template>
-        <template #empty>
-          <div class="notimportant">Nessun risultato trovato</div>
-        </template>
-      </ItemsGallery>
-    </div>
+
+    <SlidingDrawer v-if="search.form && search.form.query.length > 0">
+      <template #title>Criterio di ricerca</template>
+      <template #menu>&nbsp;</template>
+      <template #content>
+        {{ search.form }}
+      </template>
+    </SlidingDrawer>
+    <SlidingDrawer v-if="search.form && search.form.query.length > 0">
+      <template #title>Risultati di ricerca <template v-if="search.page.totalElements > 0">(x{{ search.page.totalElements }})</template></template>
+      <template #menu>&nbsp;</template>
+      <template #content>
+        <ItemsGallery v-if="search.found" :items="search.found">
+          <template #item="{ item }">
+            <RouterLink :to="`/oggetto/${item.id}`">
+              <CardFormat>
+                <template #header>
+                  <div class="oggetto-header">
+                    <OggettoShort :oggetto="item"></OggettoShort>
+                  </div>
+                </template>
+                <template #image>
+                  <ImageThumb :uuid="item.id" :image="item.thumbnail"></ImageThumb>
+                </template>
+                <template #default>
+                  <SchedaOggettoView v-if="item.scheda"
+                      :scheda="item.scheda"
+                      :form="item.scheda"
+                      :editable="false"
+                      :saving="false"
+                      :repo="item.repo"
+                      ></SchedaOggettoView>
+                </template>
+              </CardFormat>
+            </RouterLink>
+          </template>
+          <template #end>
+            <SearchMore v-if="!search.page.last"></SearchMore>
+          </template>
+          <template #empty>
+            <div class="notimportant">Nessun risultato trovato</div>
+          </template>
+        </ItemsGallery>
+      </template>
+    </SlidingDrawer>
 </template>
 <style scoped>
 

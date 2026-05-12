@@ -7,7 +7,6 @@ const search = useSearchData();
 let observer: IntersectionObserver | null = null;
 
 function attachObserver() {
-  console.log(more, more.value);
   if (observer) {
     observer.observe(more.value as HTMLDivElement);
   };

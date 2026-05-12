@@ -95,7 +95,6 @@ async function spostaOggettoIn(code: string) {
 }
 
 function clickImage(id: string) {
-    console.log(`clickImage ${id} ${selectedImage.value}`);
     if (selectedImage.value == id) {
         selectedImage.value = '';
     } else {
@@ -152,7 +151,6 @@ function clickImage(id: string) {
                             :editable="editable"
                             :saving="freeze"
                             :repo="browsed.repo"
-                            class="mycustomclass"
                             ></SchedaOggettoView>
                         <div>
                             <button v-if="editable" @click="editable = false" type="button" :disabled="freeze"><Heroicon icon="cancel"/> </button>
@@ -231,7 +229,7 @@ function clickImage(id: string) {
     width:100px;
 }
 .mainthumb {
-    width: 320px;
+    width: 100%;
 }
 .tobedeleted {
     opacity: 0.5;

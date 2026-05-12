@@ -31,11 +31,9 @@ export const useLoggedUser = defineStore('loggedUser', () => {
   }
   function digestResponseData(data: any) {
     user.value = AppUserDto.digestResponseData(data);
-    console.log('digestResponseData', user.value);
     const browse = useBrowseData();
     const first = user.value.repos[0];
     if (first) {
-      console.log('switchToRepo', first);
       browse.switchToRepo(first);
     }
   }
