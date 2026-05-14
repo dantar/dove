@@ -232,7 +232,11 @@ function removeCode(code: string) {
           class="control-btn"
           @click="toggleTorch"
         >🔦</button>
-        <button v-if="codes.length > 0" type="button" @click="emitAllCodes"><Heroicon icon="check" /></button>
+        <button v-if="codes.length > 0" type="button" @click="emitAllCodes">
+          <Heroicon icon="check" /> 
+          <span v-if="codes.length > 1">Conferma {{ codes.length }} codici</span> 
+          <span v-else>Conferma 1 codice</span> 
+        </button>
       </div>
       <ItemsGallery :items="codes">
         <template #item="{item}">

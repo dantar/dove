@@ -6,7 +6,8 @@ import Heroicon from './Heroicon.vue';
 
 interface Props {
   uuid: string,
-  gallery: string[]
+  gallery: string[],
+  freeze?: boolean
 }
 const props = defineProps<Props>();
 
@@ -15,21 +16,21 @@ const emit = defineEmits<{
 }>()
 
 const showCamera = ref(false);
-const freeze = ref(false);
+const frozen = ref(props.freeze || false);
 
 const uploadPhotos = async (photos: string[]) => {
-  freeze.value = true;
+  frozen.value = true;
   showCamera.value = false;
   const browse = useBrowseData();
   const ids = await browse.uploadGallery(props.uuid, photos);
   props.gallery.splice(0, props.gallery.length, ...ids);
-  freeze.value = false;
+  frozen.value = false;
   emit('upload', ids);
 }
 
 </script>
 <template>
-  <button type="button" :disabled="freeze" @click="showCamera = ! showCamera"><Heroicon icon="camera"/> Aggiungi foto</button>
+  <button type="button" :disabled="frozen" @click="showCamera = ! showCamera"><Heroicon icon="camera"/> Aggiungi foto</button>
   <CameraAdvanced v-if="showCamera" @done="uploadPhotos"></CameraAdvanced>
 </template>
 

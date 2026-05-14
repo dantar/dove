@@ -14,6 +14,7 @@ import OggettoShort from './OggettoShort.vue';
 import PopupDialog from './PopupDialog.vue';
 import SlidingDrawer from './SlidingDrawer.vue';
 import { useRouter } from 'vue-router';
+import { UndoableAction, useUndoableActions } from '@/stores/undoable-actions';
 
 interface Props {
   uuid: string,
@@ -29,6 +30,8 @@ const browsed = ref<OggettoBrowseDto>();
 const editable = ref(false);
 const freeze = ref(false);
 const trash = ref<string[]>([]);
+
+const undoables = useUndoableActions();
 
 async function loadOggetto(uuid: string) {
     freeze.value = true;
@@ -106,11 +109,13 @@ function clickImage(id: string) {
 
 async function deleteOggetto() {
     freeze.value = true;
-    if (browsed.value) {
-        const deleted = await browse.deleteOggetto(browsed.value.oggetto.id);
-        router.replace(`/posto/${browsed.value.posto.id}`);
-    }
-    freeze.value = false;
+    const b = browsed.value as OggettoBrowseDto;
+    const undoable = undoables.newUndoable( async () => {
+        const deleted = await browse.deleteOggetto(b.oggetto.id);
+        freeze.value = false;
+    });
+    UndoableAction.start(undoable);
+    router.replace(`/posto/${b.posto.id}`);
 }
 
 </script>
@@ -172,7 +177,7 @@ async function deleteOggetto() {
         </SlidingDrawer>
         <SlidingDrawer>
             <template #title>Galleria</template>
-            <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini"></AddPhotosButton>
+            <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini" :freeze="freeze"></AddPhotosButton>
             <template #content>
                 <div>
                     <ItemsGallery :items="browsed.oggetto.immagini" :class="{expanded: editable}">

@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router'
 import LoggedUser from './components/LoggedUser.vue';
 import { useBrowseData } from './stores/browse-data';
 import { SchedaOggettoCampoStarsHandler } from './stores/schede-by-schema';
+import UndoableActionsStack from './components/UndoableActionsStack.vue';
 
 const loggedUser = useLoggedUser();
 const router = useRouter();
@@ -36,6 +37,7 @@ console.log(SchedaOggettoCampoStarsHandler.KEY);
       <button @click="popupUser = true"><Heroicon icon="user" /></button>
     </div>
     <main>
+      <UndoableActionsStack></UndoableActionsStack>
       <RouterView />
       <PopupDialog v-if="popupUser" @close="popupUser = false">
         <LoggedUser></LoggedUser>
