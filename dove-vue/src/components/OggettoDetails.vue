@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useBrowseData } from '@/stores/browse-data';
 import { ref, watch } from 'vue';
-import type { OggettoBrowseDto, OggettoObj } from '@/models/browse-item';
+import { oggettoName, type OggettoBrowseDto, type OggettoObj } from '@/models/browse-item';
 import AddPhotosButton from './AddPhotosButton.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
@@ -107,14 +107,22 @@ function clickImage(id: string) {
     }
 }
 
-async function deleteOggetto() {
+function deleteOggetto() {
     freeze.value = true;
     const b = browsed.value as OggettoBrowseDto;
     const undoable = undoables.newUndoable( async () => {
         const deleted = await browse.deleteOggetto(b.oggetto.id);
         freeze.value = false;
     });
-    UndoableAction.start(undoable);
+    undoable.text = `Eliminazione ${oggettoName(b.oggetto)}`;
+    UndoableAction.start(undoable)
+    .then((done: string) => {
+        console.log(`Done: ${done}`);
+    })
+    .catch(error => {
+        console.log(error);
+    })
+    ;
     router.replace(`/posto/${b.posto.id}`);
 }
 

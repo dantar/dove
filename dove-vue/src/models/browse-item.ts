@@ -24,7 +24,9 @@ export interface OggettoObj {
     scheda: SchedaOggetto;
     immagini: string[];
 }
-
+export function oggettoName(oggetto: OggettoObj): string {
+    return oggetto.nome || `Oggetto ${oggetto.id.split('-')[0]}`
+}
 export interface AnyObj {
     id: string;
     tipo: string;

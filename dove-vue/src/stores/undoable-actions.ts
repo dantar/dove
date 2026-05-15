@@ -4,20 +4,22 @@ import { reactive, ref } from 'vue';
 export class UndoableAction {
   countdown: number;
   constructor(action: () => Promise<void>, cleanupFn?: (u: UndoableAction) => void) {
-    this.countdown = 3000;
+    this.countdown = 5000;
     this.action = action;
     this.timer = 0;
     this.cleanupFn = cleanupFn;
   }
-
+  text = 'Undo?';
   step = 100;
   timer: number;
   action: () => Promise<void>;
   cleanupFn?: (u: UndoableAction) => void;
-  rejectFn: ((reason?: any) => void) | null = null;
+  rejectFn?: ((reason?: any) => void);
+  resolveFn?: (value: string | PromiseLike<string>) => void;
 
-  static start(u: UndoableAction): Promise<void> {
+  static start(u: UndoableAction): Promise<string> {
     return new Promise((resolve, reject) => {
+      u.resolveFn = resolve;
       u.rejectFn = reject;
       u.timer = window.setInterval(async () => {
         u.countdown -= u.step;
@@ -25,7 +27,7 @@ export class UndoableAction {
           UndoableAction.cleanup(u);
           try {
             await u.action();
-            resolve();
+            resolve('done');
           } catch (e) {
             reject(e);
           }
@@ -37,8 +39,11 @@ export class UndoableAction {
   static abort(u: UndoableAction) {
     if (u.timer !== null) {
       UndoableAction.cleanup(u);
-      if (u.rejectFn) {
-        u.rejectFn(new Error('undone'));
+      // if (u.rejectFn) {
+      //   u.rejectFn(new Error('undone'));
+      // }
+      if (u.resolveFn) {
+        u.resolveFn('undone');
       }
     }
   }
