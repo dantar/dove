@@ -39,9 +39,6 @@ export class UndoableAction {
   static abort(u: UndoableAction) {
     if (u.timer !== null) {
       UndoableAction.cleanup(u);
-      // if (u.rejectFn) {
-      //   u.rejectFn(new Error('undone'));
-      // }
       if (u.resolveFn) {
         u.resolveFn('undone');
       }

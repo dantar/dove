@@ -126,6 +126,26 @@ function deleteOggetto() {
     router.replace(`/posto/${b.posto.id}`);
 }
 
+async function toggleThumbnail(uuid: string) {
+    freeze.value = true;
+    if (form.value || form.value == '') {
+        form.value.thumbnail = form.value.thumbnail == uuid ? '' : uuid;
+        const updated = await browse.updateOggetto(form.value as OggettoObj);
+        await loadOggetto(updated.id);
+    }
+    freeze.value = false;
+}
+
+async function trashThumbnail(uuid: string) {
+    freeze.value = true;
+    if (form.value || form.value == '') {
+        form.value.thumbnail = form.value.thumbnail == uuid ? '' : form.value.thumbnail;
+        await browse.deletePicture(form.value.id, uuid);
+        await loadOggetto(form.value.id);
+    }
+    freeze.value = false;
+}
+
 </script>
 
 <template>
@@ -165,7 +185,7 @@ function deleteOggetto() {
                         <template #image>
                         </template>
                         <div class="oggetto-img">
-                            <ImageThumb class="mainthumb" :uuid="browsed.oggetto.id" :image="browsed.oggetto.thumbnail"></ImageThumb>
+                            <ImageThumb @click="selectedImage = browsed.oggetto.thumbnail" class="mainthumb" :uuid="browsed.oggetto.id" :image="browsed.oggetto.thumbnail"></ImageThumb>
                         </div>
                         <SchedaOggettoView v-if="form?.scheda"
                             :scheda="browsed.oggetto.scheda"
@@ -188,9 +208,11 @@ function deleteOggetto() {
             <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini" :freeze="freeze"></AddPhotosButton>
             <template #content>
                 <div>
-                    <ItemsGallery :items="browsed.oggetto.immagini" :class="{expanded: editable}">
+                    <ItemsGallery :items="browsed.oggetto.immagini.filter(
+                        item => editable || item != browsed?.oggetto.thumbnail
+                    )" :class="{expanded: editable}">
                         <template #item="{ item }">
-                            <div style="position: relative;" v-if="editable || item != browsed.oggetto.thumbnail">
+                            <div style="position: relative;" v-if="true">
                                 <ImageThumb @click="clickImage(item)" :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item), expanded: selectedImage == item}"></ImageThumb>
                                 <span class="overbuttons overbuttons--up">
                                     <button v-if="editable" @click="deleteThumbnail(item)">
@@ -206,13 +228,26 @@ function deleteOggetto() {
                                 </span>
                             </div>
                         </template>
-                        <template #empty>Questo oggetto non ha foto.</template>
+                        <template #empty>
+                            <div>
+                                Questo oggetto non ha foto.
+                            </div>
+                            <AddPhotosButton @upload="refreshThumbnail()" :uuid="browsed.oggetto.id" :gallery="browsed.oggetto.immagini" :freeze="freeze"></AddPhotosButton>
+                        </template>
                     </ItemsGallery>
                 </div>
             </template>
         </SlidingDrawer>
         <PopupDialog @click="selectedImage = ''" v-if="selectedImage != ''">
             <ImageThumb :uuid="`${uuid}`" :image="`${selectedImage}`"" style="width: 100%;"></ImageThumb>
+            <div class="img-buttons">
+                <button @click="toggleThumbnail(selectedImage)" :disabled="freeze">
+                    <Heroicon icon="photo" /> Copertina
+                </button>
+                <button @click="trashThumbnail(selectedImage)" :disabled="freeze">
+                    <Heroicon icon="trash" /> Elimina
+                </button>
+            </div>
         </PopupDialog>
     </div>
     <div v-else="">Loading...</div>
@@ -220,8 +255,20 @@ function deleteOggetto() {
 
 <style scoped>
 
-.imagefullview {
-    
+.img-buttons {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.img-buttons button {
+  pointer-events: auto;
+  position: relative;
 }
 
 .oggetto-img {
