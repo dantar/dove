@@ -67,6 +67,9 @@ const form = ref<OggettoObj>();
 async function refreshThumbnail() {
     if (browsed.value && !browsed.value.oggetto.thumbnail && browsed.value.oggetto.immagini) {
         browsed.value.oggetto.thumbnail = browsed.value.oggetto.immagini[0] as string;
+        if (form.value) {
+            form.value.thumbnail = browsed.value.oggetto.thumbnail;
+        }
     }
 }
 
@@ -175,10 +178,14 @@ async function trashThumbnail(uuid: string) {
                     <CardFormat class="oggetto-details">
                         <template #header>
                             <div class="card-header">
-                                <OggettoShort :oggetto="browsed.oggetto"></OggettoShort>
+                                <OggettoShort :oggetto="browsed.oggetto">
+                                    <template #nome v-if="editable || browsed.oggetto.nome == ''">
+                                        <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="(form as OggettoObj).nome" :disabled="freeze"/>
+                                    </template>
+                                </OggettoShort>
                                 <div class="notimportant">ID: {{ browsed.oggetto.id }}</div>
-                                <span v-if="editable">
-                                    <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="(form as OggettoObj).nome" :disabled="freeze"/>
+                                <span v-if="!editable && browsed.oggetto.nome == '' && form?.nome != ''">
+                                    <button v-if="!editable" type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
                                 </span>
                             </div>
                         </template>

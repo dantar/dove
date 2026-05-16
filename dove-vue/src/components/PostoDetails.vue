@@ -82,7 +82,7 @@ const addingOggetto = ref(false);
     <SlidingDrawer v-if="browsed.posto">
       <template #title>Oggetti <template v-if="browsed.oggetti.length > 0">(x{{ browsed.oggetti.length }})</template></template>
       <QrLauncher :disabled="addingOggetto" mode="many" @decoded-many="codes => addOggetto(codes)">
-        <Heroicon icon="qr-code-add"></Heroicon> Nuovi Oggetti
+        <Heroicon icon="qr-code-add"></Heroicon> Aggiungi oggetti
       </QrLauncher>
       <template #content>
         <ItemsGallery :items="browsed.oggetti">
@@ -111,14 +111,14 @@ const addingOggetto = ref(false);
           </template>
           <template #empty>
             <div class="notimportant">Nessun oggetto in questo posto</div>
-            <div>
-              <QrLauncher mode="many" :disabled="addingOggetto" @decoded-many="codes => addOggetto(codes)">
-                <Heroicon icon="qr-code-add"></Heroicon>
-                Aggiungi un oggetto!
-              </QrLauncher>
-            </div>
           </template>
         </ItemsGallery>
+        <div>
+          <QrLauncher mode="many" :disabled="addingOggetto" @decoded-many="codes => addOggetto(codes)">
+            <Heroicon icon="qr-code-add"></Heroicon>
+            Aggiungi oggetti!
+          </QrLauncher>
+        </div>
       </template>
     </SlidingDrawer>
   </div>

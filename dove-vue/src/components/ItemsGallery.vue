@@ -26,7 +26,7 @@ const mode = ref('double');
   flex-wrap: wrap;
   gap: 6px;
   justify-content: center;
-  padding-bottom: 80px;
+  padding-bottom: 10px;
 }
 
 </style>
