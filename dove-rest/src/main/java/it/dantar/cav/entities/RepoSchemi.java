@@ -24,5 +24,7 @@ public class RepoSchemi {
 	String id;
 	@Type(JsonBinaryType.class)
 	ArrayNode schemi;
+	@Type(JsonBinaryType.class)
+	ArrayNode checkout;
 	
 }

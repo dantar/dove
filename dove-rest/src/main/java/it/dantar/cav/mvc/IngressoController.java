@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,24 +13,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.dantar.cav.entities.Checkout;
+import it.dantar.cav.entities.CheckoutDao;
 import it.dantar.cav.entities.Oggetto;
 import it.dantar.cav.entities.OggettoDao;
 import it.dantar.cav.entities.Posto;
 import it.dantar.cav.entities.PostoDao;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class IngressoController {
 
-	@Autowired
-	private PostoDao postoDao; 
-	@Autowired
-	private OggettoDao oggettoDao; 
-	@Autowired
-	private PicturesService pictureService;
-	
+	private final PostoDao postoDao; 
+	private final OggettoDao oggettoDao; 
+	private final PicturesService pictureService;
+	private final CheckoutDao checkoutDao;
+	private final ObjectMapper mapper;
+		
 	@GetMapping("/posto/{uuid}")
 	public Posto getPosto(@PathVariable("uuid") String uuid) {
 		return postoDao.findById(uuid).get();
@@ -62,7 +65,6 @@ public class IngressoController {
 
 	@PostMapping("/posto/{main}/codes")
 	public List<Oggetto> addCodes(@PathVariable String main, @RequestBody List<String> codes) {
-		ObjectMapper mapper = new ObjectMapper();
 		Posto posto = postoDao.findById(main).orElseThrow(IllegalArgumentException::new);
 		List<String> idEsistenti = new ArrayList<>();
 		postoDao.findAllById(codes).forEach(p -> idEsistenti.add(p.getId()));
@@ -121,11 +123,15 @@ public class IngressoController {
 	public boolean deleteOggetto(@PathVariable("uuid") String uuid) {
 		Optional<Oggetto> found = oggettoDao.findById(uuid);
 		if (found.isPresent()) {
-			this.pictureService.deleteAllPicturesAndDir(found.get().getId());
-			oggettoDao.delete(found.get());
-			return true;
+			return doDeleteOggetto(found.get());
 		}
 		return false;
+	}
+
+	private boolean doDeleteOggetto(Oggetto oggetto) {
+		this.pictureService.deleteAllPicturesAndDir(oggetto.getId());
+		oggettoDao.delete(oggetto);
+		return true;
 	}
 
 	@GetMapping("/oggetto")
@@ -183,6 +189,19 @@ public class IngressoController {
 	public Oggetto dropOggetto(@PathVariable String idOggetto, @PathVariable String prefix) {
 		oggettoDao.dropOggetto(idOggetto, prefix);
 		return oggettoDao.findById(String.format("%s:%s", prefix, idOggetto)).orElseThrow(IllegalArgumentException::new);
+	}
+
+	@PostMapping("/oggetto/{uuid}/checkout")
+	public Checkout checkoutOggetto(@PathVariable String uuid, @RequestBody JsonNode scheda) throws IOException {
+		Oggetto oggetto = oggettoDao.findById(uuid).orElseThrow(IllegalArgumentException::new);
+		Checkout checkout = new Checkout();
+		checkout.setId(UUID.randomUUID().toString());
+		checkout.setRepo(oggetto.getRepo());
+		checkout.setScheda(scheda);
+		checkout.setOggetto(mapper.valueToTree(oggetto));
+		checkoutDao.save(checkout);
+		this.doDeleteOggetto(oggetto);
+		return checkout;
 	}
 
 

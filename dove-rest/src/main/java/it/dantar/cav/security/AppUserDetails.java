@@ -29,7 +29,7 @@ public class AppUserDetails extends User {
 	@AllArgsConstructor
 	public static class RepoInfo {
 		Posto root;
-		RepoSchemi schemi;
+		RepoSchemi repo;
 	}
 	
 	Utente utente;

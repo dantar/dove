@@ -1,0 +1,23 @@
+info:
+  name: Checkout oggetto
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://localhost:9080/oggetto/8ad864e6-ea8c-46a3-a353-1ddb195e4fcd/checkout
+  body:
+    type: json
+    data: |-
+      {
+        "associazione": "wwf"
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
