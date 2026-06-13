@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useBrowseData } from '@/stores/browse-data';
 import { ref, watch } from 'vue';
-import { oggettoName, type OggettoBrowseDto, type OggettoObj } from '@/models/browse-item';
+import { oggettoName, SchedaBySchema, SchedaOggetto, type OggettoBrowseDto, type OggettoObj } from '@/models/browse-item';
 import AddPhotosButton from './AddPhotosButton.vue';
 import PostoBreadcrumbs from './PostoBreadcrumbs.vue';
 import SchedaOggettoView from './SchedaOggettoView.vue';
@@ -15,6 +15,8 @@ import PopupDialog from './PopupDialog.vue';
 import SlidingDrawer from './SlidingDrawer.vue';
 import { useRouter } from 'vue-router';
 import { UndoableAction, useUndoableActions } from '@/stores/undoable-actions';
+import type { TipoSchedaOggetto } from '@/stores/schede-by-schema';
+import SchedaBySchemaView from './SchedaBySchemaView.vue';
 
 interface Props {
   uuid: string,
@@ -149,6 +151,49 @@ async function trashThumbnail(uuid: string) {
     freeze.value = false;
 }
 
+const checkoutSchema = ref<TipoSchedaOggetto>();
+const checkoutData = ref<SchedaBySchema>();
+
+function iniziaCheckout(schema: TipoSchedaOggetto) {
+    if (checkoutSchema.value) {
+        annullaCheckout();
+    } else {
+        checkoutSchema.value = schema;
+        const scheda: SchedaBySchema = new SchedaOggetto(SchedaBySchema.KEY) as SchedaBySchema;
+        const proto = SchedaOggetto.protos[SchedaBySchema.KEY];
+        if (proto) {
+            proto(scheda);
+            SchedaBySchema.init(scheda);
+            SchedaBySchema.initWithSchema(schema, scheda);
+        }
+        checkoutData.value = scheda;
+    }
+}
+
+function annullaCheckout() {
+    checkoutSchema.value = undefined;
+    checkoutData.value = undefined;
+}
+
+function saveCheckout() {
+    freeze.value = true;
+    const b = browsed.value as OggettoBrowseDto;
+    const undoable = undoables.newUndoable( async () => {
+        const deleted = await browse.checkoutOggetto(b.oggetto.id, checkoutData.value as SchedaBySchema);
+        freeze.value = false;
+    });
+    undoable.text = `Checkout ${oggettoName(b.oggetto)}`;
+    UndoableAction.start(undoable)
+    .then((done: string) => {
+        console.log(`Done: ${done}`);
+    })
+    .catch(error => {
+        console.log(error);
+    })
+    ;
+    router.replace(`/posto/${b.posto.id}`);
+}
+
 </script>
 
 <template>
@@ -166,12 +211,17 @@ async function trashThumbnail(uuid: string) {
         </SlidingDrawer>
         <SlidingDrawer>
             <template #title>Oggetto</template>
-            <button @click="editable = !editable" type="button" :disabled="freeze">
-                <Heroicon icon="pencil"/> Modifica
-            </button>
-            <button type="button" :disabled="freeze" @click="deleteOggetto()">
-                <Heroicon icon="trash"></Heroicon> Elimina
-            </button>
+            <template #menubuttons>
+                <button @click="editable = !editable" type="button" :disabled="freeze">
+                    <Heroicon icon="pencil"/> Modifica
+                </button>
+                <button type="button" :disabled="freeze" @click="deleteOggetto()">
+                    <Heroicon icon="trash"></Heroicon> Elimina
+                </button>
+                <button v-for="schema in browse.currentRepo().checkout" type="button" :disabled="freeze" @click="iniziaCheckout(schema)">
+                    <Heroicon icon="archive-checkout"></Heroicon> {{ schema.nome }} 
+                </button>
+            </template>
             <template #content>
                 <div>
                     <form @submit.prevent="saveData()">
@@ -253,6 +303,19 @@ async function trashThumbnail(uuid: string) {
                 </button>
                 <button @click="trashThumbnail(selectedImage)" :disabled="freeze">
                     <Heroicon icon="trash" /> Elimina
+                </button>
+            </div>
+        </PopupDialog>
+        <PopupDialog v-if="checkoutSchema && checkoutData" @close="checkoutSchema = undefined">
+            <SchedaBySchemaView 
+                :scheda="checkoutData" 
+                :form="checkoutData" 
+                :editable="true"
+                :saving="false"
+                :schema="checkoutSchema"></SchedaBySchemaView>
+            <div>
+                <button @click="saveCheckout()" :disabled="freeze">
+                    <Heroicon icon="archive-checkout" /> Checkout
                 </button>
             </div>
         </PopupDialog>

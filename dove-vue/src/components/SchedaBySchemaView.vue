@@ -9,13 +9,18 @@ interface Props {
   editable: boolean,
   saving: boolean,
   form: SchedaBySchema,
+  schema?: TipoSchedaOggetto,
 }
 const props = defineProps<Props>()
 const user = useLoggedUser();
 const schema = ref<TipoSchedaOggetto>();
 
 async function init(idSchema: string) {
-    user.user.repos.forEach(r => r.schemi.filter(s => s.id == idSchema).forEach(s => schema.value = s));
+    if (props.schema) {
+        schema.value = props.schema;
+    } else {
+        user.user.repos.forEach(r => r.schemi.filter(s => s.id == idSchema).forEach(s => schema.value = s));
+    }
 }
 watch(() => props.scheda.schema, (n, o) => init(n));
 init(props.scheda.schema);

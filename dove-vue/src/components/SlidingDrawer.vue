@@ -60,6 +60,7 @@ function leave(e: Element) {
   <transition name="fade">
     <div v-if="menu" class="drawer-buttons">
       <div class="floatingmenu">
+        <slot name="menubuttons"></slot>
         <slot></slot>
      </div>
     </div>

@@ -18,8 +18,9 @@
 .card-image {
     flex: 1;
     max-width: 100px;
-    background-color: beige;
-    align-content: center;
+    /* background-color: beige; */
+    /* align-content: center; */
+    padding: 3px;
 }
 .card-image:empty {
     display: none;

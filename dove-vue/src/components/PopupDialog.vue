@@ -4,7 +4,7 @@ import Heroicon from './Heroicon.vue';
     const emit = defineEmits(['close']);
 </script>
 <template>
-<div class="fullpage">
+<div class="fullpage popup">
     <div class="dialog">
         <div class="buttons">
             <slot name="buttons"><button @click="emit('close')"><heroicon icon="cancel"></heroicon></button></slot>
@@ -16,6 +16,10 @@ import Heroicon from './Heroicon.vue';
 </div>
 </template>
 <style scoped>
+
+.popup {
+    z-index: 10;
+}
 
 .fullpage {
     display: flex;

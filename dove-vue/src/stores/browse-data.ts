@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { PostoBrowseDto, PostoObj, OggettoObj, OggettoBrowseDto, SchedaOggetto, AnyBrowseDto, AnyObj } from '@/models/browse-item'
+import type { PostoBrowseDto, PostoObj, OggettoObj, OggettoBrowseDto, SchedaOggetto, AnyBrowseDto, AnyObj, SchedaBySchema } from '@/models/browse-item'
 import axios from 'axios';
 import { useBackendConfig } from './backend-config';
 import type { RepoAccessObj } from '@/models/app-user';
@@ -46,6 +46,12 @@ export const useBrowseData = defineStore('browseData', () => {
     return response.data;
   }
 
+  async function checkoutOggetto(uuid: string, scheda: SchedaBySchema): Promise<Boolean> {
+    const config = useBackendConfig();
+    const response = await axios.post<Boolean>(`${config.backend}/oggetto/${uuid}/checkout`, scheda);
+    return response.data;
+  }
+  
   async function fetchPostoDetails(uuid: string): Promise<PostoObj> {
     const config = useBackendConfig();
     const response = await axios.get<PostoObj>(`${config.backend}/posto/${uuid}`);
@@ -152,7 +158,7 @@ export const useBrowseData = defineStore('browseData', () => {
 
   return { repo, current, goToRoot, goToPosto, 
     addRoot, addPosto, updatePosto, deleteOggetto, 
-    addOggetto, updateOggetto, addCodes,
+    addOggetto, updateOggetto, addCodes, checkoutOggetto,
     uploadGallery, fetchOggettoDetails, fetchPostoDetails,
     browseOggettoDetails, browsePostoDetails,
     getAnyObj, deletePicture,
