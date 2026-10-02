@@ -115,7 +115,7 @@ function leave(e: Element) {
 }
 .floatingmenu {
   position: absolute;
-  z-index: 10;
+  z-index: 20;
   top: -0.2rem;
   right: 10px;
   display: flex;
@@ -155,9 +155,10 @@ function leave(e: Element) {
 
 .drawer-header .menu-button {
     position: relative;
-    top: -0.6rem;
+    top: -1.6rem;
     background-color: white;
     margin-right: 10px;
+    z-index: 10;
 }
 
 </style>
