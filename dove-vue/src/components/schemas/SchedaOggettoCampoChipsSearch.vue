@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SchedaBySchema } from '@/models/browse-item';
 import { SchedaOggettoCampoChipsHandler, type SchedaOggettoCampoChips, type SchedaOggettoCampoSearchProps, type SearchOggettoBySchemaCampoChips } from '@/stores/schede-by-schema';
-import DataChips from '../forms/DataChips.vue';
+import DataChipsEdit from '../forms/DataChipsEdit.vue';
 import { ref } from 'vue';
 
 const props = defineProps<SchedaOggettoCampoSearchProps>()
@@ -14,13 +14,10 @@ const criteria = ref(
 <template>
   <div v-if="campo.tipo == 'chips'" class="formaline">
     <div>
-      <DataChips
-        :editable="true"
-        :saving="false"
-        :chips="criteria.options"
+      <DataChipsEdit
         :form="criteria.options"
         :options="campo.opzioni"
-      ></DataChips>
+      ></DataChipsEdit>
     </div>
     <slot name="default" :data="criteria" :empty="criteria.options.length == 0">
     </slot>

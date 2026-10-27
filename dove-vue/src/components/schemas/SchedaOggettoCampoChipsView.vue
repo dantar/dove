@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { SchedaBySchema } from '@/models/browse-item';
 import { type SchedaOggettoCampoChips, type SchedaOggettoCampoViewProps } from '@/stores/schede-by-schema';
-import DataChips from '../forms/DataChips.vue';
+import DataChipsEdit from '../forms/DataChipsEdit.vue';
+import DataChipsShow from '../forms/DataChipsShow.vue';
 
 const props = defineProps<SchedaOggettoCampoViewProps>()
 
@@ -12,13 +13,15 @@ function getValue( data: SchedaBySchema, campo: SchedaOggettoCampoChips ): strin
 </script>
 <template>
   <div v-if="campo.tipo == 'chips'" :class="{'empty': !editable && getValue(scheda, campo).length == 0}">
-    <DataChips
-      :editable="editable"
-      :saving="saving"
-      :chips="getValue(scheda, campo) || []"
+    <DataChipsEdit v-if="editable"
+      :disabled="saving"
       :form="getValue(form, campo) || []"
-      :options="(campo.opzioni)"
-    ></DataChips>
+      :options="campo.opzioni"
+    ></DataChipsEdit>
+    <DataChipsShow v-else
+      :chips="getValue(scheda, campo) || []"
+      :options="campo.opzioni"
+    ></DataChipsShow>
   </div>
 
 </template>

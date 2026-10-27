@@ -1,5 +1,6 @@
 import { type Component } from 'vue'
 import { SchedaBySchema } from '@/models/browse-item';
+import type { DataChipOption } from '@/models/data-chip';
 import SchedaOggettoCampoChipsView from '@/components/schemas/SchedaOggettoCampoChipsView.vue';
 import SchedaOggettoCampoStarsView from '@/components/schemas/SchedaOggettoCampoStarsView.vue';
 import SchedaOggettoCampoTextView from '@/components/schemas/SchedaOggettoCampoTextView.vue';
@@ -118,7 +119,7 @@ export class SchedaOggettoCampoStarsHandler {
 export interface SchedaOggettoCampoChips extends SchedaOggettoCampoBase {
     tipo: 'chips';
     span: 0;
-    opzioni: string[];
+    opzioni: DataChipOption[];
 }
 export interface SearchOggettoBySchemaCampoCriteriaChips extends SearchOggettoBySchemaCampoCriteria {
     options: string[];
