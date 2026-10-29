@@ -1,0 +1,1 @@
+sudo su -u postgres psql < sql/init-db.sql

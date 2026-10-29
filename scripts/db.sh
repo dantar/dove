@@ -6,7 +6,7 @@ set -u # stop if you use an uninitialized variable
 
 ssh -L 25432:localhost:25432 dantar \
     docker run --rm \
-    --network dove_dove \
+    --network dove_default \
     -p 25432:5432 \
     alpine/socat \
     tcp-listen:5432,fork,reuseaddr tcp-connect:database:5432

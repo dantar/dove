@@ -194,7 +194,7 @@ Database credentials and an initial admin password are presently embedded in dep
 1. Start with the relevant component: `dove-vue/` for UI/API-consumer work, `dove-rest/` for REST/data behavior, `database/init/` and `flyway/sql/` for schema changes, and `deploy/` for the artifact deployment path.
 2. For backend changes, package with `mvn clean package`; for frontend changes, use `npm ci` then `npm run build`. `scripts/build-dove.sh` performs both and assumes the local NVM installation at `/home/daniele/.nvm/nvm.sh`.
 3. Add only forward-only, timestamp-named Flyway migrations for changes to initialized database structure. Never modify a migration already applied to a shared environment.
-4. Run `scripts/deploy-dove.sh` only when intentionally deploying: it rsyncs artifacts and deployment files to the configured `dantar` SSH target, tears down its stack, rebuilds it, and starts it.
+4. Run `scripts/deploy-dove.sh` only when intentionally deploying: it stops early if the frontend or backend artifacts are missing, rsyncs artifacts and deployment files to the configured `dantar` SSH target, then runs `docker compose up -d --build --remove-orphans` to rebuild images and recreate only changed containers.
 5. Treat `obsolete-deploy-prod.sh` as historical Angular-era deployment code. `scripts/init-db.sh` targets a host PostgreSQL user and the legacy `sql/init-db.sql`, not the Docker initialization flow.
 
 ## Testing and Quality

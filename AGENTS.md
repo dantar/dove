@@ -14,7 +14,7 @@ Read `DOVE.md` before exploring or changing this repository. It is the maintaine
 - Frontend requires Node `^20.19.0 || >=22.12.0`. From `dove-vue/`: `npm ci`, `npm run type-check`, `npm run lint`, and `npm run build`. `npm run lint` auto-fixes files.
 - From `dove-rest/`: `mvn clean package`. There are currently no frontend or backend test source files, so do not claim test coverage based on successful builds.
 - `scripts/build-dove.sh` runs the backend package and frontend production build, sourcing `/home/daniele/.nvm/nvm.sh` and selecting Node 22.
-- Run `scripts/deploy-dove.sh` only for an intentional deployment: it syncs artifacts to the configured `dantar` host, runs `docker compose ... down`, then rebuilds and starts the remote stack.
+- Run `scripts/deploy-dove.sh` only for an intentional deployment: it stops early if `dove-vue/dist/` or `dove-rest/target/dove-rest.jar` is missing, syncs artifacts to the configured `dantar` host, then runs `docker compose ... up -d --build --remove-orphans`, which rebuilds images and recreates only changed containers.
 
 ## Git Workflow
 

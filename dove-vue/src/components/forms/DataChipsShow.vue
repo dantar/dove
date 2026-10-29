@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { toDataChipDefinition, type DataChipOption } from '@/models/data-chip';
+import { toDataChipDefinition, type DataChipDefinition, type DataChipOption } from '@/models/data-chip';
 
 interface Props {
   options: DataChipOption[],
@@ -10,10 +10,29 @@ const props = defineProps<Props>();
 
 const definitions = computed(() => props.options.map(toDataChipDefinition));
 
+function hasSelectedChildren(def: DataChipDefinition): boolean {
+    return (def.chips ?? []).some(child => props.chips.includes(toDataChipDefinition(child).id));
+}
+
 </script>
 <template>
-    <span class="arrayitems">
-        <span v-for="def in definitions.filter(d => chips.includes(d.id))" :key="def.id" class="chip-active-true"> {{ def.label }} </span>
-        <span v-if="chips.length == 0">&nbsp;</span>
-    </span>
+    <ul class="data-chip-tree">
+        <li v-for="def in definitions.filter(d => chips.includes(d.id))" :key="def.id">
+            <span class="chip-active-true">{{ def.label }}</span>
+            <DataChipsShow v-if="hasSelectedChildren(def)" :options="def.chips!" :chips="chips" />
+        </li>
+        <li v-if="chips.length == 0">&nbsp;</li>
+    </ul>
 </template>
+
+<style scoped>
+.data-chip-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.data-chip-tree .data-chip-tree {
+    padding-left: 1.2rem;
+}
+
+</style>
