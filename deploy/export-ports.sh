@@ -1,5 +1,5 @@
 docker run -it --rm \
-    --network dove_default \
+    --network dove_dove \
     alpine/socat \
     tcp-listen:25432,fork,reuseaddr \
     tcp-connect:database:5432

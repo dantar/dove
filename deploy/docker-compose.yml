@@ -2,26 +2,37 @@ name: dove
 
 services:
 
+  nginx:
+    image: nginx:alpine
+    container_name: dove
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+    networks:
+      - proxy
+    restart: unless-stopped
+
   frontend:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
-    ports:
-      - 8180:80
+    expose:
+      - 80
     environment:
       - APP_URL=https://dove.dantar.it
       - BACKEND_URL=/backend
       - IMAGES_URL=/images
     volumes:
-      - ./logs/nginx:/var/log/nginx/
+      - ./frontend/logs/nginx:/var/log/nginx/
+    networks:
+      - proxy
     restart: unless-stopped
 
   backend:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    ports:
-      - 8181:8080
+    expose:
+      - 8080
     environment:
       APP_URL: https://dove.dantar.it
       DEPS_DB_URL: database:5432
@@ -30,9 +41,12 @@ services:
       DEPS_DB_USERNAME: dove
       APP_PICTURES_DIR: /data
       LOGGING_FILE_NAME: /logs/backend.log
+    networks:
+      - proxy
+      - dove
     volumes:
-      - ./data/images:/data
-      - ./logs/backend:/logs
+      - ./backend/data/images:/data
+      - ./backend/data/logs:/logs
     depends_on:
       database:
         condition: service_healthy
@@ -56,8 +70,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - dove
     volumes:
-      - ./data/postgres:/var/lib/postgresql
+      - ./database/dbdump:/dbdump
+      - ./database/data/postgresql:/var/lib/postgresql
       - ./database/init:/docker-entrypoint-initdb.d:ro
 
   flyway:
@@ -65,6 +82,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - dove
     volumes:
       - ./flyway/sql:/flyway/sql:ro
     command: >
@@ -73,3 +92,9 @@ services:
       -password=dove
       -baselineOnMigrate=true
       migrate
+
+networks:
+  proxy:
+    external: true
+  dove:
+    driver: bridge

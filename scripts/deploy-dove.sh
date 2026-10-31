@@ -17,21 +17,21 @@ for ARTIFACT in "${DOVEDIR}/dove-vue/dist/index.html" "${DOVEDIR}/dove-rest/targ
     fi
 done
 
-# cd "${DOVEDIR}/docker" && docker compose build && cd -
-APPDIR="dantar:/home/daniele/apps/dove"
+APPDIR="dantar:/opt/web/dove"
 
-# frontend
-rsync --delete -varzh ${DOVEDIR}/dove-vue/dist/ ${APPDIR}/docker/frontend/dist
-# backend
-rsync -varzh ${DOVEDIR}/dove-rest/target/dove-rest.jar ${APPDIR}/docker/backend
-# database
-rsync -varzh ${DOVEDIR}/database/init/* ${APPDIR}/docker/database/init
-# flyway
-rsync --delete -varzh ${DOVEDIR}/flyway/sql/ ${APPDIR}/docker/flyway/sql
-
+# compose file and docker build contexts (swag/ is a reference copy for /opt/swag)
 rsync \
     -varzh ${DOVEDIR}/deploy/* \
-    ${APPDIR}/docker/
+    --exclude swag \
+    ${APPDIR}/
+# frontend
+rsync --delete -varzh ${DOVEDIR}/dove-vue/dist/ ${APPDIR}/frontend/dist
+# backend
+rsync -varzh ${DOVEDIR}/dove-rest/target/dove-rest.jar ${APPDIR}/backend
+# database
+rsync -varzh ${DOVEDIR}/database/init/* ${APPDIR}/database/init
+# flyway
+rsync --delete -varzh ${DOVEDIR}/flyway/sql/ ${APPDIR}/flyway/sql
 
 REMOTE="ssh dantar"
-$REMOTE docker compose -f apps/dove/docker/docker-compose.yml up -d --build --remove-orphans
+$REMOTE docker compose -f /opt/web/dove/docker-compose.yml up -d --build --remove-orphans

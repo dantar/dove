@@ -22,7 +22,8 @@ Read `DOVE.md` before exploring or changing this repository. It is the maintaine
 
 ## Runtime And Deployment
 
-- Production traffic is proxied externally: the SPA uses `/backend` and `/images`, while the backend and nginx containers expose ports 8181 and 8180 respectively. Keep these paths aligned with `deploy/docker-compose.yml` and `deploy/swag/dove.dantar.it.subdomain.conf`.
+- Production runs on `dantar` as compose project `dove` in `/opt/web/dove`. SWAG (`/opt/swag`) reaches `frontend:80` and `backend:8080` by container name over the external `proxy` Docker network; there are no host ports. The SPA uses `/backend` and `/images`. `deploy/docker-compose.yml` and `deploy/swag/` mirror the server's files: keep them in sync with it, because deploying copies `deploy/docker-compose.yml` over the live one.
+- The production database is on the `dove_dove` network; `scripts/db.sh` and `deploy/export-ports.sh` attach socat to it.
 - The older local compose file is `docker/docker-compose.yml`. Its Flyway bind mount points to `docker/flyway/sql`, but repository migrations are at root `flyway/sql`; correct this before relying on local Compose migrations.
 - A new Flyway migration must run against the existing initialized schema. Do not put migration-only changes in `database/init/`, because existing production volumes skip that directory.
 

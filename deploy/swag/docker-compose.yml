@@ -1,32 +1,45 @@
 # edit in /opt/swag/docker-compose.yml
-version: "3.5"
+name: swag
 
 services:
 
   swag:
-    image: ghcr.io/linuxserver/swag:2.5.0
+    image: lscr.io/linuxserver/swag:5.7.0-ls474
     container_name: swag
+
     cap_add:
       - NET_ADMIN
+
     environment:
       - PUID=1001
       - PGID=1001
       - TZ=Europe/Rome
-      - URL=rodarialtelefono.it
-      # add dove.dantar.it to EXTRA_DOMAINS
-      - EXTRA_DOMAINS=alice.wvoce.it,play.wvoce.it,dantar.it,dove.dantar.it,www.dantar.it,gogolgame.it,www.gogolgame.it,www.rodarialtelefono.it
+
+      - URL=dantar.it
+      - EXTRA_DOMAINS=www.dantar.it,dove.dantar.it
+
       - VALIDATION=http
-      - EMAIL=info@wvoce.it
+      - EMAIL=daniele.tarini@gmail.com
+
     volumes:
       - /opt/swag/config:/config
-      - /opt/rodarialtelefono.it/html:/var/www/rodarialtelefono.it:ro
-      - /home/daniele/html:/var/www/daniele/html:ro
-      # add static images directory
-      - /home/daniele/apps/dove/docker/data/images:/opt/dove/images:ro
-    network_mode: host
+      - /opt/web/dove/backend/data/images:/opt/dove/images:ro
+
+    ports:
+      - "80:80"
+      - "443:443"
+
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost/"]
       interval: "30s"
       timeout: "10s"
       retries: 3
+
+    networks:
+      - proxy
+
     restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

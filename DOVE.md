@@ -17,7 +17,7 @@ Four Docker services implement the application:
 | `database` | PostgreSQL 18 with `ltree` | Persistent relational data, JSONB schemas and metadata, hierarchy support. |
 | `flyway` | Flyway 11 | Applies incremental schema migrations after the database is healthy. |
 
-The production reverse proxy is a separate SWAG/nginx installation. `dove.dantar.it` proxies `/` to frontend port 8180 and `/backend/` to backend port 8181; `/images/` is served directly from the backend image volume. The SPA therefore uses relative production URLs: `/backend` and `/images`.
+The production reverse proxy is a separate SWAG/nginx installation on the same host (`/opt/swag`). `dove.dantar.it` proxies `/` to `frontend:80` and `/backend/` to `backend:8080` over the external `proxy` Docker network; `/images/` is served directly from the backend image directory, mounted read-only into SWAG. The SPA therefore uses relative production URLs: `/backend` and `/images`.
 
 ## Repository Layout
 
@@ -27,7 +27,7 @@ The production reverse proxy is a separate SWAG/nginx installation. `dove.dantar
 | `dove-rest/` | Active Spring Boot backend Maven project and Dockerfile. `target/` is generated output. |
 | `database/` | Active PostgreSQL image and first-boot schema/seed scripts. |
 | `flyway/sql/` | Active incremental migrations. |
-| `deploy/` | Production artifact-based Docker build contexts, compose file, SWAG proxy example, and database tunnel helper. |
+| `deploy/` | Production artifact-based Docker build contexts, the compose file mirrored from the server, reference copies of the SWAG compose file and `dove.conf` site config, and a database tunnel helper. |
 | `scripts/` | Build, deploy, database tunnel, and legacy initialization/deployment scripts. |
 | `docker/` | Older local compose setup; see development notes for its migration-volume issue. |
 | `sql/` | Historical/manual schema dumps and SQL, not the active initialization/migration source. |
@@ -40,13 +40,15 @@ Repository history is active through the checkout UI work. Untracked files at in
 
 ### Production deployment
 
-`deploy/docker-compose.yml` is copied to the remote host by `scripts/deploy-dove.sh` after `scripts/build-dove.sh` has built `dove-rest/target/dove-rest.jar` and `dove-vue/dist/`.
+Production runs on the `dantar` host (SSH alias in `~/.ssh/config`) as compose project `dove` in `/opt/web/dove`. `scripts/deploy-dove.sh` copies `deploy/*` (except `swag/`) there, then the artifacts built by `scripts/build-dove.sh` (`dove-vue/dist/` into `frontend/dist`, `dove-rest/target/dove-rest.jar` into `backend/`), `database/init/` and `flyway/sql/`. `deploy/docker-compose.yml` overwrites the live compose file, so it must stay identical to the server's.
 
-- Frontend: nginx port `8180:80`; runtime config is generated from `config.template.json` using `APP_URL`, `BACKEND_URL`, and `IMAGES_URL`.
-- Backend: port `8181:8080`, Actuator port 8081 internal; waits for PostgreSQL health and successful Flyway migration; images mount at `/data`, logs at `/logs`.
-- Database: internal port 5432, persistent host path `deploy/data/postgres`, one-time scripts mounted at `/docker-entrypoint-initdb.d`.
+- Networks: `frontend` and `backend` join the external `proxy` network shared with SWAG; `backend`, `database`, and `flyway` share the project network `dove` (`dove_dove`). No host ports are published.
+- Frontend: nginx on port 80; runtime config is generated from `config.template.json` using `APP_URL`, `BACKEND_URL`, and `IMAGES_URL`.
+- Backend: port 8080, Actuator port 8081 internal; waits for PostgreSQL health and successful Flyway migration; images at host `backend/data/images` (mounted as `/data`), logs at `backend/data/logs`.
+- Database: internal port 5432, data at host `database/data/postgresql`, dumps folder `database/dbdump` mounted as `/dbdump`, one-time scripts mounted at `/docker-entrypoint-initdb.d`.
 - Flyway: uses `baselineOnMigrate=true`, then applies every `flyway/sql/V*` file.
-- `deploy/export-ports.sh` exposes the internal production database through an ephemeral socat container. `scripts/db.sh` creates the corresponding SSH tunnel.
+- A placeholder `nginx` service (`container_name: dove`) serves `/opt/web/dove/html`; SWAG does not route to it.
+- `deploy/export-ports.sh` exposes the internal production database through an ephemeral socat container on `dove_dove`. `scripts/db.sh` does the same and creates the SSH tunnel to `localhost:25432`.
 
 ### Local development
 
@@ -194,7 +196,7 @@ Database credentials and an initial admin password are presently embedded in dep
 1. Start with the relevant component: `dove-vue/` for UI/API-consumer work, `dove-rest/` for REST/data behavior, `database/init/` and `flyway/sql/` for schema changes, and `deploy/` for the artifact deployment path.
 2. For backend changes, package with `mvn clean package`; for frontend changes, use `npm ci` then `npm run build`. `scripts/build-dove.sh` performs both and assumes the local NVM installation at `/home/daniele/.nvm/nvm.sh`.
 3. Add only forward-only, timestamp-named Flyway migrations for changes to initialized database structure. Never modify a migration already applied to a shared environment.
-4. Run `scripts/deploy-dove.sh` only when intentionally deploying: it stops early if the frontend or backend artifacts are missing, rsyncs artifacts and deployment files to the configured `dantar` SSH target, then runs `docker compose up -d --build --remove-orphans` to rebuild images and recreate only changed containers.
+4. Run `scripts/deploy-dove.sh` only when intentionally deploying: it stops early if the frontend or backend artifacts are missing, rsyncs deployment files and artifacts to `dantar:/opt/web/dove`, then runs `docker compose up -d --build --remove-orphans` to rebuild images and recreate only changed containers.
 5. Treat `obsolete-deploy-prod.sh` as historical Angular-era deployment code. `scripts/init-db.sh` targets a host PostgreSQL user and the legacy `sql/init-db.sql`, not the Docker initialization flow.
 
 ## Testing and Quality
@@ -216,3 +218,5 @@ Database credentials and an initial admin password are presently embedded in dep
 ## Session Notes
 
 When adding future session notes, record the date, branch/commit, what changed, verification performed, and any intentionally deferred concern. Keep confirmed project behavior in the sections above rather than duplicating it here.
+
+- 2026-10-29 (main, after 87f8b7a): production moved to the new `dantar` server at `/opt/web/dove`, using a `proxy`-network layout. `scripts/deploy-dove.sh`, `deploy/docker-compose.yml`, `deploy/swag/`, and `deploy/export-ports.sh` were updated to match the live server (verified by diffing the compose file and by an rsync dry run). Production had only `V202605091519` applied; the next deploy applies `V202605191922__repo-checkout.sql` for the first time — dump the database first.
