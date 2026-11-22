@@ -16,6 +16,7 @@ const router = useRouter();
 
 const popupUser = ref(false);
 const popupCart = ref(false);
+const popupMain = ref(false);
 
 const browse = useBrowseData();
 
@@ -28,17 +29,21 @@ console.log(SchedaOggettoCampoStarsHandler.KEY);
 <template>
   <div v-if="loggedUser.user.username">
     <div class="header">
-      <QrLauncher v-if="browse.repo" mode="one" @decoded-one="(uuid) => router.replace(`/qr/${uuid}`)">
-        <Heroicon icon="qr-code-search"></Heroicon>
-      </QrLauncher>
-      <RouterLink v-if="browse.repo" to="/search"><button><Heroicon icon="search" /></button></RouterLink>
-      <button v-if="false" @click="popupCart = true"><Heroicon icon="cart" /></button>
-      <RouterLink v-if="browse.repo" :to="`/posto/${browse.repo}`"><button><Heroicon icon="archive-box" /></button></RouterLink>
-      <button @click="popupUser = true"><Heroicon icon="user" /></button>
+      <button @click="popupMain = true"><Heroicon icon="menu" />Menu</button>
     </div>
     <main>
       <UndoableActionsStack></UndoableActionsStack>
       <RouterView />
+      <PopupDialog v-if="popupMain" @close="popupMain = false">
+        <QrLauncher v-if="browse.repo" mode="one" @decoded-one="(uuid) => router.replace(`/qr/${uuid}`)">
+          <Heroicon icon="qr-code-search" />
+          Cerca codice QR
+        </QrLauncher>
+        <RouterLink v-if="browse.repo" to="/search"><button><Heroicon icon="search" />Ricerca avanzata</button></RouterLink>
+        <button v-if="false" @click="popupCart = true"><Heroicon icon="cart" /></button>
+        <RouterLink v-if="browse.repo" :to="`/posto/${browse.repo}`"><button><Heroicon icon="archive-box" />Archivio</button></RouterLink>
+        <button @click="popupUser = true"><Heroicon icon="user" />Utente</button>
+      </PopupDialog>
       <PopupDialog v-if="popupUser" @close="popupUser = false">
         <LoggedUser></LoggedUser>
       </PopupDialog>
