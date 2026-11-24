@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Transition } from 'vue';
+import { ref } from 'vue';
 import Heroicon from './Heroicon.vue';
 
 const menu = ref(false);
@@ -11,10 +11,14 @@ function beforeEnter(e: Element) {
   el.style.transform = 'scaleY(0)'
   el.style.transformOrigin = 'top'
   el.style.opacity = '0'
+  el.style.overflow = 'hidden'
 }
 
 function enter(e: Element) {
   const el = e as HTMLElement;
+  // forza reflow, così l'animazione parte da height 0
+  void el.offsetHeight
+
   el.style.transition = 'height 0.3s ease, transform 0.3s ease, opacity 0.2s ease'
 
   // altezza reale
@@ -25,8 +29,21 @@ function enter(e: Element) {
   el.style.opacity = '1'
 }
 
+// a fine animazione rimuove gli stili inline: il drawer torna ad altezza naturale
+// e segue le variazioni del contenuto
+function afterEnter(e: Element) {
+  const el = e as HTMLElement;
+  el.style.height = ''
+  el.style.transform = ''
+  el.style.transformOrigin = ''
+  el.style.opacity = ''
+  el.style.transition = ''
+  el.style.overflow = ''
+}
+
 function leave(e: Element) {
   const el = e as HTMLElement;
+  el.style.overflow = 'hidden'
   // imposta stato iniziale (aperto)
   el.style.height = el.scrollHeight + 'px'
   el.style.transform = 'scaleY(1)'
@@ -68,6 +85,8 @@ function leave(e: Element) {
   <transition
     @before-enter="beforeEnter"
     @enter="enter"
+    @after-enter="afterEnter"
+    @enter-cancelled="afterEnter"
     @leave="leave"
   >
     <div v-if="content" class="drawer-content">
@@ -76,24 +95,6 @@ function leave(e: Element) {
   </transition>
 </template>
 <style>
-
-.drawer-content {
-  overflow: hidden;
-}
-.rollup-enter-from,
-.rollup-leave-to {
-  opacity: 0;
-  transform: scaleY(0);
-}
-.rollup-enter-to,
-.rollup-leave-from {
-  opacity: 1;
-  transform: scaleY(1);
-}
-.rollup-enter-active,
-.rollup-leave-active {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
 
 .fade-enter-from,
 .fade-leave-to {
