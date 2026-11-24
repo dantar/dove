@@ -29,9 +29,8 @@ const router = useRouter();
 const selectedImage = ref('');
 
 const browsed = ref<OggettoBrowseDto>();
-const editable = ref(false);
+const editing = ref(false);
 const freeze = ref(false);
-const trash = ref<string[]>([]);
 
 const undoables = useUndoableActions();
 
@@ -48,20 +47,29 @@ watch(() => props.uuid, loadOggetto);
 
 function setOggetto(o: OggettoObj) {
     form.value = JSON.parse(JSON.stringify(o));
-    trash.value = [];
+}
+
+function iniziaModifica() {
+    if (browsed.value) {
+        setOggetto(browsed.value.oggetto);
+    }
+    editing.value = true;
+}
+
+function annullaModifica() {
+    if (browsed.value) {
+        setOggetto(browsed.value.oggetto);
+    }
+    editing.value = false;
 }
 
 const saveData = async () => {
   freeze.value = true;
   const browse = useBrowseData();
   const updated = await browse.updateOggetto(form.value as OggettoObj);
-  for (let index = 0; index < trash.value.length; index++) {
-    const image = trash.value[index] as string;
-    await browse.deletePicture(updated.id, image);
-  }
   await loadOggetto(updated.id);
   freeze.value = false;
-  editable.value = false;
+  editing.value = false;
 }
 
 const form = ref<OggettoObj>();
@@ -72,23 +80,6 @@ async function refreshThumbnail() {
         if (form.value) {
             form.value.thumbnail = browsed.value.oggetto.thumbnail;
         }
-    }
-}
-
-function selectThumbnail(image:string) {
-    if (form.value) {
-        form.value.thumbnail = (form.value.thumbnail == image? '': image);
-    }
-}
-
-function deleteThumbnail(image:string) {
-    if (form.value && form.value.thumbnail == image) {
-        form.value.thumbnail = '';
-    }
-    if (trash.value.includes(image)) {
-        trash.value.splice(trash.value.indexOf(image), 1);
-    } else {
-        trash.value.push(image);
     }
 }
 
@@ -212,7 +203,7 @@ function saveCheckout() {
         <SlidingDrawer>
             <template #title>Oggetto</template>
             <template #menubuttons>
-                <button @click="editable = !editable" type="button" :disabled="freeze">
+                <button @click="iniziaModifica()" type="button" :disabled="freeze">
                     <Heroicon icon="pencil"/> Modifica
                 </button>
                 <button type="button" :disabled="freeze" @click="deleteOggetto()">
@@ -229,13 +220,13 @@ function saveCheckout() {
                         <template #header>
                             <div class="card-header">
                                 <OggettoShort :oggetto="browsed.oggetto">
-                                    <template #nome v-if="editable || browsed.oggetto.nome == ''">
+                                    <template #nome v-if="browsed.oggetto.nome == ''">
                                         <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="(form as OggettoObj).nome" :disabled="freeze"/>
                                     </template>
                                 </OggettoShort>
                                 <div class="notimportant">ID: {{ browsed.oggetto.id }}</div>
-                                <span v-if="!editable && browsed.oggetto.nome == '' && form?.nome != ''">
-                                    <button v-if="!editable" type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
+                                <span v-if="!editing && browsed.oggetto.nome == '' && form?.nome != ''">
+                                    <button type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
                                 </span>
                             </div>
                         </template>
@@ -247,14 +238,10 @@ function saveCheckout() {
                         <SchedaOggettoView v-if="form?.scheda"
                             :scheda="browsed.oggetto.scheda"
                             :form="form?.scheda"
-                            :editable="editable"
+                            :editable="false"
                             :saving="freeze"
                             :repo="browsed.repo"
                             ></SchedaOggettoView>
-                        <div>
-                            <button v-if="editable" @click="editable = false" type="button" :disabled="freeze"><Heroicon icon="cancel"/> </button>
-                            <button v-if="editable" type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva </button>
-                        </div>
                     </CardFormat>
                     </form>
                 </div>
@@ -266,23 +253,11 @@ function saveCheckout() {
             <template #content>
                 <div>
                     <ItemsGallery :items="browsed.oggetto.immagini.filter(
-                        item => editable || item != browsed?.oggetto.thumbnail
-                    )" :class="{expanded: editable}">
+                        item => item != browsed?.oggetto.thumbnail
+                    )">
                         <template #item="{ item }">
                             <div style="position: relative;" v-if="true">
-                                <ImageThumb @click="clickImage(item)" :uuid="`${uuid}`" :image="`${item}`" :class="{tobedeleted: trash.includes(item), expanded: selectedImage == item}"></ImageThumb>
-                                <span class="overbuttons overbuttons--up">
-                                    <button v-if="editable" @click="deleteThumbnail(item)">
-                                        <Heroicon icon="trash" />
-                                        <Heroicon icon="checked" v-if="trash.includes(item)" />
-                                        <Heroicon icon="unchecked" v-else></Heroicon>
-                                    </button>
-                                    <button v-if="editable && !trash.includes(item)" @click="selectThumbnail(item)">
-                                        <Heroicon icon="photo" />
-                                        <Heroicon icon="checked" v-if="form?.thumbnail == item" />
-                                        <Heroicon icon="unchecked" v-else></Heroicon>
-                                    </button>
-                                </span>
+                                <ImageThumb @click="clickImage(item)" :uuid="`${uuid}`" :image="`${item}`" :class="{expanded: selectedImage == item}"></ImageThumb>
                             </div>
                         </template>
                         <template #empty>
@@ -305,6 +280,25 @@ function saveCheckout() {
                     <Heroicon icon="trash" /> Elimina
                 </button>
             </div>
+        </PopupDialog>
+        <PopupDialog v-if="editing && form" @close="annullaModifica()">
+            <form class="edit-form" @submit.prevent="saveData()">
+                <label class="data-panel">
+                    <span class="data-panel-header">Nome</span>
+                    <input type="text" :placeholder="`Oggetto ${browsed.oggetto.id.split('-')[0]}`" v-model="form.nome" :disabled="freeze"/>
+                </label>
+                <SchedaOggettoView v-if="form.scheda"
+                    :scheda="form.scheda"
+                    :form="form.scheda"
+                    :editable="true"
+                    :saving="freeze"
+                    :repo="browsed.repo"
+                    ></SchedaOggettoView>
+                <div class="edit-buttons">
+                    <button @click="annullaModifica()" type="button" :disabled="freeze"><Heroicon icon="cancel"/> Annulla</button>
+                    <button type="submit" :disabled="freeze"><Heroicon icon="check"/> Salva</button>
+                </div>
+            </form>
         </PopupDialog>
         <PopupDialog v-if="checkoutSchema && checkoutData" @close="checkoutSchema = undefined">
             <SchedaBySchemaView 
@@ -370,8 +364,19 @@ function saveCheckout() {
 .mainthumb {
     width: 100%;
 }
-.tobedeleted {
-    opacity: 0.5;
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.edit-form input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+.edit-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 </style>

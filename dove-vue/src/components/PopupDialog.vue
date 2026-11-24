@@ -36,6 +36,8 @@ import Heroicon from './Heroicon.vue';
 
 .dialog {
     position: relative;
+    max-height: calc(100vh - 32px);
+    max-width: calc(100vw - 16px);
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: white;
@@ -49,7 +51,9 @@ import Heroicon from './Heroicon.vue';
     flex-direction: column;
     gap: 12px;
     padding: 24px;
-    min-width: 300px;
+    min-width: min(300px, calc(100vw - 16px));
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .buttons {

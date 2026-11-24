@@ -41,7 +41,19 @@ function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
         <div v-if="schema" class="scheda-header">
             <span>{{ schema.nome }}</span>
         </div>
-        <SlotGrid>
+        <div v-if="editable" class="scheda-list">
+            <template v-if="schema">
+                <div class="data-panel" v-for="campo in schema.campi" :key="campo.id">
+                    <span class="data-panel-header">{{ campo.nome }}</span>
+                    <span class="data-panel-content">
+                        <component v-if="SchedaBySchema.handler[campo.tipo]" :is="SchedaBySchema.handler[campo.tipo]?.component()" v-bind="viewProps(campo)" />
+                        <span v-else>manca!</span>
+                    </span>
+                </div>
+            </template>
+            <div v-else>Schema {{ scheda.schema }} loading...</div>
+        </div>
+        <SlotGrid v-else>
             <div v-if="schema" class="data-panel" v-for="campo in schema.campi">
                 <span class="data-panel-header">{{ campo.nome }}</span> 
                 <span class="data-panel-content">
@@ -54,6 +66,23 @@ function viewProps(campo: SchedaOggettoCampo): SchedaOggettoCampoViewProps {
     </div>
 </template>
 <style scoped>
+
+.scheda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.scheda-list .data-panel {
+    width: 100%;
+    margin: 0;
+}
+
+.scheda-list .data-panel-content :deep(textarea),
+.scheda-list .data-panel-content :deep(input[type="text"]) {
+    width: 100%;
+    box-sizing: border-box;
+}
 
 .data-panel:has(.empty) {
     display: none;
